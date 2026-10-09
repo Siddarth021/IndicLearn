@@ -1,0 +1,113 @@
+{
+  "metadata": {
+    "experiment_id": "EXP-011",
+    "status": "PASS",
+    "timestamp": "2026-10-08T21:14:33.681165+00:00",
+    "total_scenarios": 10,
+    "passed_scenarios": 10,
+    "scenario_pass_rate": 1.0,
+    "evaluation_mode": "controlled_algorithmic_evaluation",
+    "scientific_disclaimer": "Controlled algorithmic benchmark. Does NOT claim real student learning gains."
+  },
+  "scenarios": [
+    {
+      "scenario_id": "EXP011_SCEN_001_DIFFICULTY_ALIGNMENT",
+      "passed": true,
+      "weak_difficulty": "EASY",
+      "developing_difficulty": "MEDIUM",
+      "mastered_difficulty": "HARD"
+    },
+    {
+      "scenario_id": "EXP011_SCEN_002_WEAKNESS_TARGETING",
+      "passed": true,
+      "weak_priority": 0.4432,
+      "strong_priority": 0.3002,
+      "weakness_score": 0.7999
+    },
+    {
+      "scenario_id": "EXP011_SCEN_003_UNCERTAINTY_TARGETING",
+      "passed": true,
+      "uncertainty_score": 1.0
+    },
+    {
+      "scenario_id": "EXP011_SCEN_004_PREREQUISITE_TARGETING",
+      "passed": true,
+      "prerequisite_relevance": 0.4
+    },
+    {
+      "scenario_id": "EXP011_SCEN_005_LANGUAGE_PREFERENCE",
+      "passed": true,
+      "selected_language": "te"
+    },
+    {
+      "scenario_id": "EXP011_SCEN_006_REPEAT_AVOIDANCE",
+      "passed": true,
+      "item1_id": "ITEM_CTFT_001_EASY_EN",
+      "item2_id": "ITEM_CTFT_002_MED_TE"
+    },
+    {
+      "scenario_id": "EXP011_SCEN_007_DETERMINISM",
+      "passed": true,
+      "deterministic_match": true
+    },
+    {
+      "scenario_id": "EXP011_SCEN_008_PROVENANCE_INTEGRITY",
+      "passed": true,
+      "source_chunk_ids": [
+        "CHUNK_SS_003"
+      ]
+    },
+    {
+      "scenario_id": "EXP011_SCEN_009_STUDENT_ISOLATION",
+      "passed": true,
+      "student_a_concept_b_evidence": 0,
+      "student_b_concept_a_evidence": 0
+    },
+    {
+      "scenario_id": "EXP011_SCEN_010_CLOSED_LOOP_EVIDENCE",
+      "passed": true,
+      "evidence_count_before": 0,
+      "evidence_count_after": 1,
+      "knowledge_score_after": 0.75
+    }
+  ],
+  "report": {
+    "experiment_id": "EXP-011",
+    "title": "Controlled Adaptive Assessment Evaluation",
+    "research_question": "RQ-ASSESS: Does the Phase 7A adaptive assessment engine maintain difficulty calibration, weakness targeting, language fidelity, repeat avoidance, and closed-loop state updates under controlled test conditions?",
+    "hypothesis": "The adaptive assessment selection and evaluation pipelines satisfy 100% of controlled invariants without cross-student leakage or degradation in provenance.",
+    "dataset_identifier": "data/evaluation/exp011_assessment_eval.json",
+    "sample_size": 10,
+    "procedure": "Evaluated 10 controlled scenarios spanning difficulty adaptation, weakness targeting, uncertainty probing, prerequisite deficit awareness, Telugu language preference, repeat item avoidance, determinism, provenance, student isolation, and closed-loop evidence integration.",
+    "metrics": {
+      "total_scenarios": 10,
+      "passed_scenarios": 10,
+      "scenario_pass_rate": 1.0,
+      "difficulty_alignment": 1.0,
+      "weakness_targeting_accuracy": 1.0,
+      "language_fidelity": 1.0,
+      "repeat_avoidance_rate": 1.0,
+      "closed_loop_evidence_rate": 1.0
+    },
+    "observed_results": {
+      "total_scenarios": 10,
+      "passed_scenarios": 10,
+      "overall_status": "PASS"
+    },
+    "interpretation": "The adaptive assessment engine successfully calibrates item difficulty to student mastery, targets verified concept weaknesses, respects Telugu language preferences, prevents immediate question repeats, and integrates quiz outcomes into the student model in a closed feedback loop.",
+    "scientific_claims": [
+      "The adaptive assessment system deterministically adheres to defined pedagogical item selection policies and maintains closed-loop evidence integration under controlled conditions."
+    ],
+    "limitations": [
+      "Evaluated using controlled curated question items and synthetic knowledge states.",
+      "Does not establish psychometric IRT item discrimination or live exam score improvements.",
+      "Real student learning gains require a future controlled educational effectiveness study."
+    ],
+    "reproducibility": {
+      "random_seed": 42,
+      "item_bank": "data/evaluation/signals_systems_items.json",
+      "gold_graph": "data/evaluation/concept_graph_gold.json"
+    },
+    "timestamp": "2026-10-08T21:14:33.681147+00:00"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ParticipantProfileSchema",
+  "description": "Pseudonymous metadata schema for student participants in usability and learning studies.",
+  "type": "object",
+  "required": ["participant_id", "degree_program", "academic_year", "language_background"],
+  "properties": {
+    "participant_id": {
+      "type": "string",
+      "pattern": "^P_[0-9]{3,5}$",
+      "description": "Pseudonymous identifier (e.g. P_001, P_002). No real names or student registration IDs."
+    },
+    "degree_program": {
+      "type": "string",
+      "enum": ["B.Tech", "B.E.", "M.Tech", "Dual_Degree", "Other"],
+      "description": "Enrolled degree program."
+    },
+    "engineering_branch": {
+      "type": "string",
+      "enum": ["ECE", "EEE", "CSE", "IT", "Mechanical", "Civil", "Other"]
+    },
+    "academic_year": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Current year of study."
+    },
+    "language_background": {
+      "type": "object",
+      "required": ["native_language", "medium_of_instruction_school", "preferred_query_style"],
+      "properties": {
+        "native_language": { "type": "string" },
+        "medium_of_instruction_school": { "type": "string", "enum": ["Telugu", "English", "Bilingual", "Other"] },
+        "preferred_query_style": {
+          "type": "string",
+          "enum": ["pure_english", "telugu_script", "romanized_telugu", "code_mixed"]
+        }
+      }
+    },
+    "prior_exposure_to_signals_and_systems": {
+      "type": "string",
+      "enum": ["currently_enrolled", "completed_course", "no_prior_coursework"]
+    }
+  },
+  "additionalProperties": false
+}

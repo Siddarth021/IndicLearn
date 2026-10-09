@@ -1,0 +1,280 @@
+{
+  "experiment_id": "EXP-005A",
+  "name": "Research-Hardened RAG Evaluation, Real-LLM Validation & Benchmark Expansion",
+  "benchmark_dataset": "data\\evaluation\\rag_eval_expanded.json",
+  "corpus_dataset": "data\\evaluation\\signals_and_systems_eval.json",
+  "subject_id": "signals_and_systems",
+  "provider_mode": "mock",
+  "llm_provider_class": "MockLLMProvider",
+  "scientific_interpretation_principle": "Pipeline validation != Real LLM answer quality != Human-judged correctness. MockLLMProvider validates grounding mechanics, citation parsing, sufficiency routing, and error boundaries. It does not establish real LLM factual accuracy or colloquial Telugu generative quality.",
+  "benchmark_leakage_audit": {
+    "leakage_detected": false,
+    "total_queries_checked": 60,
+    "total_chunks_checked": 10,
+    "leaked_queries_count": 0,
+    "leaked_queries": [],
+    "status": "PASS (No verbatim leakage detected)"
+  },
+  "retrieval_metrics": {
+    "aggregate": {
+      "queries_count": 50,
+      "recall_at_1": 0.38,
+      "recall_at_3": 0.7,
+      "recall_at_5": 0.92,
+      "mrr": 0.5677,
+      "gold_evidence_recall_at_5": 0.91,
+      "multi_chunk_evidence_recall": 0.95
+    },
+    "by_language": {
+      "en": {
+        "queries_count": 15,
+        "recall_at_1": 0.2,
+        "recall_at_3": 0.7333,
+        "recall_at_5": 1.0,
+        "mrr": 0.5,
+        "gold_evidence_recall_at_5": 1.0
+      },
+      "te": {
+        "queries_count": 12,
+        "recall_at_1": 0.3333,
+        "recall_at_3": 0.4167,
+        "recall_at_5": 0.6667,
+        "mrr": 0.4153,
+        "gold_evidence_recall_at_5": 0.625
+      },
+      "te-Latn": {
+        "queries_count": 12,
+        "recall_at_1": 0.4167,
+        "recall_at_3": 0.8333,
+        "recall_at_5": 1.0,
+        "mrr": 0.625,
+        "gold_evidence_recall_at_5": 1.0
+      },
+      "te-en": {
+        "queries_count": 11,
+        "recall_at_1": 0.6364,
+        "recall_at_3": 0.8182,
+        "recall_at_5": 1.0,
+        "mrr": 0.7636,
+        "gold_evidence_recall_at_5": 1.0
+      }
+    },
+    "by_difficulty": {
+      "easy": {
+        "queries_count": 14,
+        "recall_at_1": 0.4286,
+        "recall_at_3": 0.6429,
+        "recall_at_5": 0.8571,
+        "mrr": 0.5774,
+        "gold_evidence_recall_at_5": 0.8571
+      },
+      "medium": {
+        "queries_count": 21,
+        "recall_at_1": 0.4286,
+        "recall_at_3": 0.7619,
+        "recall_at_5": 0.9524,
+        "mrr": 0.6198,
+        "gold_evidence_recall_at_5": 0.9524
+      },
+      "hard": {
+        "queries_count": 15,
+        "recall_at_1": 0.2667,
+        "recall_at_3": 0.6667,
+        "recall_at_5": 0.9333,
+        "mrr": 0.4856,
+        "gold_evidence_recall_at_5": 0.9
+      }
+    },
+    "by_category": {
+      "code_mixed": {
+        "queries_count": 11,
+        "recall_at_1": 0.6364,
+        "recall_at_3": 0.8182,
+        "recall_at_5": 1.0,
+        "mrr": 0.7636,
+        "gold_evidence_recall_at_5": 1.0
+      },
+      "comparison": {
+        "queries_count": 1,
+        "recall_at_1": 0.0,
+        "recall_at_3": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 0.3333,
+        "gold_evidence_recall_at_5": 1.0
+      },
+      "definition": {
+        "queries_count": 3,
+        "recall_at_1": 0.3333,
+        "recall_at_3": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 0.6667,
+        "gold_evidence_recall_at_5": 1.0
+      },
+      "explanation": {
+        "queries_count": 4,
+        "recall_at_1": 0.0,
+        "recall_at_3": 0.75,
+        "recall_at_5": 1.0,
+        "mrr": 0.3958,
+        "gold_evidence_recall_at_5": 1.0
+      },
+      "multichunk": {
+        "queries_count": 4,
+        "recall_at_1": 0.25,
+        "recall_at_3": 0.75,
+        "recall_at_5": 1.0,
+        "mrr": 0.5208,
+        "gold_evidence_recall_at_5": 1.0
+      },
+      "prerequisite_reasoning": {
+        "queries_count": 1,
+        "recall_at_1": 0.0,
+        "recall_at_3": 0.0,
+        "recall_at_5": 1.0,
+        "mrr": 0.25,
+        "gold_evidence_recall_at_5": 1.0
+      },
+      "relationship": {
+        "queries_count": 1,
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "gold_evidence_recall_at_5": 1.0
+      },
+      "romanized_telugu": {
+        "queries_count": 12,
+        "recall_at_1": 0.4167,
+        "recall_at_3": 0.8333,
+        "recall_at_5": 1.0,
+        "mrr": 0.625,
+        "gold_evidence_recall_at_5": 1.0
+      },
+      "telugu_script": {
+        "queries_count": 12,
+        "recall_at_1": 0.3333,
+        "recall_at_3": 0.4167,
+        "recall_at_5": 0.6667,
+        "mrr": 0.4153,
+        "gold_evidence_recall_at_5": 0.625
+      },
+      "terminology_variation": {
+        "queries_count": 1,
+        "recall_at_1": 0.0,
+        "recall_at_3": 0.0,
+        "recall_at_5": 1.0,
+        "mrr": 0.25,
+        "gold_evidence_recall_at_5": 1.0
+      }
+    }
+  },
+  "ablations": {
+    "knowledge_graph_ablation": {
+      "system_a_hybrid_only": {
+        "description": "Hybrid lexical (BM25) + dense retrieval on raw query text",
+        "recall_at_5": 0.88,
+        "mrr": 0.568,
+        "gold_evidence_recall_at_5": 0.87
+      },
+      "system_b_hybrid_plus_concept_mapping": {
+        "description": "Hybrid retrieval with Telugu/Romanized normalization and cross-lingual concept mapping",
+        "recall_at_5": 0.92,
+        "mrr": 0.5677,
+        "gold_evidence_recall_at_5": 0.91
+      },
+      "system_c_hybrid_plus_concept_mapping_plus_graph": {
+        "description": "Full proposed pipeline: Concept-aware hybrid retrieval with curriculum graph context and sufficiency gating",
+        "recall_at_5": 0.86,
+        "mrr": 0.5547,
+        "gold_evidence_recall_at_5": 0.85
+      },
+      "graph_contribution_analysis": "Empirical comparison between System B and System C measures the isolated effect of knowledge graph context and curriculum graph prerequisite expansion on retrieval recall and MRR."
+    },
+    "concept_mapping_query_ablation": {
+      "setting_1_raw_query": {
+        "description": "Raw unnormalized user query text directly submitted to hybrid retriever",
+        "recall_at_1": 0.38,
+        "recall_at_3": 0.72,
+        "recall_at_5": 0.88,
+        "mrr": 0.568,
+        "gold_evidence_recall_at_5": 0.87
+      },
+      "setting_2_normalized_query": {
+        "description": "Query normalized via TeluguNormalizer / TransliterationNormalizer",
+        "recall_at_1": 0.36,
+        "recall_at_3": 0.74,
+        "recall_at_5": 0.9,
+        "mrr": 0.5657,
+        "gold_evidence_recall_at_5": 0.89
+      },
+      "setting_3_normalized_plus_canonical_expansion": {
+        "description": "Normalized query with cross-lingual concept mapping and canonical concept expansion",
+        "recall_at_1": 0.38,
+        "recall_at_3": 0.7,
+        "recall_at_5": 0.92,
+        "mrr": 0.5677,
+        "gold_evidence_recall_at_5": 0.91
+      }
+    }
+  },
+  "pipeline_and_answerability": {
+    "total_queries_evaluated": 60,
+    "answerability_matrix": {
+      "answerable": {
+        "evidence_sufficient_and_grounded": 46,
+        "evidence_sufficient_but_grounding_failed": 0,
+        "evidence_insufficient_refused": 4
+      },
+      "out_of_scope_and_adversarial": {
+        "correctly_refused": 10,
+        "incorrectly_hallucinated_or_answered": 0
+      }
+    },
+    "grounding_status_breakdown": {
+      "GROUNDED": 46,
+      "OUT_OF_SCOPE": 14
+    },
+    "citation_integrity_metrics": {
+      "citation_validity_rate": 1.0,
+      "citation_coverage_rate": 1.0,
+      "unsupported_citation_rate": 0.0,
+      "scientific_interpretation": "Citation integrity metrics evaluate citation identifier resolution and sentence-level citation attachment within supplied evidence. They do NOT establish real LLM factual accuracy or human-perceived semantic correctness."
+    },
+    "claim_level_audit": {
+      "total_claims": 92,
+      "cited_claims": 92,
+      "uncited_claims": 0,
+      "supported_claims": 17,
+      "unsupported_citation_claims": 0,
+      "unrelated_evidence_claims": 75,
+      "metadata_contradictions": 0,
+      "supported_claim_ratio": 0.1848
+    }
+  },
+  "real_llm_evaluation": {
+    "status": "REAL LLM EVALUATION: NOT RUN",
+    "reason": "Real LLM evaluation is opt-in. Specify --provider real to execute."
+  },
+  "human_evaluation": {
+    "status": "HUMAN EVALUATION: NOT YET EVALUATED",
+    "scale": {
+      "0": "Poor / incorrect / unsupported / grammatically unacceptable",
+      "1": "Partially correct / partially supported / minor translation or terminology flaws",
+      "2": "Good / fully correct / strongly grounded / fluent and appropriate academic phrasing"
+    },
+    "dimensions": {
+      "correctness": "Factual accuracy of engineering concepts relative to university signal processing curriculum (0-2).",
+      "groundedness": "Extent to which all substantive factual claims are strictly substantiated by the cited retrieved materials (0-2).",
+      "relevance": "Directness and specificity of the response addressing the student's question (0-2).",
+      "completeness": "Coverage of expected core principles, equations, or properties required for a thorough answer (0-2).",
+      "language_appropriateness": "Naturalness, fluency, and proper engineering terminology in the requested language/code-mixed style (0-2)."
+    },
+    "note": "No human scoring panel has rated model completions in this automated release. Results must strictly reflect NOT YET EVALUATED."
+  },
+  "limitations": [
+    "Automated citation integrity validates source identifier presence and sentence coverage; it does not replace human domain expertise.",
+    "Real LLM evaluation requires external API credentials and was executed in offline-mock mode for deterministic CI.",
+    "Syntactic sentence splitting is a heuristic proxy for atomic propositional claims.",
+    "Multimodal content (plots, diagrams, circuit schematics) is currently evaluated on extracted textual captions only."
+  ]
+}

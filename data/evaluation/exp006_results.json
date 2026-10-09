@@ -1,0 +1,151 @@
+{
+  "experiment_id": "EXP-006",
+  "name": "Student Knowledge Modeling & Evidence-Based Personalization Benchmark",
+  "executed_at": "2026-10-06T23:02:35.363685+00:00",
+  "total_scenarios": 10,
+  "scenarios_passed": 10,
+  "scenario_pass_rate": 1.0,
+  "total_invariants_evaluated": 27,
+  "invariants_passed": 27,
+  "invariant_pass_rate": 1.0,
+  "scientific_disclaimer": "Controlled synthetic evaluation dataset. Does NOT represent real student ground truth or claim cognitive predictive validity. Strictly validates model behavior, evidence weighting, confidence dynamics, uncertainty handling, isolation, and determinism.",
+  "scenario_details": [
+    {
+      "scenario_id": "SCEN_001_MONOTONIC_CORRECT",
+      "name": "Monotonicity Under Repeated Correct Assessment",
+      "all_invariants_passed": true,
+      "final_knowledge_score": 0.925,
+      "final_confidence": 0.7438,
+      "final_mastery_status": "MASTERED",
+      "evidence_count": 6,
+      "invariant_checks": {
+        "monotonic_score_increase": true,
+        "final_min_score": true,
+        "final_min_confidence": true,
+        "expected_final_status": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_002_MONOTONIC_INCORRECT",
+      "name": "Monotonicity Under Repeated Incorrect Assessment",
+      "all_invariants_passed": true,
+      "final_knowledge_score": 0.075,
+      "final_confidence": 0.7438,
+      "final_mastery_status": "EMERGING",
+      "evidence_count": 6,
+      "invariant_checks": {
+        "monotonic_score_decrease": true,
+        "final_max_score": true,
+        "not_instantly_zeroed": true,
+        "expected_final_status": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_003_WEAK_RESTRAINT",
+      "name": "Weak Evidence Restraint (Questions Asked != Ignorance)",
+      "all_invariants_passed": true,
+      "final_knowledge_score": 0.5,
+      "final_confidence": 0.25,
+      "final_mastery_status": "UNKNOWN",
+      "evidence_count": 10,
+      "invariant_checks": {
+        "max_confidence": true,
+        "score_near_prior": true,
+        "never_mastered": true,
+        "expected_final_status": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_004_STRONG_DOMINATES_WEAK",
+      "name": "Strong Assessment Dominates Observational Interactions",
+      "all_invariants_passed": true,
+      "final_knowledge_score": 0.2897,
+      "final_confidence": 0.3329,
+      "final_mastery_status": "EMERGING",
+      "evidence_count": 5,
+      "invariant_checks": {
+        "final_max_score": true,
+        "strong_evidence_dominance": true,
+        "expected_final_status": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_005_CONFLICTING_STABILITY",
+      "name": "Stability and Uncertainty Under Contradictory Evidence",
+      "all_invariants_passed": true,
+      "final_knowledge_score": 0.4951,
+      "final_confidence": 0.7438,
+      "final_mastery_status": "UNCERTAIN",
+      "evidence_count": 6,
+      "invariant_checks": {
+        "balanced_score_range": true,
+        "has_conflicting_flag": true,
+        "expected_final_status": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_006_RECOVERY_AFTER_STRUGGLE",
+      "name": "Recovery Dynamics After Initial Struggles",
+      "all_invariants_passed": true,
+      "final_knowledge_score": 0.7,
+      "final_confidence": 0.7884,
+      "final_mastery_status": "DEVELOPING",
+      "evidence_count": 7,
+      "invariant_checks": {}
+    },
+    {
+      "scenario_id": "SCEN_007_COLD_START",
+      "name": "Cold Start Prior and Confidence Initial State",
+      "all_invariants_passed": true,
+      "final_knowledge_score": 0.5,
+      "final_confidence": 0.1,
+      "final_mastery_status": "UNKNOWN",
+      "evidence_count": 0,
+      "invariant_checks": {
+        "expected_final_status": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_008_STUDENT_ISOLATION",
+      "name": "Multi-Student Data Isolation",
+      "all_invariants_passed": true,
+      "final_knowledge_score": 0.8972,
+      "final_confidence": 0.6188,
+      "final_mastery_status": "MASTERED",
+      "evidence_count": 4,
+      "invariant_checks": {
+        "alice_status": true,
+        "bob_status": true,
+        "bob_evidence_count": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_009_CONCEPT_ISOLATION",
+      "name": "Concept-Level Boundary Isolation",
+      "all_invariants_passed": true,
+      "final_knowledge_score": 0.8972,
+      "final_confidence": 0.6188,
+      "final_mastery_status": "MASTERED",
+      "evidence_count": 4,
+      "invariant_checks": {
+        "target_concept_status": true,
+        "secondary_concept_status": true,
+        "secondary_concept_evidence_count": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_010_PROVENANCE_AND_DETERMINISM",
+      "name": "Provenance Traceability and Bitwise Reproducibility",
+      "all_invariants_passed": true,
+      "final_knowledge_score": 0.6214,
+      "final_confidence": 0.5401,
+      "final_mastery_status": "UNCERTAIN",
+      "evidence_count": 4,
+      "invariant_checks": {
+        "evidence_history_length": true,
+        "deterministic_exact_match": true
+      }
+    }
+  ],
+  "status": "COMPLETE"
+}

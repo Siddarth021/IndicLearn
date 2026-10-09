@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "experiment_id": "EXP-012",
+    "title": "Student Learning Dashboard Human Usability Evaluation Protocol",
+    "benchmark_type": "HUMAN USABILITY EVALUATION FRAMEWORK",
+    "version": "1.0",
+    "created_at": "2026-10-06",
+    "scientific_disclaimer": "Human usability evaluation framework. EXP-009 validates software and interface invariants. EXP-012 defines the human usability instrument. If no real participant data is provided, status remains NOT_RUN (HUMAN_DATA_REQUIRED). Zero participant responses are manufactured.",
+    "ethical_notice": "Requires institutional ethical approval / IRB clearance and informed consent prior to human data collection."
+  },
+  "tasks": [
+    {
+      "task_id": "T1_FIND_CONCEPT",
+      "name": "Locate Specific Academic Concept",
+      "prompt": "Locate the concept 'Convolution' on the knowledge map or list view.",
+      "success_criteria": "Student selects and inspects the correct concept node within 60 seconds.",
+      "max_time_seconds": 60
+    },
+    {
+      "task_id": "T2_INTERPRET_ESTIMATE",
+      "name": "Interpret Estimated Knowledge and Confidence",
+      "prompt": "Explain what the displayed 'Estimated knowledge' (0.75) and 'Evidence confidence' (0.80) mean for this concept.",
+      "success_criteria": "Student correctly identifies that estimates reflect latent probabilistic inference rather than absolute cognition.",
+      "max_time_seconds": 90
+    },
+    {
+      "task_id": "T3_UNDERSTAND_RECOMMENDATION",
+      "name": "Comprehend Recommended Learning Action",
+      "prompt": "Identify the top recommendation and explain why this action was prioritized.",
+      "success_criteria": "Student correctly cites the underlying reason code (e.g., prerequisite deficit or weakness).",
+      "max_time_seconds": 90
+    },
+    {
+      "task_id": "T4_INSPECT_EVIDENCE",
+      "name": "Trace Evidence Provenance to Source Document",
+      "prompt": "Inspect the supporting evidence drawer and identify the textbook chapter/chunk grounding the concept.",
+      "success_criteria": "Student navigates to the source chunk reference successfully.",
+      "max_time_seconds": 60
+    },
+    {
+      "task_id": "T5_NAVIGATE_GRAPH_VS_LIST",
+      "name": "Compare Graph View and List View Usability",
+      "prompt": "Toggle between Graph View and List View to inspect prerequisite dependencies.",
+      "success_criteria": "Student completes navigation across both views.",
+      "max_time_seconds": 60
+    }
+  ],
+  "likert_items": [
+    { "item_id": "Q01", "statement": "I could find the concept I was looking for." },
+    { "item_id": "Q02", "statement": "I understood why a recommendation was shown." },
+    { "item_id": "Q03", "statement": "I understood what 'Estimated knowledge' meant." },
+    { "item_id": "Q04", "statement": "I could identify the source supporting an answer or status." },
+    { "item_id": "Q05", "statement": "I could navigate the knowledge map (dependencies and prerequisites)." },
+    { "item_id": "Q06", "statement": "The language used across explanations and UI labels was understandable." }
+  ],
+  "view_modes_evaluated": ["GRAPH_VIEW", "LIST_VIEW"],
+  "participants": [],
+  "responses": []
+}

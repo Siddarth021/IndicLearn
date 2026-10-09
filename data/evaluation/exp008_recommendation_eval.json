@@ -1,0 +1,129 @@
+{
+  "metadata": {
+    "experiment_id": "EXP-008",
+    "name": "Personalized Recommendation & Remediation Evaluation",
+    "subject_id": "signals_and_systems",
+    "version": "1.0",
+    "created_at": "2026-10-06",
+    "scientific_disclaimer": "Controlled synthetic evaluation benchmark. Does NOT claim real student learning gains, exam score improvements, or validated pedagogical efficacy. Strictly evaluates software engineering invariants and algorithmic properties: multi-signal prioritization, uncertainty distinction, prerequisite remediation, downstream blocker awareness, recent-action damping, mastered concept deprioritization, conflicting evidence handling, source grounding and missing-source safety, assessment delegation, student isolation, and determinism."
+  },
+  "scenarios": [
+    {
+      "scenario_id": "SCEN_001_HIGH_CONFIDENCE_WEAKNESS",
+      "name": "High-Confidence Weakness Triggers Strong Remediation",
+      "description": "Student has assessed score S=0.25 at C=0.90 across multiple quizzes. Recommender must prioritize the concept, assign LOW_KNOWLEDGE reason code, and select active remediation (PRACTICE_CONCEPT or REVIEW_CONCEPT).",
+      "invariants": {
+        "priority_high": true,
+        "reason_has_low_knowledge": true,
+        "action_is_remediation": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_002_LOW_CONFIDENCE_UNCERTAINTY",
+      "name": "Low-Confidence Uncertainty Distinguished from Weakness",
+      "description": "Concept has score S=0.25 with nascent confidence C=0.15 and zero assessments. Recommender must assign LOW_CONFIDENCE, must NOT assign LOW_KNOWLEDGE (false deficit), and recommend initial study.",
+      "invariants": {
+        "reason_has_low_confidence": true,
+        "reason_lacks_low_knowledge": true,
+        "action_is_initial_review": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_003_PREREQUISITE_REMEDIATION",
+      "name": "Prerequisite Remediation Unblocks Downstream Learning",
+      "description": "Concept A (LTI System) is a direct prerequisite of Concept B (Convolution). When Concept A is unmastered, Concept B recommends REVIEW_PREREQUISITE, and Concept A receives DOWNSTREAM_BLOCKER boost.",
+      "invariants": {
+        "downstream_concept_action_review_prerequisite": true,
+        "upstream_prerequisite_has_downstream_blocker": true,
+        "prerequisite_deficit_reason_assigned": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_004_DOWNSTREAM_RELEVANCE",
+      "name": "Downstream Blocker Weight Reflects Curriculum Impact",
+      "description": "Concept A blocks multiple unresolved downstream concepts, while Concept B blocks none. Concept A must receive higher downstream_blocker_score than Concept B.",
+      "invariants": {
+        "blocker_score_a_greater_than_b": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_005_RECENT_ACTION_PENALTY",
+      "name": "Recent-Action Damping Prevents Repetitive Domination",
+      "description": "Two equally weak concepts: Concept A was acted upon 2 minutes ago, while Concept B was not. Concept B must achieve higher priority due to recent-action penalty on A.",
+      "invariants": {
+        "priority_b_greater_than_a": true,
+        "concept_b_ranked_above_a": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_006_MASTERED_CONCEPT_DEPRIORITIZATION",
+      "name": "Mastered Concepts Deprioritized Below Unresolved Topics",
+      "description": "Concept A is MASTERED (S=0.85, C=0.80) while Concept B is DEVELOPING (S=0.60, C=0.60). Unresolved Concept B must rank above Mastered Concept A.",
+      "invariants": {
+        "priority_b_greater_than_a": true,
+        "concept_b_ranked_above_a": true,
+        "mastered_concept_damped": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_007_CONFLICTING_EVIDENCE",
+      "name": "Conflicting Evidence (UNCERTAIN) Triggers Diagnostic Action",
+      "description": "Concept has mixed correct and incorrect assessments resulting in UNCERTAIN status. Recommender must flag UNCERTAIN reason code and recommend diagnostic assessment or focused review.",
+      "invariants": {
+        "reason_has_uncertain": true,
+        "action_is_diagnostic": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_008_SOURCE_GROUNDING",
+      "name": "Review Recommendations Grounded in Curriculum Chunks",
+      "description": "Concept Convolution has verified textbook chunks [CHUNK_SS_001, CHUNK_SS_004]. Recommender must set source_available=True and preserve chunk provenance.",
+      "invariants": {
+        "source_available_is_true": true,
+        "source_chunks_preserved": true,
+        "reason_has_source_available": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_009_MISSING_SOURCE_SAFETY",
+      "name": "Missing Source Concepts Flag Explicit SOURCE_UNAVAILABLE",
+      "description": "Hypothetical concept lacking curriculum chunks must explicitly declare source_available=False and assign SOURCE_UNAVAILABLE without fabricating citations.",
+      "invariants": {
+        "source_available_is_false": true,
+        "source_chunks_empty": true,
+        "reason_has_source_unavailable": true,
+        "no_hallucinated_provenance": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_010_ASSESSMENT_DELEGATION",
+      "name": "Assessment Action Delegates to Adaptive Assessment Service",
+      "description": "Recommendation with TAKE_ASSESSMENT delegates question selection to AdaptiveAssessmentService, obtaining valid item with intact source provenance without duplicating selection logic.",
+      "invariants": {
+        "delegation_succeeds": true,
+        "delegated_item_valid": true,
+        "delegated_item_provenance_intact": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_011_STUDENT_ISOLATION",
+      "name": "Student Recommendation Isolation",
+      "description": "Student A (weak in Convolution) and Student B (mastered Convolution) receive completely isolated recommendation rankings with zero state leakage across student IDs.",
+      "invariants": {
+        "student_a_top_convolution": true,
+        "student_b_top_not_convolution": true,
+        "student_isolation_preserved": true
+      }
+    },
+    {
+      "scenario_id": "SCEN_012_DETERMINISTIC_RANKING",
+      "name": "Deterministic Ranking Invariant",
+      "description": "Executing recommendation generation twice for the same student state and history yields identical rankings, priority scores, and explanations.",
+      "invariants": {
+        "exact_ranking_identical": true,
+        "priority_scores_identical": true,
+        "explanations_identical": true
+      }
+    }
+  ]
+}

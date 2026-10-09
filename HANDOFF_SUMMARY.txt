@@ -1,0 +1,33 @@
+INDICLEARN PROJECT HANDOFF SUMMARY — PHASE 9 COMPLETE
+======================================================
+
+Current Phase: Phase 9 Complete -> Empirical Human Trials Next.
+Status: 250 tests passing, Ruff clean.
+
+Phase 9 Key Results & Artifacts:
+- Pre-Registered Experiment Registry: data/evaluation/experiment_registry.json (EXP-001 through EXP-014)
+- Statistical Suite: src/indiclearn/evaluation/statistics/ (descriptive, agreement, significance)
+- Research Report Generator: src/indiclearn/evaluation/reporting/generator.py
+- Human Evaluation Infrastructure: data/evaluation/human/ (guidelines, schemas, consent, 4 templates, example annotation)
+- Controlled Evaluation Experiments:
+  * EXP-010 (Recommendation Evaluation): 10/10 scenarios passed (100.0%), Top-1 Accuracy = 1.0000.
+  * EXP-011 (Adaptive Assessment Evaluation): 10/10 scenarios passed (100.0%), Repeat Avoidance = 1.0000.
+- Human-Subject Validation Protocols:
+  * EXP-012 (Dashboard Usability): Framework validated; N=0 participants; Status: NOT_RUN (HUMAN_DATA_REQUIRED).
+  * EXP-013 (RAG Human Annotation): Framework validated; N=0 annotations; Status: HUMAN_DATA_REQUIRED.
+  * EXP-014 (Multilingual Evaluation): Framework validated across 4 tracks; N=0 evaluations; Status: HUMAN_DATA_REQUIRED.
+- Scientific Invariants: Zero fabricated participants, Likert scores, or p-values.
+- Documentation:
+  * docs/RESEARCH_EVALUATION.md
+  * docs/HUMAN_EVALUATION_PROTOCOL.md
+  * docs/LEARNING_EFFECTIVENESS_STUDY.md (Pre/Post RCT design, N=128 completing / N=152 enrolled)
+  * ADRs DEC-043, DEC-044, DEC-045 in docs/DECISIONS.md
+- New Unit Tests: tests/unit/test_research_evaluation.py (20 comprehensive tests; 250 total repo-wide).
+
+Historical Experiments Preserved:
+- EXP-005A: Recall@5=0.9200, MRR=0.5677, Gold Recall@5=0.9100 (PASS)
+- EXP-005B: Scope Accuracy=1.0000, FAR on out-of-scope=0.0000 (PASS)
+- EXP-006: 10/10 scenarios passed, 27/27 invariants passed (100.0%) (PASS)
+- EXP-007: 10/10 scenarios passed, 21/21 invariants passed (100.0%) (PASS)
+- EXP-008: 12/12 scenarios passed, 33/33 invariants passed (100.0%) (PASS)
+- EXP-009: 15/15 scenarios passed (100.0%) (PASS)

@@ -1,0 +1,96 @@
+{
+  "experiment_id": "EXP-005B",
+  "name": "RAG Safety, Scope Control & Retrieval Hardening",
+  "scope_dataset": "data\\evaluation\\scope_eval.json",
+  "rag_dataset": "data\\evaluation\\rag_eval_expanded.json",
+  "subject_id": "signals_and_systems",
+  "scope_evaluation": {
+    "total_queries": 45,
+    "accuracy": 1.0,
+    "macro_precision": 1.0,
+    "macro_recall": 1.0,
+    "macro_f1": 1.0,
+    "false_acceptance_rate": 0.0,
+    "false_acceptance_count": 0,
+    "false_acceptances": [],
+    "misclassifications": [],
+    "confusion_matrix": {
+      "in_scope": {
+        "in_scope": 18,
+        "out_of_scope": 0,
+        "ambiguous": 0
+      },
+      "out_of_scope": {
+        "in_scope": 0,
+        "out_of_scope": 18,
+        "ambiguous": 0
+      },
+      "ambiguous": {
+        "in_scope": 0,
+        "out_of_scope": 0,
+        "ambiguous": 9
+      }
+    },
+    "per_class_metrics": {
+      "in_scope": {
+        "support": 18,
+        "true_positives": 18,
+        "false_positives": 0,
+        "false_negatives": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "out_of_scope": {
+        "support": 18,
+        "true_positives": 18,
+        "false_positives": 0,
+        "false_negatives": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "ambiguous": {
+        "support": 9,
+        "true_positives": 9,
+        "false_positives": 0,
+        "false_negatives": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    }
+  },
+  "graph_ablation_rerun": {
+    "system_a_hybrid_only": {
+      "description": "Hybrid BM25 + dense retrieval on raw query text",
+      "recall_at_1": 0.38,
+      "recall_at_3": 0.72,
+      "recall_at_5": 0.88,
+      "mrr": 0.568,
+      "gold_evidence_recall_at_5": 0.87
+    },
+    "system_b_hybrid_plus_concept_mapping": {
+      "description": "Hybrid retrieval with Telugu/Romanized normalization and canonical concept expansion",
+      "recall_at_1": 0.38,
+      "recall_at_3": 0.7,
+      "recall_at_5": 0.92,
+      "mrr": 0.5677,
+      "gold_evidence_recall_at_5": 0.91
+    },
+    "system_c_post_retrieval_graph_enrichment": {
+      "description": "Hardened architecture: Direct evidence retrieval with post-retrieval graph context enrichment in prompt generation without evidence displacement",
+      "recall_at_1": 0.38,
+      "recall_at_3": 0.7,
+      "recall_at_5": 0.92,
+      "mrr": 0.5677,
+      "gold_evidence_recall_at_5": 0.91
+    },
+    "architectural_conclusion": "By decoupling graph prerequisite expansion from the retrieval candidate pool and positioning it as post-retrieval prompt context enrichment, direct evidence Recall@5 is preserved at 0.9200 without evidence displacement."
+  },
+  "architectural_decisions": {
+    "scope_assessor": "HeuristicScopeAssessor with generic term penalties and domain indicator guards",
+    "graph_integration": "Post-retrieval answer context enrichment (Section 16)"
+  },
+  "status": "COMPLETE"
+}

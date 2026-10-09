@@ -1,0 +1,293 @@
+{
+  "metadata": {
+    "name": "Signals and Systems Controlled Assessment Item Bank",
+    "subject_id": "signals_and_systems",
+    "version": "1.0",
+    "description": "Controlled, grounded assessment items for Phase 7A adaptive assessment evaluation. Provenance traces back to course chunks in signals_and_systems_eval.json.",
+    "scientific_disclaimer": "Synthetic/curated assessment bank designed for algorithmic validation of adaptive item selection. Not calibrated via Item Response Theory (IRT)."
+  },
+  "items": [
+    {
+      "item_id": "ITEM_CONV_001_EASY_EN",
+      "concept_id": "cpt_signals_and_systems_convolution",
+      "subject_id": "signals_and_systems",
+      "question": "What mathematical operation relates the input x(t) and impulse response h(t) to the output y(t) of an LTI system?",
+      "question_type": "MCQ",
+      "difficulty": "EASY",
+      "language": "en",
+      "options": [
+        "A) Convolution integral",
+        "B) Fourier integral",
+        "C) Matrix inversion",
+        "D) Algebraic multiplication"
+      ],
+      "correct_answer": "A",
+      "explanation": "For continuous-time LTI systems, the output y(t) is defined by the convolution integral of x(t) and h(t).",
+      "source_chunk_ids": ["CHUNK_SS_001"]
+    },
+    {
+      "item_id": "ITEM_CONV_002_EASY_TE",
+      "concept_id": "cpt_signals_and_systems_convolution",
+      "subject_id": "signals_and_systems",
+      "question": "ఒక continuous-time LTI సిస్టమ్ యొక్క output y(t) ని input x(t) మరియు impulse response h(t) ల మధ్య ఏ operation ద్వారా కనుగొంటారు?",
+      "question_type": "MCQ",
+      "difficulty": "EASY",
+      "language": "te",
+      "options": [
+        "A) కన్వల్యూషన్ ఇంటిగ్రల్ (Convolution integral)",
+        "B) ఫోరియర్ ట్రాన్స్‌ఫార్మ్ (Fourier Transform)",
+        "C) లాప్లేస్ ట్రాన్స్‌ఫార్మ్ (Laplace Transform)",
+        "D) కేవలం గుణకారం (Multiplication)"
+      ],
+      "correct_answer": "A",
+      "explanation": "LTI సిస్టమ్ output y(t) అనేది input x(t) మరియు impulse response h(t) ల convolution integral ద్వారా లభిస్తుంది.",
+      "source_chunk_ids": ["CHUNK_SS_001"]
+    },
+    {
+      "item_id": "ITEM_CONV_003_MED_EN",
+      "concept_id": "cpt_signals_and_systems_convolution",
+      "subject_id": "signals_and_systems",
+      "question": "Which of the following algebraic properties does the convolution operation satisfy?",
+      "question_type": "MCQ",
+      "difficulty": "MEDIUM",
+      "language": "en",
+      "options": [
+        "A) Commutative, associative, and distributive",
+        "B) Only commutative and distributive",
+        "C) Non-commutative and non-associative",
+        "D) Only associative"
+      ],
+      "correct_answer": "A",
+      "explanation": "Convolution satisfies commutative (x*h = h*x), associative, and distributive properties over addition.",
+      "source_chunk_ids": ["CHUNK_SS_001"]
+    },
+    {
+      "item_id": "ITEM_CONV_004_HARD_EN",
+      "concept_id": "cpt_signals_and_systems_convolution",
+      "subject_id": "signals_and_systems",
+      "question": "True or False: If an LTI system has impulse response h(t) and input x(t), the convolution integral y(t) = integral x(tau) h(t - tau) dtau is strictly equal to integral h(tau) x(t - tau) dtau due to commutativity.",
+      "question_type": "TRUE_FALSE",
+      "difficulty": "HARD",
+      "language": "en",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correct_answer": "True",
+      "explanation": "A change of variables u = t - tau proves that x(t) * h(t) = h(t) * x(t), establishing commutativity.",
+      "source_chunk_ids": ["CHUNK_SS_001"]
+    },
+    {
+      "item_id": "ITEM_LTI_001_EASY_EN",
+      "concept_id": "cpt_signals_and_systems_lti_system",
+      "subject_id": "signals_and_systems",
+      "question": "What two fundamental properties must a system satisfy to be classified as a Linear Time-Invariant (LTI) system?",
+      "question_type": "MCQ",
+      "difficulty": "EASY",
+      "language": "en",
+      "options": [
+        "A) Linearity and time-invariance",
+        "B) Causality and memorylessness",
+        "C) Stability and invertibility",
+        "D) Homogeneity and causality"
+      ],
+      "correct_answer": "A",
+      "explanation": "An LTI system satisfies both linearity (superposition) and time-invariance.",
+      "source_chunk_ids": ["CHUNK_SS_002"]
+    },
+    {
+      "item_id": "ITEM_LTI_002_MED_EN",
+      "concept_id": "cpt_signals_and_systems_lti_system",
+      "subject_id": "signals_and_systems",
+      "question": "How is a continuous-time LTI system completely characterized in the time domain?",
+      "question_type": "MCQ",
+      "difficulty": "MEDIUM",
+      "language": "en",
+      "options": [
+        "A) By its unit impulse response h(t)",
+        "B) By its initial capacitor voltages only",
+        "C) By its step response duration only",
+        "D) By its frequency bandwidth alone"
+      ],
+      "correct_answer": "A",
+      "explanation": "Because any input can be decomposed into weighted impulses, the impulse response h(t) completely characterizes an LTI system.",
+      "source_chunk_ids": ["CHUNK_SS_002"]
+    },
+    {
+      "item_id": "ITEM_LTI_003_HARD_EN",
+      "concept_id": "cpt_signals_and_systems_lti_system",
+      "subject_id": "signals_and_systems",
+      "question": "True or False: If a system is time-invariant, applying an input x(t - t0) always produces the output y(t - t0), where y(t) is the response to x(t).",
+      "question_type": "TRUE_FALSE",
+      "difficulty": "HARD",
+      "language": "en",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correct_answer": "True",
+      "explanation": "Time-invariance strictly asserts that a time shift in the input causes an identical time shift in the output.",
+      "source_chunk_ids": ["CHUNK_SS_002"]
+    },
+    {
+      "item_id": "ITEM_LIN_001_EASY_EN",
+      "concept_id": "cpt_signals_and_systems_linearity",
+      "subject_id": "signals_and_systems",
+      "question": "Which principle states that the response of a system to a weighted sum of inputs is equal to the weighted sum of individual responses?",
+      "question_type": "MCQ",
+      "difficulty": "EASY",
+      "language": "en",
+      "options": [
+        "A) Superposition principle",
+        "B) Heisenberg uncertainty principle",
+        "C) Convolution theorem",
+        "D) Nyquist criterion"
+      ],
+      "correct_answer": "A",
+      "explanation": "Linearity encompasses superposition (additivity) and homogeneity (scaling).",
+      "source_chunk_ids": ["CHUNK_SS_002"]
+    },
+    {
+      "item_id": "ITEM_TINV_001_MED_EN",
+      "concept_id": "cpt_signals_and_systems_time_invariance",
+      "subject_id": "signals_and_systems",
+      "question": "A system is defined by y(t) = t * x(t). Is this system time-invariant?",
+      "question_type": "TRUE_FALSE",
+      "difficulty": "MEDIUM",
+      "language": "en",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correct_answer": "False",
+      "explanation": "The explicit time multiplier t violates time-invariance; shifting x(t) yields t*x(t - t0), whereas shifting output yields (t - t0)*x(t - t0).",
+      "source_chunk_ids": ["CHUNK_SS_002"]
+    },
+    {
+      "item_id": "ITEM_CTFT_001_EASY_EN",
+      "concept_id": "cpt_signals_and_systems_continuous_time_fourier_transform",
+      "subject_id": "signals_and_systems",
+      "question": "What mathematical domain does the Continuous-Time Fourier Transform (CTFT) map a time-domain signal x(t) into?",
+      "question_type": "MCQ",
+      "difficulty": "EASY",
+      "language": "en",
+      "options": [
+        "A) Continuous frequency domain (omega)",
+        "B) Complex z-plane",
+        "C) Discrete spatial grid",
+        "D) Wavelet scale domain"
+      ],
+      "correct_answer": "A",
+      "explanation": "The CTFT decomposes a continuous-time signal into complex sinusoidal frequency components in the continuous frequency domain.",
+      "source_chunk_ids": ["CHUNK_SS_003"]
+    },
+    {
+      "item_id": "ITEM_CTFT_002_MED_TE",
+      "concept_id": "cpt_signals_and_systems_continuous_time_fourier_transform",
+      "subject_id": "signals_and_systems",
+      "question": "CTFT లో ఒక సిగ్నల్ x(t) ని frequency domain లోకి మార్చడానికి ఉపయోగించే కర్నల్ (kernel) ఏది?",
+      "question_type": "MCQ",
+      "difficulty": "MEDIUM",
+      "language": "te",
+      "options": [
+        "A) e^(-j omega t)",
+        "B) e^(+s t)",
+        "C) z^(-n)",
+        "D) sin(omega t)"
+      ],
+      "correct_answer": "A",
+      "explanation": "CTFT ఇంటిగ్రల్ X(omega) = integral x(t) e^(-j omega t) dt లో transform kernel e^(-j omega t).",
+      "source_chunk_ids": ["CHUNK_SS_003"]
+    },
+    {
+      "item_id": "ITEM_LAPLACE_001_MED_EN",
+      "concept_id": "cpt_signals_and_systems_laplace_transform",
+      "subject_id": "signals_and_systems",
+      "question": "What is the complex frequency variable 's' composed of in the bilateral Laplace transform?",
+      "question_type": "MCQ",
+      "difficulty": "MEDIUM",
+      "language": "en",
+      "options": [
+        "A) s = sigma + j*omega",
+        "B) s = r * e^(j*theta)",
+        "C) s = j*omega only",
+        "D) s = sigma / omega"
+      ],
+      "correct_answer": "A",
+      "explanation": "The Laplace variable s is a complex frequency variable defined as s = sigma + j*omega.",
+      "source_chunk_ids": ["CHUNK_SS_007"]
+    },
+    {
+      "item_id": "ITEM_SAMP_001_EASY_EN",
+      "concept_id": "cpt_signals_and_systems_sampling_theorem",
+      "subject_id": "signals_and_systems",
+      "question": "According to the Nyquist-Shannon Sampling Theorem, what is the minimum sampling frequency fs needed to reconstruct a signal bandlimited to maximum frequency fm?",
+      "question_type": "MCQ",
+      "difficulty": "EASY",
+      "language": "en",
+      "options": [
+        "A) fs >= 2 * fm",
+        "B) fs = fm / 2",
+        "C) fs = fm",
+        "D) fs <= 2 * fm"
+      ],
+      "correct_answer": "A",
+      "explanation": "To prevent aliasing, the sampling rate fs must be at least twice the maximum signal frequency fm (Nyquist rate).",
+      "source_chunk_ids": ["CHUNK_SS_005", "CHUNK_SS_006"]
+    },
+    {
+      "item_id": "ITEM_SAMP_002_MED_TELATN",
+      "concept_id": "cpt_signals_and_systems_sampling_theorem",
+      "subject_id": "signals_and_systems",
+      "question": "Sampling rate fs anedhi 2*fm kante takkuva unte em jarugutundi?",
+      "question_type": "MCQ",
+      "difficulty": "MEDIUM",
+      "language": "te-Latn",
+      "options": [
+        "A) Aliasing jarugutundi",
+        "B) Perfect reconstruction vasthundi",
+        "C) Signal amplify avuthundi",
+        "D) Bandwidth zero avuthundi"
+      ],
+      "correct_answer": "A",
+      "explanation": "Sampling frequency fs < 2*fm unte high frequency components low frequencies ga fold ayyi aliasing distortion vasthundi.",
+      "source_chunk_ids": ["CHUNK_SS_005", "CHUNK_SS_006"]
+    },
+    {
+      "item_id": "ITEM_ENERGY_001_EASY_EN",
+      "concept_id": "cpt_signals_and_systems_energy_signal",
+      "subject_id": "signals_and_systems",
+      "question": "Which statement correctly defines an Energy Signal?",
+      "question_type": "MCQ",
+      "difficulty": "EASY",
+      "language": "en",
+      "options": [
+        "A) Finite total energy and zero average power",
+        "B) Infinite total energy and finite non-zero average power",
+        "C) Zero energy and infinite power",
+        "D) Both energy and power are infinite"
+      ],
+      "correct_answer": "A",
+      "explanation": "An energy signal has 0 < E < infinity and average power P = 0.",
+      "source_chunk_ids": ["CHUNK_SS_010"]
+    },
+    {
+      "item_id": "ITEM_POWER_001_EASY_EN",
+      "concept_id": "cpt_signals_and_systems_power_signal",
+      "subject_id": "signals_and_systems",
+      "question": "Which statement correctly defines a Power Signal?",
+      "question_type": "MCQ",
+      "difficulty": "EASY",
+      "language": "en",
+      "options": [
+        "A) Infinite total energy and finite non-zero average power",
+        "B) Finite total energy and zero average power",
+        "C) Zero average power and zero energy",
+        "D) Periodic signals with zero power"
+      ],
+      "correct_answer": "A",
+      "explanation": "A power signal has infinite total energy E = infinity and finite non-zero average power (0 < P < infinity).",
+      "source_chunk_ids": ["CHUNK_SS_010"]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+# Attention Mechanisms
+
+Attention is defined as a mechanism that maps a query and a set of key-value pairs to an output.
+
+Multi-Head Attention is a method that computes attention in parallel.
+
+Transformer Architecture is a deep learning model based on Self-Attention.

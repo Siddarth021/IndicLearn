@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "experiment_id": "EXP-014",
+    "title": "Multilingual Human Evaluation of Educational NLP Responses",
+    "benchmark_type": "MULTILINGUAL HUMAN EVALUATION BENCHMARK",
+    "version": "1.0",
+    "created_at": "2026-10-06",
+    "scientific_disclaimer": "Multilingual human evaluation framework. Separately evaluates English (en), Telugu (te), Romanized Telugu (te-Latn), and Telugu-English code-mixed (te-en) responses without collapsing language categories. If no real multilingual participant data is provided, status remains strictly HUMAN_DATA_REQUIRED. Zero human evaluations or language fluency ratings are fabricated.",
+    "ethical_notice": "Requires institutional ethical approval / IRB clearance and informed consent prior to human data collection."
+  },
+  "modalities": [
+    {
+      "code": "en",
+      "name": "Standard Academic English",
+      "script": "Latin",
+      "description": "Standard university-level computer science and engineering English register."
+    },
+    {
+      "code": "te",
+      "name": "Academic Telugu (Native Script)",
+      "script": "Telugu (Unicode U+0C00–U+0C7F)",
+      "description": "Explanations presented in Telugu script incorporating standardized Telugu technical terminology."
+    },
+    {
+      "code": "te-Latn",
+      "name": "Romanized Telugu (Transliterated)",
+      "script": "Latin (Phonetic)",
+      "description": "Telugu language phonetically written in Latin script; subject to spelling and transliteration variance."
+    },
+    {
+      "code": "te-en",
+      "name": "Telugu-English Code-Mixed",
+      "script": "Mixed / Latin / Telugu",
+      "description": "Conversational academic engineering register featuring technical English nouns embedded in Telugu syntactic frames."
+    }
+  ],
+  "qualitative_dimensions": [
+    "factual_correctness",
+    "evidence_grounding",
+    "linguistic_naturalness",
+    "technical_term_preservation",
+    "transliteration_clarity",
+    "pedagogical_clarity"
+  ],
+  "participants": [],
+  "evaluations": []
+}

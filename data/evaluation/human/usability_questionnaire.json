@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "IndicLearn Dashboard & Interface Usability Questionnaire",
+  "description": "Neutral evaluation instrument for measuring interface usability, navigational transparency, and conceptual clarity.",
+  "type": "object",
+  "required": [
+    "response_id",
+    "participant_id",
+    "session_id",
+    "likert_responses",
+    "task_performance",
+    "timestamp"
+  ],
+  "properties": {
+    "response_id": { "type": "string" },
+    "participant_id": { "type": "string", "pattern": "^PARTICIPANT-[A-Za-z0-9_-]+$" },
+    "session_id": { "type": "string" },
+    "view_mode_evaluated": {
+      "type": "string",
+      "enum": ["GRAPH_VIEW", "LIST_VIEW", "BOTH"]
+    },
+    "likert_scale_definition": {
+      "type": "object",
+      "properties": {
+        "1": { "type": "string", "default": "Strongly disagree" },
+        "2": { "type": "string", "default": "Disagree" },
+        "3": { "type": "string", "default": "Neither agree nor disagree" },
+        "4": { "type": "string", "default": "Agree" },
+        "5": { "type": "string", "default": "Strongly agree" }
+      }
+    },
+    "likert_responses": {
+      "type": "object",
+      "required": [
+        "Q01_concept_findability",
+        "Q02_recommendation_transparency",
+        "Q03_knowledge_estimate_comprehension",
+        "Q04_evidence_traceability",
+        "Q05_map_navigation_ease",
+        "Q06_language_clarity"
+      ],
+      "properties": {
+        "Q01_concept_findability": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Item 1: 'I could find the concept I was looking for.'"
+        },
+        "Q02_recommendation_transparency": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Item 2: 'I understood why a recommendation was shown.'"
+        },
+        "Q03_knowledge_estimate_comprehension": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Item 3: 'I understood what \"Estimated knowledge\" meant.'"
+        },
+        "Q04_evidence_traceability": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Item 4: 'I could identify the source supporting an answer or status.'"
+        },
+        "Q05_map_navigation_ease": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Item 5: 'I could navigate the knowledge map (dependencies and prerequisites).'"
+        },
+        "Q06_language_clarity": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Item 6: 'The language used across explanations and UI labels was understandable.'"
+        }
+      }
+    },
+    "task_performance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["task_id", "completed", "completion_time_seconds", "error_count"],
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "enum": [
+              "T1_ASK_ENGLISH_QUERY",
+              "T2_ASK_TELUGU_QUERY",
+              "T3_ASK_ROMANIZED_QUERY",
+              "T4_ASK_CODEMIX_QUERY",
+              "T5_INSPECT_CONCEPT_DETAIL",
+              "T6_INTERPRET_KNOWLEDGE_STATE",
+              "T7_FOLLOW_RECOMMENDATION",
+              "T8_COMPLETE_ADAPTIVE_ITEM",
+              "T9_INSPECT_EVIDENCE_SOURCE"
+            ]
+          },
+          "completed": { "type": "boolean" },
+          "completion_time_seconds": { "type": "number", "minimum": 0 },
+          "error_count": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "open_feedback": {
+      "type": "object",
+      "properties": {
+        "most_confusing_element": { "type": "string" },
+        "most_helpful_element": { "type": "string" },
+        "general_comments": { "type": "string" }
+      }
+    },
+    "timestamp": { "type": "string", "format": "date-time" }
+  }
+}

@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "indiclearn"
+version = "1.0.0"
+description = "IndicLearn Studio: a multilingual (English/Telugu/Hindi/Sanskrit) study tutor with a personalised knowledge map for students"
+requires-python = ">=3.10"
+dependencies = [
+  "pydantic>=2.5",
+  "pyyaml>=6.0",
+  "pypdf>=4.0",               # PDF text + font-size headings
+  "python-pptx>=0.6.23",
+  "python-docx>=1.1",
+  "scikit-learn>=1.3",        # char n-gram TF-IDF
+  "numpy>=1.26",
+  "fastapi>=0.110",
+  "uvicorn>=0.29",
+  "python-multipart>=0.0.9",
+]
+
+[project.optional-dependencies]
+models = ["sentence-transformers>=3.0", "transformers>=4.40", "torch>=2.2"]   # optional local neural models
+faiss = ["faiss-cpu>=1.8"]                                                    # only for the legacy research pipeline
+dev = ["pytest>=8", "ruff>=0.5", "mypy>=1.8", "reportlab>=4", "httpx>=0.27", "playwright>=1.44"]
+
+[project.scripts]
+indiclearn-studio = "indiclearn.studio.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint.per-file-ignores]
+# FastAPI's Depends() default is idiomatic; the optional-model fallbacks must never crash a request.
+"src/indiclearn/studio/*" = ["B008", "BLE001", "S110", "SIM102", "SIM103", "C405", "RUF017", "RUF007", "PLC0206", "B023", "E501", "PLR"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = false
+ignore_missing_imports = true

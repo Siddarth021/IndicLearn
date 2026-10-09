@@ -1,0 +1,232 @@
+{
+  "metadata": {
+    "experiment_id": "EXP-008",
+    "timestamp": "2026-10-06T23:02:36.325566+00:00",
+    "total_scenarios": 12,
+    "total_invariants": 33,
+    "passed_invariants": 33,
+    "overall_compliance_rate": 1.0,
+    "status": "PASS",
+    "scientific_disclaimer": "Controlled synthetic evaluation benchmark. Does NOT claim real student learning gains, exam score improvements, or validated pedagogical efficacy. Strictly evaluates software engineering invariants and algorithmic properties: multi-signal prioritization, uncertainty distinction, prerequisite remediation, downstream blocker awareness, recent-action damping, mastered concept deprioritization, conflicting evidence handling, source grounding and missing-source safety, assessment delegation, student isolation, and determinism."
+  },
+  "scenarios": [
+    {
+      "evaluated_concept": "cpt_signals_and_systems_convolution",
+      "knowledge_score": 0.1001,
+      "confidence": 0.6308,
+      "priority_score": 0.3136,
+      "action_type": "PRACTICE_CONCEPT",
+      "reason_codes": [
+        "LOW_KNOWLEDGE",
+        "SOURCE_AVAILABLE"
+      ],
+      "invariant_results": {
+        "priority_high": true,
+        "reason_has_low_knowledge": true,
+        "action_is_remediation": true
+      },
+      "passed": true,
+      "scenario_id": "SCEN_001_HIGH_CONFIDENCE_WEAKNESS",
+      "name": "High-Confidence Weakness Triggers Strong Remediation"
+    },
+    {
+      "evaluated_concept": "cpt_signals_and_systems_sampling_theorem",
+      "knowledge_score": 0.5,
+      "confidence": 0.1,
+      "action_type": "REVIEW_CONCEPT",
+      "reason_codes": [
+        "LOW_CONFIDENCE",
+        "DOWNSTREAM_BLOCKER",
+        "SOURCE_AVAILABLE"
+      ],
+      "invariant_results": {
+        "reason_has_low_confidence": true,
+        "reason_lacks_low_knowledge": true,
+        "action_is_initial_review": true
+      },
+      "passed": true,
+      "scenario_id": "SCEN_002_LOW_CONFIDENCE_UNCERTAINTY",
+      "name": "Low-Confidence Uncertainty Distinguished from Weakness"
+    },
+    {
+      "conv_action": "REVIEW_PREREQUISITE",
+      "conv_unmastered_prereqs": [
+        "LTI System"
+      ],
+      "lti_reason_codes": [
+        "LOW_KNOWLEDGE",
+        "DOWNSTREAM_BLOCKER",
+        "SOURCE_AVAILABLE"
+      ],
+      "lti_blocked_dependents": [
+        "Convolution"
+      ],
+      "invariant_results": {
+        "downstream_concept_action_review_prerequisite": true,
+        "upstream_prerequisite_has_downstream_blocker": true,
+        "prerequisite_deficit_reason_assigned": true
+      },
+      "passed": true,
+      "scenario_id": "SCEN_003_PREREQUISITE_REMEDIATION",
+      "name": "Prerequisite Remediation Unblocks Downstream Learning"
+    },
+    {
+      "lti_blocker_score": 0.3333,
+      "energy_blocker_score": 0.0,
+      "invariant_results": {
+        "blocker_score_a_greater_than_b": true
+      },
+      "passed": true,
+      "scenario_id": "SCEN_004_DOWNSTREAM_RELEVANCE",
+      "name": "Downstream Blocker Weight Reflects Curriculum Impact"
+    },
+    {
+      "priority_a": 0.1473,
+      "priority_b": 0.3562,
+      "penalty_a": 0.9355,
+      "penalty_b": 0.0,
+      "invariant_results": {
+        "priority_b_greater_than_a": true,
+        "concept_b_ranked_above_a": true
+      },
+      "passed": true,
+      "scenario_id": "SCEN_005_RECENT_ACTION_PENALTY",
+      "name": "Recent-Action Damping Prevents Repetitive Domination"
+    },
+    {
+      "mastered_priority": 0.0296,
+      "developing_priority": 0.276,
+      "invariant_results": {
+        "priority_b_greater_than_a": true,
+        "concept_b_ranked_above_a": true,
+        "mastered_concept_damped": true
+      },
+      "passed": true,
+      "scenario_id": "SCEN_006_MASTERED_CONCEPT_DEPRIORITIZATION",
+      "name": "Mastered Concepts Deprioritized Below Unresolved Topics"
+    },
+    {
+      "concept_id": "cpt_signals_and_systems_impulse_response",
+      "mastery_status": "UNCERTAIN",
+      "action_type": "TAKE_ASSESSMENT",
+      "reason_codes": [
+        "UNCERTAIN",
+        "SOURCE_AVAILABLE"
+      ],
+      "invariant_results": {
+        "reason_has_uncertain": true,
+        "action_is_diagnostic": true
+      },
+      "passed": true,
+      "scenario_id": "SCEN_007_CONFLICTING_EVIDENCE",
+      "name": "Conflicting Evidence (UNCERTAIN) Triggers Diagnostic Action"
+    },
+    {
+      "concept_id": "cpt_signals_and_systems_convolution",
+      "source_available": true,
+      "source_chunk_ids": [
+        "CHUNK_SS_001",
+        "CHUNK_SS_004"
+      ],
+      "reason_codes": [
+        "LOW_CONFIDENCE",
+        "PREREQUISITE_DEFICIT",
+        "SOURCE_AVAILABLE"
+      ],
+      "invariant_results": {
+        "source_available_is_true": true,
+        "source_chunks_preserved": true,
+        "reason_has_source_available": true
+      },
+      "passed": true,
+      "scenario_id": "SCEN_008_SOURCE_GROUNDING",
+      "name": "Review Recommendations Grounded in Curriculum Chunks"
+    },
+    {
+      "concept_id": "cpt_signals_and_systems_quantum_signal",
+      "source_available": false,
+      "source_chunk_ids": [],
+      "reason_codes": [
+        "LOW_CONFIDENCE",
+        "SOURCE_UNAVAILABLE"
+      ],
+      "invariant_results": {
+        "source_available_is_false": true,
+        "source_chunks_empty": true,
+        "reason_has_source_unavailable": true,
+        "no_hallucinated_provenance": true
+      },
+      "passed": true,
+      "scenario_id": "SCEN_009_MISSING_SOURCE_SAFETY",
+      "name": "Missing Source Concepts Flag Explicit SOURCE_UNAVAILABLE"
+    },
+    {
+      "delegation_succeeded": true,
+      "item_id": "ITEM_CONV_003_MED_EN",
+      "item_question": "Which of the following algebraic properties does the convolution operation satisfy?",
+      "item_chunks": [
+        "CHUNK_SS_001"
+      ],
+      "invariant_results": {
+        "delegation_succeeds": true,
+        "delegated_item_valid": true,
+        "delegated_item_provenance_intact": true
+      },
+      "passed": true,
+      "scenario_id": "SCEN_010_ASSESSMENT_DELEGATION",
+      "name": "Assessment Action Delegates to Adaptive Assessment Service"
+    },
+    {
+      "student_a_top": "cpt_signals_and_systems_convolution",
+      "student_a_priority": 0.3886,
+      "student_b_top": "cpt_signals_and_systems_laplace_transform",
+      "student_b_priority": 0.1725,
+      "invariant_results": {
+        "student_a_top_convolution": true,
+        "student_b_top_not_convolution": true,
+        "student_isolation_preserved": true
+      },
+      "passed": true,
+      "scenario_id": "SCEN_011_STUDENT_ISOLATION",
+      "name": "Student Recommendation Isolation"
+    },
+    {
+      "ranking_run1": [
+        "cpt_signals_and_systems_convolution",
+        "cpt_signals_and_systems_laplace_transform",
+        "cpt_signals_and_systems_z_transform",
+        "cpt_signals_and_systems_continuous_time_fourier_transform",
+        "cpt_signals_and_systems_lti_system"
+      ],
+      "ranking_run2": [
+        "cpt_signals_and_systems_convolution",
+        "cpt_signals_and_systems_laplace_transform",
+        "cpt_signals_and_systems_z_transform",
+        "cpt_signals_and_systems_continuous_time_fourier_transform",
+        "cpt_signals_and_systems_lti_system"
+      ],
+      "scores_run1": [
+        0.1725,
+        0.1725,
+        0.1725,
+        0.1475,
+        0.1475
+      ],
+      "scores_run2": [
+        0.1725,
+        0.1725,
+        0.1725,
+        0.1475,
+        0.1475
+      ],
+      "invariant_results": {
+        "exact_ranking_identical": true,
+        "priority_scores_identical": true,
+        "explanations_identical": true
+      },
+      "passed": true,
+      "scenario_id": "SCEN_012_DETERMINISTIC_RANKING",
+      "name": "Deterministic Ranking Invariant"
+    }
+  ]
+}

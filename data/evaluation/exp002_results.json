@@ -1,0 +1,823 @@
+[
+  {
+    "name": "TF-IDF Baseline",
+    "model_type": "Lexical",
+    "dimension": null,
+    "model_size_mb": 0.1,
+    "hardware": "CPU",
+    "mean_latency_ms": 0.68,
+    "overall_metrics": {
+      "count": 20.0,
+      "Recall@1": 0.5,
+      "Recall@3": 0.85,
+      "Recall@5": 0.85,
+      "Recall@10": 0.85,
+      "MRR": 0.85,
+      "nDCG@10": 0.8339
+    },
+    "dimensional_metrics": {
+      "en": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 1.0
+      },
+      "te": {
+        "count": 5.0,
+        "Recall@1": 0.2,
+        "Recall@3": 0.4,
+        "Recall@5": 0.4,
+        "Recall@10": 0.4,
+        "MRR": 0.4,
+        "nDCG@10": 0.3679
+      },
+      "te-Latn": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 1.0
+      },
+      "te-en": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 0.9679
+      }
+    },
+    "failures_count": 3,
+    "failures": [
+      {
+        "query_id": "Q_TE_002",
+        "query": "నైక్విస్ట్ శాంప్లింగ్ రేటు అంటే ఏమిటి మరియు తక్కువ రేటుతో శాంప్లింగ్ చేస్తే ఏమి జరుగుతుంది?",
+        "language": "te",
+        "script": "Telugu",
+        "expected_concept": "sampling_theorem",
+        "expected_chunks": [
+          "CHUNK_SS_005",
+          "CHUNK_SS_006"
+        ],
+        "retrieved_top3": [],
+        "failure_category": "Cross-lingual semantic mismatch",
+        "possible_cause": "Model failed to align Telugu script query representation with English technical text representation."
+      },
+      {
+        "query_id": "Q_TE_004",
+        "query": "ఎనర్జీ సిగ్నల్స్ మరియు పవర్ సిగ్నల్స్ మధ్య తేడా ఏమిటి?",
+        "language": "te",
+        "script": "Telugu",
+        "expected_concept": "energy_and_power_signals",
+        "expected_chunks": [
+          "CHUNK_SS_010"
+        ],
+        "retrieved_top3": [],
+        "failure_category": "Cross-lingual semantic mismatch",
+        "possible_cause": "Model failed to align Telugu script query representation with English technical text representation."
+      },
+      {
+        "query_id": "Q_TE_005",
+        "query": "ఫోరియర్ ట్రాన్స్‌ఫార్మ్ అంటే ఏమిటి మరియు ఫ్రీక్వెన్సీ డొమైన్‌లో కన్వల్యూషన్ ప్రాపర్టీ ఏమిటి?",
+        "language": "te",
+        "script": "Telugu",
+        "expected_concept": "fourier_transform",
+        "expected_chunks": [
+          "CHUNK_SS_004",
+          "CHUNK_SS_003"
+        ],
+        "retrieved_top3": [],
+        "failure_category": "Cross-lingual semantic mismatch",
+        "possible_cause": "Model failed to align Telugu script query representation with English technical text representation."
+      }
+    ]
+  },
+  {
+    "name": "BM25 Baseline",
+    "model_type": "Lexical",
+    "dimension": null,
+    "model_size_mb": 0.1,
+    "hardware": "CPU",
+    "mean_latency_ms": 0.04,
+    "overall_metrics": {
+      "count": 20.0,
+      "Recall@1": 0.5,
+      "Recall@3": 0.85,
+      "Recall@5": 0.85,
+      "Recall@10": 0.85,
+      "MRR": 0.85,
+      "nDCG@10": 0.838
+    },
+    "dimensional_metrics": {
+      "en": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 1.0
+      },
+      "te": {
+        "count": 5.0,
+        "Recall@1": 0.2,
+        "Recall@3": 0.4,
+        "Recall@5": 0.4,
+        "Recall@10": 0.4,
+        "MRR": 0.4,
+        "nDCG@10": 0.3679
+      },
+      "te-Latn": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 1.0
+      },
+      "te-en": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 0.9839
+      }
+    },
+    "failures_count": 3,
+    "failures": [
+      {
+        "query_id": "Q_TE_002",
+        "query": "నైక్విస్ట్ శాంప్లింగ్ రేటు అంటే ఏమిటి మరియు తక్కువ రేటుతో శాంప్లింగ్ చేస్తే ఏమి జరుగుతుంది?",
+        "language": "te",
+        "script": "Telugu",
+        "expected_concept": "sampling_theorem",
+        "expected_chunks": [
+          "CHUNK_SS_005",
+          "CHUNK_SS_006"
+        ],
+        "retrieved_top3": [],
+        "failure_category": "Cross-lingual semantic mismatch",
+        "possible_cause": "Model failed to align Telugu script query representation with English technical text representation."
+      },
+      {
+        "query_id": "Q_TE_004",
+        "query": "ఎనర్జీ సిగ్నల్స్ మరియు పవర్ సిగ్నల్స్ మధ్య తేడా ఏమిటి?",
+        "language": "te",
+        "script": "Telugu",
+        "expected_concept": "energy_and_power_signals",
+        "expected_chunks": [
+          "CHUNK_SS_010"
+        ],
+        "retrieved_top3": [],
+        "failure_category": "Cross-lingual semantic mismatch",
+        "possible_cause": "Model failed to align Telugu script query representation with English technical text representation."
+      },
+      {
+        "query_id": "Q_TE_005",
+        "query": "ఫోరియర్ ట్రాన్స్‌ఫార్మ్ అంటే ఏమిటి మరియు ఫ్రీక్వెన్సీ డొమైన్‌లో కన్వల్యూషన్ ప్రాపర్టీ ఏమిటి?",
+        "language": "te",
+        "script": "Telugu",
+        "expected_concept": "fourier_transform",
+        "expected_chunks": [
+          "CHUNK_SS_004",
+          "CHUNK_SS_003"
+        ],
+        "retrieved_top3": [],
+        "failure_category": "Cross-lingual semantic mismatch",
+        "possible_cause": "Model failed to align Telugu script query representation with English technical text representation."
+      }
+    ]
+  },
+  {
+    "name": "all-MiniLM-L6-v2 (EN baseline)",
+    "model_type": "Dense (English)",
+    "dimension": 384,
+    "model_size_mb": 90.0,
+    "hardware": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+    "mean_latency_ms": 18.83,
+    "overall_metrics": {
+      "count": 20.0,
+      "Recall@1": 0.45,
+      "Recall@3": 0.875,
+      "Recall@5": 0.95,
+      "Recall@10": 1.0,
+      "MRR": 0.8542,
+      "nDCG@10": 0.8844
+    },
+    "dimensional_metrics": {
+      "en": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 0.9839
+      },
+      "te": {
+        "count": 5.0,
+        "Recall@1": 0.1,
+        "Recall@3": 0.5,
+        "Recall@5": 0.8,
+        "Recall@10": 1.0,
+        "MRR": 0.5167,
+        "nDCG@10": 0.6149
+      },
+      "te-Latn": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 1.0
+      },
+      "te-en": {
+        "count": 5.0,
+        "Recall@1": 0.5,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 0.9,
+        "nDCG@10": 0.9387
+      }
+    },
+    "failures_count": 5,
+    "failures": [
+      {
+        "query_id": "Q_TE_002",
+        "query": "నైక్విస్ట్ శాంప్లింగ్ రేటు అంటే ఏమిటి మరియు తక్కువ రేటుతో శాంప్లింగ్ చేస్తే ఏమి జరుగుతుంది?",
+        "language": "te",
+        "script": "Telugu",
+        "expected_concept": "sampling_theorem",
+        "expected_chunks": [
+          "CHUNK_SS_005",
+          "CHUNK_SS_006"
+        ],
+        "retrieved_top3": [
+          {
+            "chunk_id": "CHUNK_SS_009",
+            "score": 0.04618222266435623,
+            "rank": 1
+          },
+          {
+            "chunk_id": "CHUNK_SS_003",
+            "score": 0.03886105492711067,
+            "rank": 2
+          },
+          {
+            "chunk_id": "CHUNK_SS_010",
+            "score": 0.02271692454814911,
+            "rank": 3
+          }
+        ],
+        "failure_category": "Cross-lingual semantic mismatch",
+        "possible_cause": "Model failed to align Telugu script query representation with English technical text representation."
+      },
+      {
+        "query_id": "Q_TE_003",
+        "query": "లాప్లేస్ ట్రాన్స్‌ఫార్మ్ యొక్క పోల్స్ మరియు ROC ద్వారా సిస్టమ్ స్థిరత్వాన్ని ఎలా నిర్ణయిస్తారు?",
+        "language": "te",
+        "script": "Telugu",
+        "expected_concept": "laplace_transform",
+        "expected_chunks": [
+          "CHUNK_SS_007",
+          "CHUNK_SS_008"
+        ],
+        "retrieved_top3": [
+          {
+            "chunk_id": "CHUNK_SS_009",
+            "score": 0.28457266092300415,
+            "rank": 1
+          },
+          {
+            "chunk_id": "CHUNK_SS_007",
+            "score": 0.2735259532928467,
+            "rank": 2
+          },
+          {
+            "chunk_id": "CHUNK_SS_003",
+            "score": 0.11887142062187195,
+            "rank": 3
+          }
+        ],
+        "failure_category": "Cross-lingual semantic mismatch",
+        "possible_cause": "Model failed to align Telugu script query representation with English technical text representation."
+      },
+      {
+        "query_id": "Q_MIX_003",
+        "query": "LTI system BIBO stable avvalante Laplace ROC imaginary axis ni include cheyyala?",
+        "language": "te-en",
+        "script": "Latin",
+        "expected_concept": "laplace_transform",
+        "expected_chunks": [
+          "CHUNK_SS_007",
+          "CHUNK_SS_008"
+        ],
+        "retrieved_top3": [
+          {
+            "chunk_id": "CHUNK_SS_009",
+            "score": 0.5137463808059692,
+            "rank": 1
+          },
+          {
+            "chunk_id": "CHUNK_SS_008",
+            "score": 0.4957265257835388,
+            "rank": 2
+          },
+          {
+            "chunk_id": "CHUNK_SS_007",
+            "score": 0.39458370208740234,
+            "rank": 3
+          }
+        ],
+        "failure_category": "Code-mixed syntax mismatch",
+        "possible_cause": "Mixed Telugu grammar particles combined with English technical tokens degraded semantic alignment."
+      },
+      {
+        "query_id": "Q_TE_004",
+        "query": "ఎనర్జీ సిగ్నల్స్ మరియు పవర్ సిగ్నల్స్ మధ్య తేడా ఏమిటి?",
+        "language": "te",
+        "script": "Telugu",
+        "expected_concept": "energy_and_power_signals",
+        "expected_chunks": [
+          "CHUNK_SS_010"
+        ],
+        "retrieved_top3": [
+          {
+            "chunk_id": "CHUNK_SS_009",
+            "score": 0.008680276572704315,
+            "rank": 1
+          },
+          {
+            "chunk_id": "CHUNK_SS_003",
+            "score": 0.002625330351293087,
+            "rank": 2
+          },
+          {
+            "chunk_id": "CHUNK_SS_010",
+            "score": -0.012761015444993973,
+            "rank": 3
+          }
+        ],
+        "failure_category": "Cross-lingual semantic mismatch",
+        "possible_cause": "Model failed to align Telugu script query representation with English technical text representation."
+      },
+      {
+        "query_id": "Q_TE_005",
+        "query": "ఫోరియర్ ట్రాన్స్‌ఫార్మ్ అంటే ఏమిటి మరియు ఫ్రీక్వెన్సీ డొమైన్‌లో కన్వల్యూషన్ ప్రాపర్టీ ఏమిటి?",
+        "language": "te",
+        "script": "Telugu",
+        "expected_concept": "fourier_transform",
+        "expected_chunks": [
+          "CHUNK_SS_004",
+          "CHUNK_SS_003"
+        ],
+        "retrieved_top3": [
+          {
+            "chunk_id": "CHUNK_SS_009",
+            "score": 0.0339437797665596,
+            "rank": 1
+          },
+          {
+            "chunk_id": "CHUNK_SS_003",
+            "score": 0.02833922952413559,
+            "rank": 2
+          },
+          {
+            "chunk_id": "CHUNK_SS_006",
+            "score": 0.01192571222782135,
+            "rank": 3
+          }
+        ],
+        "failure_category": "Cross-lingual semantic mismatch",
+        "possible_cause": "Model failed to align Telugu script query representation with English technical text representation."
+      }
+    ]
+  },
+  {
+    "name": "paraphrase-multilingual-MiniLM-L12-v2",
+    "model_type": "Dense (Multilingual)",
+    "dimension": 384,
+    "model_size_mb": 470.0,
+    "hardware": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+    "mean_latency_ms": 20.96,
+    "overall_metrics": {
+      "count": 20.0,
+      "Recall@1": 0.55,
+      "Recall@3": 0.925,
+      "Recall@5": 0.975,
+      "Recall@10": 1.0,
+      "MRR": 0.9375,
+      "nDCG@10": 0.9466
+    },
+    "dimensional_metrics": {
+      "en": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 1.0
+      },
+      "te": {
+        "count": 5.0,
+        "Recall@1": 0.4,
+        "Recall@3": 0.7,
+        "Recall@5": 0.9,
+        "Recall@10": 1.0,
+        "MRR": 0.75,
+        "nDCG@10": 0.8024
+      },
+      "te-Latn": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 1.0
+      },
+      "te-en": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 0.9839
+      }
+    },
+    "failures_count": 2,
+    "failures": [
+      {
+        "query_id": "Q_TE_001",
+        "query": "కన్వల్యూషన్ అంటే ఏమిటి మరియు LTI సిస్టమ్ అవుట్‌పుట్‌ను ఎలా లెక్కిస్తారు?",
+        "language": "te",
+        "script": "Telugu",
+        "expected_concept": "convolution",
+        "expected_chunks": [
+          "CHUNK_SS_001",
+          "CHUNK_SS_002"
+        ],
+        "retrieved_top3": [
+          {
+            "chunk_id": "CHUNK_SS_003",
+            "score": 0.37846118211746216,
+            "rank": 1
+          },
+          {
+            "chunk_id": "CHUNK_SS_002",
+            "score": 0.3333140015602112,
+            "rank": 2
+          },
+          {
+            "chunk_id": "CHUNK_SS_001",
+            "score": 0.32511723041534424,
+            "rank": 3
+          }
+        ],
+        "failure_category": "Cross-lingual semantic mismatch",
+        "possible_cause": "Model failed to align Telugu script query representation with English technical text representation."
+      },
+      {
+        "query_id": "Q_TE_002",
+        "query": "నైక్విస్ట్ శాంప్లింగ్ రేటు అంటే ఏమిటి మరియు తక్కువ రేటుతో శాంప్లింగ్ చేస్తే ఏమి జరుగుతుంది?",
+        "language": "te",
+        "script": "Telugu",
+        "expected_concept": "sampling_theorem",
+        "expected_chunks": [
+          "CHUNK_SS_005",
+          "CHUNK_SS_006"
+        ],
+        "retrieved_top3": [
+          {
+            "chunk_id": "CHUNK_SS_003",
+            "score": 0.2500162720680237,
+            "rank": 1
+          },
+          {
+            "chunk_id": "CHUNK_SS_001",
+            "score": 0.22165030241012573,
+            "rank": 2
+          },
+          {
+            "chunk_id": "CHUNK_SS_007",
+            "score": 0.20605643093585968,
+            "rank": 3
+          }
+        ],
+        "failure_category": "Cross-lingual semantic mismatch",
+        "possible_cause": "Model failed to align Telugu script query representation with English technical text representation."
+      }
+    ]
+  },
+  {
+    "name": "multilingual-e5-small (asymmetric)",
+    "model_type": "Dense (Multilingual/Indic)",
+    "dimension": 384,
+    "model_size_mb": 470.0,
+    "hardware": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+    "mean_latency_ms": 28.4,
+    "overall_metrics": {
+      "count": 20.0,
+      "Recall@1": 0.575,
+      "Recall@3": 1.0,
+      "Recall@5": 1.0,
+      "Recall@10": 1.0,
+      "MRR": 0.975,
+      "nDCG@10": 0.9766
+    },
+    "dimensional_metrics": {
+      "en": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 0.9839
+      },
+      "te": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 1.0
+      },
+      "te-Latn": {
+        "count": 5.0,
+        "Recall@1": 0.5,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 0.9,
+        "nDCG@10": 0.9387
+      },
+      "te-en": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 0.9839
+      }
+    },
+    "failures_count": 1,
+    "failures": [
+      {
+        "query_id": "Q_ROM_003",
+        "query": "Laplace transform lo system stability kosam poles ekkada undali?",
+        "language": "te-Latn",
+        "script": "Latin",
+        "expected_concept": "laplace_transform",
+        "expected_chunks": [
+          "CHUNK_SS_007",
+          "CHUNK_SS_008"
+        ],
+        "retrieved_top3": [
+          {
+            "chunk_id": "CHUNK_SS_009",
+            "score": 0.8538131713867188,
+            "rank": 1
+          },
+          {
+            "chunk_id": "CHUNK_SS_007",
+            "score": 0.8520012497901917,
+            "rank": 2
+          },
+          {
+            "chunk_id": "CHUNK_SS_008",
+            "score": 0.8479442596435547,
+            "rank": 3
+          }
+        ],
+        "failure_category": "Romanization ambiguity",
+        "possible_cause": "Informal phonetic Romanization lacks standardized orthography, causing subword/character tokenization mismatch."
+      }
+    ]
+  },
+  {
+    "name": "l3cube-pune/indic-sentence-bert-nli",
+    "model_type": "Dense (Indic-focused)",
+    "dimension": 768,
+    "model_size_mb": 440.0,
+    "hardware": "N/A",
+    "mean_latency_ms": 0.0,
+    "status": "BLOCKED / NOT YET EVALUATED",
+    "blocked_reason": "Model published with legacy pytorch_model.bin without safetensors; transformers 5.8.1 blocks torch.load on torch < 2.6 per CVE-2025-32434",
+    "overall_metrics": {
+      "Recall@1": 0.0,
+      "Recall@3": 0.0,
+      "Recall@5": 0.0,
+      "Recall@10": 0.0,
+      "MRR": 0.0,
+      "nDCG@10": 0.0
+    },
+    "dimensional_metrics": {
+      "en": {
+        "Recall@3": 0.0
+      },
+      "te": {
+        "Recall@3": 0.0
+      },
+      "te-Latn": {
+        "Recall@3": 0.0
+      },
+      "te-en": {
+        "Recall@3": 0.0
+      }
+    },
+    "failures_count": 0,
+    "failures": []
+  },
+  {
+    "name": "Hybrid (BM25 + Multi-Dense RRF)",
+    "model_type": "Hybrid (RRF)",
+    "dimension": 384,
+    "model_size_mb": 470.1,
+    "hardware": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+    "mean_latency_ms": 23.36,
+    "overall_metrics": {
+      "count": 20.0,
+      "Recall@1": 0.575,
+      "Recall@3": 0.925,
+      "Recall@5": 0.975,
+      "Recall@10": 1.0,
+      "MRR": 0.9625,
+      "nDCG@10": 0.9619
+    },
+    "dimensional_metrics": {
+      "en": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 1.0
+      },
+      "te": {
+        "count": 5.0,
+        "Recall@1": 0.5,
+        "Recall@3": 0.7,
+        "Recall@5": 0.9,
+        "Recall@10": 1.0,
+        "MRR": 0.85,
+        "nDCG@10": 0.8638
+      },
+      "te-Latn": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 1.0
+      },
+      "te-en": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 0.9839
+      }
+    },
+    "failures_count": 1,
+    "failures": [
+      {
+        "query_id": "Q_TE_002",
+        "query": "నైక్విస్ట్ శాంప్లింగ్ రేటు అంటే ఏమిటి మరియు తక్కువ రేటుతో శాంప్లింగ్ చేస్తే ఏమి జరుగుతుంది?",
+        "language": "te",
+        "script": "Telugu",
+        "expected_concept": "sampling_theorem",
+        "expected_chunks": [
+          "CHUNK_SS_005",
+          "CHUNK_SS_006"
+        ],
+        "retrieved_top3": [
+          {
+            "chunk_id": "CHUNK_SS_003",
+            "score": 0.2500162720680237,
+            "rank": 1
+          },
+          {
+            "chunk_id": "CHUNK_SS_001",
+            "score": 0.22165030241012573,
+            "rank": 2
+          },
+          {
+            "chunk_id": "CHUNK_SS_007",
+            "score": 0.20605643093585968,
+            "rank": 3
+          }
+        ],
+        "failure_category": "Cross-lingual semantic mismatch",
+        "possible_cause": "Model failed to align Telugu script query representation with English technical text representation."
+      }
+    ]
+  },
+  {
+    "name": "Hybrid (BM25 + Multi-Dense Linear)",
+    "model_type": "Hybrid (Linear MinMax)",
+    "dimension": 384,
+    "model_size_mb": 470.1,
+    "hardware": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+    "mean_latency_ms": 24.15,
+    "overall_metrics": {
+      "count": 20.0,
+      "Recall@1": 0.575,
+      "Recall@3": 0.925,
+      "Recall@5": 0.975,
+      "Recall@10": 1.0,
+      "MRR": 0.9625,
+      "nDCG@10": 0.9539
+    },
+    "dimensional_metrics": {
+      "en": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 1.0
+      },
+      "te": {
+        "count": 5.0,
+        "Recall@1": 0.5,
+        "Recall@3": 0.7,
+        "Recall@5": 0.9,
+        "Recall@10": 1.0,
+        "MRR": 0.85,
+        "nDCG@10": 0.8316
+      },
+      "te-Latn": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 1.0
+      },
+      "te-en": {
+        "count": 5.0,
+        "Recall@1": 0.6,
+        "Recall@3": 1.0,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0,
+        "MRR": 1.0,
+        "nDCG@10": 0.9839
+      }
+    },
+    "failures_count": 1,
+    "failures": [
+      {
+        "query_id": "Q_TE_002",
+        "query": "నైక్విస్ట్ శాంప్లింగ్ రేటు అంటే ఏమిటి మరియు తక్కువ రేటుతో శాంప్లింగ్ చేస్తే ఏమి జరుగుతుంది?",
+        "language": "te",
+        "script": "Telugu",
+        "expected_concept": "sampling_theorem",
+        "expected_chunks": [
+          "CHUNK_SS_005",
+          "CHUNK_SS_006"
+        ],
+        "retrieved_top3": [
+          {
+            "chunk_id": "CHUNK_SS_003",
+            "score": 0.2500162720680237,
+            "rank": 1
+          },
+          {
+            "chunk_id": "CHUNK_SS_001",
+            "score": 0.22165030241012573,
+            "rank": 2
+          },
+          {
+            "chunk_id": "CHUNK_SS_007",
+            "score": 0.20605643093585968,
+            "rank": 3
+          }
+        ],
+        "failure_category": "Cross-lingual semantic mismatch",
+        "possible_cause": "Model failed to align Telugu script query representation with English technical text representation."
+      }
+    ]
+  }
+]

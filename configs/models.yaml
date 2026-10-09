@@ -1,0 +1,24 @@
+# Model/provider choices. Evaluated in EXP-002 (see docs/EXPERIMENTS.md and docs/DECISIONS.md).
+embedding:
+  default_provider: sentence_transformer
+  active_model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  candidates:
+    category_a_multilingual:
+      model_id: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+      dimension: 384
+      size_mb: 470
+      status: EVALUATED
+    category_b_indic_focused:
+      model_id: l3cube-pune/indic-sentence-bert-nli
+      dimension: 768
+      size_mb: 440
+      status: EVALUATED
+    category_c_english_baseline:
+      model_id: sentence-transformers/all-MiniLM-L6-v2
+      dimension: 384
+      size_mb: 90
+      status: EVALUATED
+llm:
+  provider: null   # undecided — Phase 5 RAG pipeline (behind LLMProvider interface)
+vector_store:
+  provider: faiss  # Verified in Phase 2 with FaissVectorStore and InMemoryVectorStore fallback

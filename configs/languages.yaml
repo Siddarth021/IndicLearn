@@ -1,0 +1,21 @@
+languages:
+  en:
+    name: English
+    scripts: [Latin]
+    status: IMPLEMENTED
+    scope: Technical queries and textbook terminology
+  te:
+    name: Telugu
+    scripts: [Telugu]
+    status: IMPLEMENTED
+    scope: Pure Telugu script queries and translated academic aliases
+  te-Latn:
+    name: Romanized Telugu
+    scripts: [Latin]
+    status: IMPLEMENTED
+    scope: Telugu phonetically written in Latin characters (transliterated)
+  te-en:
+    name: Telugu-English Code-Mixed
+    scripts: [Latin, Telugu, Mixed]
+    status: IMPLEMENTED
+    scope: Code-mixed engineering student queries combining English terminology with Telugu functional particles

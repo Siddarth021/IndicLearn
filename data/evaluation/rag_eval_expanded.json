@@ -1,0 +1,1332 @@
+{
+  "metadata": {
+    "name": "Signals and Systems Expanded RAG Evaluation Benchmark",
+    "experiment": "EXP-005A",
+    "version": "2.0",
+    "total_queries": 60,
+    "answerable_count": 50,
+    "unanswerable_count": 10,
+    "language_counts": {
+      "en": 18,
+      "te": 14,
+      "te-Latn": 14,
+      "te-en": 14
+    },
+    "difficulty_counts": {
+      "easy": 19,
+      "medium": 21,
+      "hard": 20
+    }
+  },
+  "queries": [
+    {
+      "query_id": "RAG_EXP_001",
+      "query": "What are the two defining mathematical properties that a continuous-time system must satisfy to be classified as linear time-invariant?",
+      "category": "definition",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_lti_system"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_002"
+      ],
+      "expected_key_points": [
+        "Linearity consisting of superposition and homogeneity",
+        "Time-invariance where input time shift yields identical output time shift",
+        "System is completely characterized by impulse response h(t)"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_002",
+      "query": "Define the Nyquist rate and state the fundamental condition for perfect reconstruction of a continuous signal.",
+      "category": "definition",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_sampling_theorem",
+        "cpt_signals_and_systems_nyquist_rate"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_005"
+      ],
+      "expected_key_points": [
+        "Sampling frequency must be fs >= 2*B",
+        "Minimum sampling rate is termed Nyquist rate (2*B)",
+        "Enables exact continuous signal reconstruction without distortion"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_003",
+      "query": "How is an energy signal distinguished from a power signal in terms of total energy and average power values?",
+      "category": "comparison",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_energy_signal",
+        "cpt_signals_and_systems_power_signal"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_010"
+      ],
+      "expected_key_points": [
+        "Energy signal has finite total energy (0 < E < inf) and zero average power (P = 0)",
+        "Power signal has infinite total energy (E = inf) and finite non-zero average power (0 < P < inf)",
+        "Transient pulses are energy signals; periodic signals are power signals"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_004",
+      "query": "What geometric shape does the Region of Convergence take in the complex z-plane for discrete-time systems?",
+      "category": "definition",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_z_transform",
+        "cpt_signals_and_systems_region_of_convergence"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_009"
+      ],
+      "expected_key_points": [
+        "ROC in z-plane is a ring or annular region centered at the origin",
+        "Maps discrete-time sequences x[n] into complex z-domain",
+        "BIBO stability requires the ROC to encompass the unit circle |z| = 1"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_005",
+      "query": "How do we combine an arbitrary input signal with the system's unit impulse response to compute the overall response of an LTI system?",
+      "category": "explanation",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": true,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_convolution"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_001"
+      ],
+      "expected_key_points": [
+        "Calculated via the convolution integral y(t) = integral x(tau) h(t - tau) dtau",
+        "Applies to continuous-time Linear Time-Invariant systems",
+        "Satisfies commutative, associative, and distributive properties"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_006",
+      "query": "Explain how decomposing a continuous waveform into complex sinusoidal basis functions provides magnitude and phase spectral representations.",
+      "category": "explanation",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": true,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_continuous_time_fourier_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_003"
+      ],
+      "expected_key_points": [
+        "Continuous-Time Fourier Transform X(omega) = integral x(t) e^{-j omega t} dt",
+        "Transforms signal from time domain into continuous frequency domain",
+        "Separates the waveform into magnitude spectrum |X(omega)| and phase spectrum"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_007",
+      "query": "What physical distortion occurs when sampling occurs below the Nyquist frequency, and how does pre-filtering alleviate this?",
+      "category": "explanation",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_aliasing",
+        "cpt_signals_and_systems_sampling_theorem"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_006"
+      ],
+      "expected_key_points": [
+        "High frequency components fold over into lower frequency spectrum (aliasing)",
+        "An anti-aliasing low-pass filter must be placed before the sampler",
+        "Attenuates frequencies exceeding fs / 2 prior to discretization"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_008",
+      "query": "Why can the Region of Convergence in the complex s-plane never encompass any poles of the transfer function?",
+      "category": "explanation",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_laplace_transform",
+        "cpt_signals_and_systems_region_of_convergence"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_007"
+      ],
+      "expected_key_points": [
+        "ROC is the set of complex s values where the Laplace integral strictly converges",
+        "Poles represent singularities where the transform goes to infinity",
+        "ROC is bounded by vertical lines in the s-plane parallel to the imaginary axis"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_009",
+      "query": "How does the time-domain convolution property of LTI systems simplify when mapped into the continuous frequency domain?",
+      "category": "multichunk",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": true,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_convolution",
+        "cpt_signals_and_systems_continuous_time_fourier_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_001",
+        "CHUNK_SS_004"
+      ],
+      "expected_key_points": [
+        "Time domain convolution integral y(t) = x(t) * h(t) maps to point-wise multiplication F{x*h} = X(omega) H(omega)",
+        "Replaces complicated integral evaluation with algebraic product of spectra",
+        "Significantly simplifies overall system analysis"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_010",
+      "query": "Explain how the unit impulse response of an LTI system governs both time-domain output and frequency-domain filtering characteristics.",
+      "category": "multichunk",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": true,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_lti_system",
+        "cpt_signals_and_systems_impulse_response",
+        "cpt_signals_and_systems_continuous_time_fourier_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_002",
+        "CHUNK_SS_003"
+      ],
+      "expected_key_points": [
+        "LTI system is completely characterized by its unit impulse response h(t)",
+        "Fourier transform of h(t) yields frequency response H(omega)",
+        "Magnitude and phase spectra determine how system shapes input frequencies"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_011",
+      "query": "What are the stability criteria for continuous-time LTI systems in terms of Laplace ROC and pole locations in the s-plane?",
+      "category": "relationship",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_bibo_stability",
+        "cpt_signals_and_systems_laplace_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_008"
+      ],
+      "expected_key_points": [
+        "System is BIBO stable if and only if ROC includes the imaginary j omega axis",
+        "For a causal continuous-time system, all poles must strictly lie in open left-half s-plane Re(s) < 0",
+        "ROC cannot contain any poles"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_012",
+      "query": "How do stability requirements differ between continuous-time systems in the s-plane and discrete-time systems in the z-plane?",
+      "category": "multichunk",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": true,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_bibo_stability",
+        "cpt_signals_and_systems_laplace_transform",
+        "cpt_signals_and_systems_z_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_008",
+        "CHUNK_SS_009"
+      ],
+      "expected_key_points": [
+        "Continuous s-plane: BIBO stability requires ROC to include imaginary axis j omega, poles in Re(s) < 0 for causal",
+        "Discrete z-plane: BIBO stability requires ROC to include the unit circle |z| = 1",
+        "Laplace maps continuous time; Z-transform maps discrete-time sequences"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_013",
+      "query": "Describe the complete pipeline required to sample a continuous bandlimited signal and reconstruct it without high-frequency foldover.",
+      "category": "multichunk",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": true,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_sampling_theorem",
+        "cpt_signals_and_systems_aliasing"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_005",
+        "CHUNK_SS_006"
+      ],
+      "expected_key_points": [
+        "Pre-filter with an anti-aliasing low-pass filter to attenuate frequencies exceeding fs/2",
+        "Sample at rate fs >= 2*B (Nyquist rate)",
+        "Reconstruct using an ideal low-pass interpolation filter"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_014",
+      "query": "Why must a student understand linearity and time-invariance properties before studying the unit impulse response convolution integral?",
+      "category": "prerequisite_reasoning",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": true,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_linearity",
+        "cpt_signals_and_systems_time_invariance",
+        "cpt_signals_and_systems_convolution"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_001",
+        "CHUNK_SS_002"
+      ],
+      "expected_key_points": [
+        "Convolution uniquely characterizes only systems that satisfy both linearity and time-invariance",
+        "Superposition allows decomposing input into shifted scaled impulses",
+        "Time-invariance ensures delayed impulses produce identical delayed responses"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_015",
+      "query": "In system analysis, what does the unit impulse response h(t) tell us about an LTI system's behavior?",
+      "category": "terminology_variation",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_impulse_response"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_002"
+      ],
+      "expected_key_points": [
+        "Response of the system to a unit impulse delta(t)",
+        "Completely characterizes the continuous-time LTI system",
+        "Used in convolution to determine response to any arbitrary input"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_016",
+      "query": "కన్వల్యూషన్ అంటే ఏమిటి మరియు LTI సిస్టమ్ అవుట్‌పుట్‌ను నిర్ణయించడంలో దీని ప్రాముఖ్యత ఏమిటి?",
+      "category": "telugu_script",
+      "language": "te",
+      "script": "Telugu",
+      "difficulty": "easy",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_convolution"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_001"
+      ],
+      "expected_key_points": [
+        "కన్వల్యూషన్ అనేది LTI సిస్టమ్ అవుట్‌పుట్‌ను నిర్ణయించే గణిత ప్రక్రియ",
+        "ఇన్పుట్ సిగ్నల్ x(t) మరియు ఇంపల్స్ రెస్పాన్స్ h(t) ల ఇంటిగ్రల్",
+        "commutative, associative మరియు distributive ధర్మాలను పాటిస్తుంది"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_017",
+      "query": "లీనియర్ టైమ్-ఇన్వేరియంట్ సిస్టమ్ సంతృప్తి పరచవలసిన రెండు ప్రాథమిక లక్షణాలు ఏమిటి?",
+      "category": "telugu_script",
+      "language": "te",
+      "script": "Telugu",
+      "difficulty": "easy",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_lti_system"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_002"
+      ],
+      "expected_key_points": [
+        "లీనియారిటీ (సూపర్‌పొజిషన్ మరియు హోమోజెనియిటీ)",
+        "టైమ్-ఇన్వేరియన్స్ (ఇన్పుట్ షిఫ్ట్ సమానమైన అవుట్‌పుట్ షిఫ్ట్ ఉత్పత్తి చేస్తుంది)",
+        "యూనిట్ ఇంపల్స్ రెస్పాన్స్ h(t) ద్వారా పూర్తిగా వివరించబడుతుంది"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_018",
+      "query": "నైక్విస్ట్ శాంప్లింగ్ సిద్ధాంతం ప్రకారం సిగ్నల్‌ను పునర్నిర్మించడానికి కనీస ఫ్రీక్వెన్సీ ఎంత ఉండాలి?",
+      "category": "telugu_script",
+      "language": "te",
+      "script": "Telugu",
+      "difficulty": "easy",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_sampling_theorem"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_005"
+      ],
+      "expected_key_points": [
+        "శాంప్లింగ్ ఫ్రీక్వెన్సీ fs >= 2 * B ఉండాలి",
+        "కనీస రేటును నైక్విస్ట్ రేట్ (2*B) అంటారు",
+        "బ్యాండ్‌లిమిటెడ్ సిగ్నల్‌ను విరూపణ లేకుండా పునర్నిర్మించవచ్చు"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_019",
+      "query": "శాంప్లింగ్ రేటు నైక్విస్ట్ రేటు కంటే తక్కువగా ఉన్నప్పుడు ఎందుకు ఏలియాసింగ్ ఏర్పడుతుంది మరియు దానిని ఎలా నివారించవచ్చు?",
+      "category": "telugu_script",
+      "language": "te",
+      "script": "Telugu",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_aliasing",
+        "cpt_signals_and_systems_sampling_theorem"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_006"
+      ],
+      "expected_key_points": [
+        "fs < 2*B అయినప్పుడు అధిక ఫ్రీక్వెన్సీ భాగాలు తక్కువ ఫ్రీక్వెన్సీ స్పెక్ట్రమ్‌లోకి మడతపడతాయి (aliasing)",
+        "శాంప్లింగ్ ముందు యాంటీ-ఏలియాసింగ్ లో-పాస్ ఫిల్టర్‌ను ఉపయోగించాలి",
+        "fs / 2 కంటే ఎక్కువ ఫ్రీక్వెన్సీలను తగ్గించాలి"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_020",
+      "query": "ఎనర్జీ సిగ్నల్ మరియు పవర్ సిగ్నల్ మధ్య ముఖ్యమైన తేడాలు ఏమిటి?",
+      "category": "telugu_script",
+      "language": "te",
+      "script": "Telugu",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_energy_signal",
+        "cpt_signals_and_systems_power_signal"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_010"
+      ],
+      "expected_key_points": [
+        "ఎనర్జీ సిగ్నల్: పరిమిత శక్తి (0 < E < inf), సగటు పవర్ P = 0",
+        "పవర్ సిగ్నల్: అనంత శక్తి (E = inf), పరిమిత సగటు పవర్ (0 < P < inf)",
+        "పీరియాడిక్ సిగ్నల్స్ పవర్ సిగ్నల్స్, ట్రాన్సియెంట్ పల్సులు ఎనర్జీ సిగ్నల్స్"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_021",
+      "query": "లాప్లేస్ ట్రాన్స్‌ఫార్మ్‌లో రీజియన్ ఆఫ్ కన్వర్జెన్స్ (ROC) ఎందుకు ఎటువంటి పోల్స్‌ను కలిగి ఉండకూడదు?",
+      "category": "telugu_script",
+      "language": "te",
+      "script": "Telugu",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_laplace_transform",
+        "cpt_signals_and_systems_region_of_convergence"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_007"
+      ],
+      "expected_key_points": [
+        "ROC అనేది ఇంటిగ్రల్ కన్వర్జ్ అయ్యే complex s విలువల సమితి",
+        "పోల్స్ వద్ద ట్రాన్స్‌ఫార్మ్ విలువ అనంతం అవుతుంది (singularity)",
+        "ROC నిలువు గీతలతో పరిమితమై ఉంటుంది మరియు స్థిరత్వాన్ని నిర్ణయిస్తుంది"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_022",
+      "query": "నిరంతర LTI వ్యవస్థ స్థిరంగా (BIBO stable) ఉండాలంటే లాప్లేస్ డొమైన్‌లో ROC మరియు పోల్స్ ఎక్కడ ఉండాలి?",
+      "category": "telugu_script",
+      "language": "te",
+      "script": "Telugu",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_bibo_stability",
+        "cpt_signals_and_systems_laplace_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_008"
+      ],
+      "expected_key_points": [
+        "BIBO స్థిరత్వం కోసం ROC తప్పనిసరిగా ఇమాజినరీ j omega అక్షాన్ని కలిగి ఉండాలి",
+        "కాజల్ సిస్టమ్ కోసం అన్ని పోల్స్ సగం సంకీర్ణ తలం ఎడమవైపు (Re(s) < 0) ఉండాలి"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_023",
+      "query": "డిస్క్రీట్ టైమ్ సిస్టమ్‌లలో Z-ట్రాన్స్‌ఫార్మ్ స్థిరత్వం యూనిట్ సర్కిల్‌తో ఎలా ముడిపడి ఉంది?",
+      "category": "telugu_script",
+      "language": "te",
+      "script": "Telugu",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_z_transform",
+        "cpt_signals_and_systems_bibo_stability"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_009"
+      ],
+      "expected_key_points": [
+        "Z-ట్రాన్స్‌ఫార్మ్ అనేది లాప్లేస్ ట్రాన్స్‌ఫార్మ్ యొక్క డిస్క్రీట్ రూపం",
+        "ROC అనేది ఆరిజిన్ చుట్టూ ఉండే రింగ్",
+        "BIBO స్థిరత్వం కోసం ROC తప్పనిసరిగా యూనిట్ సర్కిల్ |z| = 1 ని కలిగి ఉండాలి"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_024",
+      "query": "టైమ్ డొమైన్‌లో కన్వల్యూషన్ చేయడం కంటే ఫ్రీక్వెన్సీ డొమైన్‌లో గుణించడం ఎందుకు విశ్లేషణను సులభతరం చేస్తుంది?",
+      "category": "telugu_script",
+      "language": "te",
+      "script": "Telugu",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": true,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_convolution",
+        "cpt_signals_and_systems_continuous_time_fourier_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_001",
+        "CHUNK_SS_004"
+      ],
+      "expected_key_points": [
+        "టైమ్ డొమైన్ కన్వల్యూషన్ ఇంటిగ్రల్ ఫ్రీక్వెన్సీ డొమైన్‌లో పాయింట్-వైజ్ మల్టిప్లికేషన్ అవుతుంది",
+        "F{x(t) * h(t)} = X(omega) H(omega)",
+        "సంక్లిష్టమైన ఇంటిగ్రల్స్ బదులుగా సాధారణ గుణకారం ద్వారా సిస్టమ్ అవుట్‌పుట్ పొందవచ్చు"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_025",
+      "query": "ఒక సంకేతాన్ని పౌనఃపున్యాలుగా విభజించి దాని పరిమాణం మరియు దశ స్పెక్ట్రమ్‌లను ఎలా కొలుస్తారు?",
+      "category": "telugu_script",
+      "language": "te",
+      "script": "Telugu",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": true,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_continuous_time_fourier_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_003"
+      ],
+      "expected_key_points": [
+        "కంటిన్యూయస్-టైమ్ ఫోరియర్ ట్రాన్స్‌ఫార్మ్ X(omega) ద్వారా సంకేతాన్ని కాంప్లెక్స్ సైనూసోయిడ్స్‌గా విభజిస్తారు",
+        "ఇది సిగ్నల్ యొక్క మాగ్నిట్యూడ్ స్పెక్ట్రమ్ మరియు ఫేజ్ స్పెక్ట్రమ్‌ను అందిస్తుంది"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_026",
+      "query": "కాలంలో జరిగే షిఫ్ట్ ఫ్రీక్వెన్సీ డొమైన్‌లో ఫోరియర్ ట్రాన్స్‌ఫార్మ్ ధర్మాలను ఎలా ప్రభావితం చేస్తుంది?",
+      "category": "telugu_script",
+      "language": "te",
+      "script": "Telugu",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_continuous_time_fourier_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_004"
+      ],
+      "expected_key_points": [
+        "టైమ్ షిఫ్టింగ్, ఫ్రీక్వెన్సీ షిఫ్టింగ్, డిఫరెన్షియేషన్ మరియు డ్యూయాలిటీ ముఖ్యమైన ధర్మాలు",
+        "ఫోరియర్ ట్రాన్స్‌ఫార్మ్ ధర్మాలు సిగ్నల్ విశ్లేషణను సులభతరం చేస్తాయి"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_027",
+      "query": "బ్యాండ్‌లిమిటెడ్ సిగ్నల్‌ను తగినంత రేటుతో శాంప్లింగ్ చేసి విరూపణ లేకుండా తిరిగి ఎలా పొందాలి?",
+      "category": "telugu_script",
+      "language": "te",
+      "script": "Telugu",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": true,
+      "canonical_term_omitted": true,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_sampling_theorem",
+        "cpt_signals_and_systems_aliasing"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_005",
+        "CHUNK_SS_006"
+      ],
+      "expected_key_points": [
+        "కనీస శాంప్లింగ్ రేటు 2*B లేదా అంతకంటే ఎక్కువ ఉండాలి",
+        "ఏలియాసింగ్ రాకుండా యాంటీ-ఏలియాసింగ్ ఫిల్టర్ ఉపయోగించాలి",
+        "ఐడియల్ లో-పాస్ ఇంటర్‌పోలేషన్ ఫిల్టర్ ద్వారా సిగ్నల్ పునర్నిర్మించబడుతుంది"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_028",
+      "query": "convolution ante enti mariyu h(t) impulse response tho output ela vasthundi?",
+      "category": "romanized_telugu",
+      "language": "te-Latn",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_convolution"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_001"
+      ],
+      "expected_key_points": [
+        "Convolution anedi continuous-time LTI system output compute chese integral operation",
+        "y(t) = integral x(tau) h(t - tau) dtau dwara compute avthundi",
+        "Commutative, associative mariyu distributive properties untayi"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_029",
+      "query": "LTI system ante yenti mariyu linearity time-invariance enduku kavali?",
+      "category": "romanized_telugu",
+      "language": "te-Latn",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_lti_system"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_002"
+      ],
+      "expected_key_points": [
+        "Linear Time-Invariant system linearity mariyu time-invariance satisfy cheyali",
+        "Superposition mariyu homogeneity linearity lo untayi",
+        "Unit impulse response h(t) dwara complete characterization jaruguthundi"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_030",
+      "query": "sampling theorem lo aliasing enduku avuthundi mariyu daanni ela prevent cheyali?",
+      "category": "romanized_telugu",
+      "language": "te-Latn",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_aliasing",
+        "cpt_signals_and_systems_sampling_theorem"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_006"
+      ],
+      "expected_key_points": [
+        "fs < 2*B ainappudu high frequencies low frequency loki fold avthayi",
+        "Deenni aliasing antaru",
+        "Anti-aliasing low-pass filter tho fs/2 kante unna frequencies ni cut cheyali"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_031",
+      "query": "Laplace transform lo region of convergence emiti mariyu poles enduku undakudadhu?",
+      "category": "romanized_telugu",
+      "language": "te-Latn",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_laplace_transform",
+        "cpt_signals_and_systems_region_of_convergence"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_007"
+      ],
+      "expected_key_points": [
+        "ROC anedi integral converge ayye complex s plane region",
+        "Poles daggara transform infinity avthundi kabatti ROC lo poles undavu",
+        "ROC vertical lines tho bound ayi untundi"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_032",
+      "query": "continuous LTI system BIBO stable avvali ante Laplace ROC lo imaginary axis undala?",
+      "category": "romanized_telugu",
+      "language": "te-Latn",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_bibo_stability",
+        "cpt_signals_and_systems_laplace_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_008"
+      ],
+      "expected_key_points": [
+        "Avunu, BIBO stability kosam ROC mandatory ga j omega imaginary axis ni include chesukovali",
+        "Causal system lo poles anni open left-half plane Re(s) < 0 lo undali"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_033",
+      "query": "energy signal ki mariyu power signal ki difference yenti simple ga explain cheyyi",
+      "category": "romanized_telugu",
+      "language": "te-Latn",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_energy_signal",
+        "cpt_signals_and_systems_power_signal"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_010"
+      ],
+      "expected_key_points": [
+        "Energy signal lo finite total energy 0 < E < inf mariyu average power P = 0",
+        "Power signal lo infinite energy E = inf mariyu finite average power 0 < P < inf",
+        "Periodic signals power signals, transient pulses energy signals"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_034",
+      "query": "continuous Fourier transform signal ni frequency domain lo ela represent chesthundi?",
+      "category": "romanized_telugu",
+      "language": "te-Latn",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_continuous_time_fourier_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_003"
+      ],
+      "expected_key_points": [
+        "Continuous signal ni frequency domain complex sinusoids ga decompose chesthundi",
+        "X(omega) integral x(t) e^{-j omega t} dt dwara define avthundi",
+        "Magnitude spectrum mariyu phase spectrum istundi"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_035",
+      "query": "time domain lo convolution integral chese badulu frequency domain lo multiplication ela cheyocchu?",
+      "category": "romanized_telugu",
+      "language": "te-Latn",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": true,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_convolution",
+        "cpt_signals_and_systems_continuous_time_fourier_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_001",
+        "CHUNK_SS_004"
+      ],
+      "expected_key_points": [
+        "Convolution property prakaram F{x(t) * h(t)} = X(omega) H(omega)",
+        "Time domain convolution frequency domain lo point-wise multiplication avthundi",
+        "System response analysis chala simplify avthundi"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_036",
+      "query": "discrete time systems lo z-transform ROC unit circle meeda unte stability ela untundi?",
+      "category": "romanized_telugu",
+      "language": "te-Latn",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_z_transform",
+        "cpt_signals_and_systems_bibo_stability"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_009"
+      ],
+      "expected_key_points": [
+        "Z-transform ROC ring shape lo origin chuttu untundi",
+        "Discrete LTI system BIBO stable avvali ante ROC lo unit circle |z| = 1 undali"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_037",
+      "query": "input signal mariyu impulse response ni kalipi LTI output ela calculate chesthamu?",
+      "category": "romanized_telugu",
+      "language": "te-Latn",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": true,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_convolution"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_001"
+      ],
+      "expected_key_points": [
+        "Convolution integral dwara calculate chesthamu",
+        "y(t) = integral x(tau) h(t - tau) dtau",
+        "LTI systems continuous response ni fully characterize chesthundi"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_038",
+      "query": "signal distortion lekunda discrete samples nundi restore avvali ante minimum frequency entha undali?",
+      "category": "romanized_telugu",
+      "language": "te-Latn",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": true,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_sampling_theorem"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_005"
+      ],
+      "expected_key_points": [
+        "Minimum sampling rate fs >= 2*B undali",
+        "Deenni Nyquist rate antaru",
+        "Bandlimited continuous signal complete ga reconstruct avthundi"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_039",
+      "query": "continuous s-plane mariyu discrete z-plane lo stability conditions madhya differences enti?",
+      "category": "romanized_telugu",
+      "language": "te-Latn",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": true,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_bibo_stability",
+        "cpt_signals_and_systems_laplace_transform",
+        "cpt_signals_and_systems_z_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_008",
+        "CHUNK_SS_009"
+      ],
+      "expected_key_points": [
+        "s-plane lo imaginary axis j omega undali, causal system poles Re(s) < 0 lo undali",
+        "z-plane lo ROC unit circle |z| = 1 ni contain cheyali"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_040",
+      "query": "LTI system ni simple ga explain cheyyi and linearity time-invariance meaning cheppu",
+      "category": "code_mixed",
+      "language": "te-en",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_lti_system"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_002"
+      ],
+      "expected_key_points": [
+        "Linearity (superposition + homogeneity)",
+        "Time-invariance (input shift equals output shift)",
+        "Unit impulse response h(t) completely characterizes the system"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_041",
+      "query": "Nyquist rate ante enti mariyu sampling theorem lo deeni significance explain cheyyandi",
+      "category": "code_mixed",
+      "language": "te-en",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_nyquist_rate",
+        "cpt_signals_and_systems_sampling_theorem"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_005"
+      ],
+      "expected_key_points": [
+        "Minimum sampling rate fs >= 2*B",
+        "Bandlimited signal reconstruction without distortion",
+        "Highest frequency component B Hz determine chesthundi"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_042",
+      "query": "Fourier transform lo convolution property dwara system analysis ela simplify avtundi?",
+      "category": "code_mixed",
+      "language": "te-en",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_continuous_time_fourier_transform",
+        "cpt_signals_and_systems_convolution"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_004"
+      ],
+      "expected_key_points": [
+        "Time domain convolution becomes multiplication in frequency domain",
+        "F{x(t)*h(t)} = X(omega) H(omega)",
+        "Simplifies continuous-time LTI system evaluation"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_043",
+      "query": "Laplace transform ROC lo poles enduku lie avvakudadhu and vertical boundaries enduku untayi?",
+      "category": "code_mixed",
+      "language": "te-en",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_laplace_transform",
+        "cpt_signals_and_systems_region_of_convergence"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_007"
+      ],
+      "expected_key_points": [
+        "ROC contains complex s values where integral converges",
+        "Poles represent infinite singularities",
+        "ROC is bounded by vertical lines parallel to imaginary axis"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_044",
+      "query": "BIBO stability conditions for continuous LTI systems Laplace transform lo describe cheyyandi",
+      "category": "code_mixed",
+      "language": "te-en",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_bibo_stability"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_008"
+      ],
+      "expected_key_points": [
+        "Bounded-Input Bounded-Output stability",
+        "ROC must include imaginary j omega axis",
+        "For causal system, all poles must lie in open left-half s-plane Re(s) < 0"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_045",
+      "query": "Discrete time LTI systems lo Z-transform ROC unit circle ni enduku include cheyali for stability?",
+      "category": "code_mixed",
+      "language": "te-en",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_z_transform",
+        "cpt_signals_and_systems_bibo_stability"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_009"
+      ],
+      "expected_key_points": [
+        "Z-transform maps discrete sequences into complex z-plane",
+        "ROC is an annular ring centered at origin",
+        "BIBO stability requires ROC contains unit circle |z| = 1"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_046",
+      "query": "Signal energy finite undi average power zero unte daanni em signal antaru?",
+      "category": "code_mixed",
+      "language": "te-en",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_energy_signal"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_010"
+      ],
+      "expected_key_points": [
+        "Deenni energy signal antaru",
+        "0 < E < infinity mariyu average power P = 0",
+        "Transient pulses are examples of energy signals"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_047",
+      "query": "Continuous time convolution math formula cheppi commutative and associative properties explain cheyyi",
+      "category": "code_mixed",
+      "language": "te-en",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_convolution"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_001"
+      ],
+      "expected_key_points": [
+        "y(t) = integral x(tau) h(t - tau) dtau",
+        "Combines input signal and impulse response",
+        "Commutative, associative, and distributive properties hold"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_048",
+      "query": "Aliasing prevent cheyadaniki anti-aliasing low pass filter sampling mundu enduku apply cheyali?",
+      "category": "code_mixed",
+      "language": "te-en",
+      "script": "Latin",
+      "difficulty": "medium",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_aliasing",
+        "cpt_signals_and_systems_sampling_theorem"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_006"
+      ],
+      "expected_key_points": [
+        "fs < 2*B lo high frequencies low frequencies loki fold avthayi",
+        "Sampling mundu fs/2 kante unna frequencies ni filter chesi attenuate cheyali",
+        "Reconstruction lo ideal low-pass interpolation filter use chestharu"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_049",
+      "query": "Continuous signal ni complex sinusoids ga convert chesi magnitude phase spectra iche transform enti?",
+      "category": "code_mixed",
+      "language": "te-en",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": false,
+      "canonical_term_omitted": true,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_continuous_time_fourier_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_003"
+      ],
+      "expected_key_points": [
+        "Continuous-Time Fourier Transform (CTFT)",
+        "X(omega) = integral x(t) e^{-j omega t} dt",
+        "Decomposes signal into magnitude and phase spectra"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_050",
+      "query": "Time domain convolution mariyu frequency domain multiplication relation tho LTI response ela osthundi?",
+      "category": "code_mixed",
+      "language": "te-en",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": true,
+      "requires_multichunk": true,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [
+        "cpt_signals_and_systems_convolution",
+        "cpt_signals_and_systems_continuous_time_fourier_transform"
+      ],
+      "gold_evidence_chunk_ids": [
+        "CHUNK_SS_001",
+        "CHUNK_SS_004"
+      ],
+      "expected_key_points": [
+        "Time domain convolution integral y(t) = x(t)*h(t)",
+        "Frequency domain multiplication F{x*h} = X(omega) H(omega)",
+        "Enormously simplifies linear time-invariant system analysis"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_051",
+      "query": "How is the Kalman filtering algorithm implemented for recursive state estimation in linear state-space systems?",
+      "category": "out_of_scope",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": false,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [],
+      "gold_evidence_chunk_ids": [],
+      "expected_key_points": [
+        "Insufficient evidence",
+        "Kalman filtering and state estimation are not present in introductory Signals and Systems notes"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_052",
+      "query": "JPEG ఇమేజ్ కంప్రెషన్‌లో డిస్క్రీట్ కొసైన్ ట్రాన్స్‌ఫార్మ్ (DCT) ను ఎలా ఉపయోగిస్తారు?",
+      "category": "out_of_scope",
+      "language": "te",
+      "script": "Telugu",
+      "difficulty": "easy",
+      "answerability": false,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [],
+      "gold_evidence_chunk_ids": [],
+      "expected_key_points": [
+        "అందించిన మెటీరియల్‌లో సమాచారం లేదు",
+        "DCT మరియు ఇమేజ్ కంప్రెషన్ పాఠ్యాంశాలలో అందుబాటులో లేవు"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_053",
+      "query": "State space representation lo controllability matrix rank ela check chesi system control avthundo cheppandi",
+      "category": "out_of_scope",
+      "language": "te-en",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": false,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [],
+      "gold_evidence_chunk_ids": [],
+      "expected_key_points": [
+        "Insufficient information",
+        "Controllability matrix and state-space control are not present in provided course notes"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_054",
+      "query": "Hilbert transform anedi analytic signal generation lo phase shift 90 degrees ela chesthundi?",
+      "category": "out_of_scope",
+      "language": "te-Latn",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": false,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [],
+      "gold_evidence_chunk_ids": [],
+      "expected_key_points": [
+        "Insufficient evidence",
+        "Hilbert transform is not present in the course material"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_055",
+      "query": "Explain how Viterbi decoding algorithm corrects convolutional code errors in digital communication channels.",
+      "category": "out_of_scope",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "easy",
+      "answerability": false,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [],
+      "gold_evidence_chunk_ids": [],
+      "expected_key_points": [
+        "Insufficient evidence",
+        "Viterbi algorithm and channel coding are not covered in course notes"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_056",
+      "query": "Explain the architecture of an FIR digital filter designed using Kaiser windowing techniques.",
+      "category": "adversarial_overlap",
+      "language": "en",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": false,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [],
+      "gold_evidence_chunk_ids": [],
+      "expected_key_points": [
+        "Insufficient evidence",
+        "Kaiser window design for FIR filters is not contained in provided course notes (shares 'filter' keyword)"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_057",
+      "query": "Bilinear transformation method dwara analog filter poles ni digital IIR filter poles loki ela map chestharu?",
+      "category": "adversarial_overlap",
+      "language": "te-en",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": false,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [],
+      "gold_evidence_chunk_ids": [],
+      "expected_key_points": [
+        "Insufficient information",
+        "Bilinear transformation for digital IIR filters is absent from introductory notes (shares 'transformation', 'poles')"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_058",
+      "query": "డిస్క్రీట్ వేవ్‌లెట్ ట్రాన్స్‌ఫార్మ్ (DWT) మల్టీ-రిజల్యూషన్ అనాలిసిస్‌లో సిగ్నల్స్‌ను ఎలా డీకంపోజ్ చేస్తుంది?",
+      "category": "adversarial_overlap",
+      "language": "te",
+      "script": "Telugu",
+      "difficulty": "hard",
+      "answerability": false,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [],
+      "gold_evidence_chunk_ids": [],
+      "expected_key_points": [
+        "అందించిన మెటీరియల్‌లో సమాచారం లేదు",
+        "వేవ్‌లెట్ ట్రాన్స్‌ఫార్మ్ పాఠ్యాంశాలలో లేదు (shares 'ట్రాన్స్‌ఫార్మ్')"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_059",
+      "query": "Fast Fourier Transform (FFT) lo Cooley-Tukey butterfly algorithm tho decimation in time ela implement cheyali?",
+      "category": "adversarial_overlap",
+      "language": "te-Latn",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": false,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [],
+      "gold_evidence_chunk_ids": [],
+      "expected_key_points": [
+        "Insufficient evidence",
+        "Cooley-Tukey FFT algorithm is absent from introductory continuous-time notes (shares 'Fourier transform')"
+      ]
+    },
+    {
+      "query_id": "RAG_EXP_060",
+      "query": "Adaptive LMS filter lo weight update equation dwara error signal gradient descent tho ela minimize avthundi?",
+      "category": "adversarial_overlap",
+      "language": "te-en",
+      "script": "Latin",
+      "difficulty": "hard",
+      "answerability": false,
+      "requires_multichunk": false,
+      "canonical_term_omitted": false,
+      "expected_concept_ids": [],
+      "gold_evidence_chunk_ids": [],
+      "expected_key_points": [
+        "Insufficient information",
+        "Adaptive LMS filter is not present in provided course notes (shares 'filter', 'signal')"
+      ]
+    }
+  ]
+}

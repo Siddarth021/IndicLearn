@@ -1,0 +1,5 @@
+# OPTIONAL local neural models (downloaded once from Hugging Face, then run offline)
+sentence-transformers>=3.0   # multilingual-e5-small dense retrieval
+transformers>=4.40           # NLLB-200 translator
+torch>=2.2
+faiss-cpu>=1.8               # legacy research pipeline only

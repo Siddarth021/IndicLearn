@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "experiment_id": "EXP-013",
+    "title": "RAG Human Annotation Analysis Framework",
+    "benchmark_type": "HUMAN EXPERT ANNOTATION BENCHMARK",
+    "version": "1.0",
+    "created_at": "2026-10-06",
+    "scientific_disclaimer": "RAG human annotation evaluation framework. Evaluates generated RAG responses against retrieved course evidence on factual correctness, evidence support, citation accuracy, pedagogical usefulness, clarity, language naturalness, and code-mixed comprehension. Without real human annotations, status remains strictly HUMAN_DATA_REQUIRED. Zero human ratings or inter-rater kappa values are fabricated.",
+    "ethical_notice": "Requires institutional ethical approval / IRB clearance and informed consent prior to human data collection."
+  },
+  "rating_dimensions": [
+    "factual_correctness",
+    "evidence_support",
+    "citation_correctness",
+    "pedagogical_usefulness",
+    "clarity",
+    "language_quality",
+    "code_mixed_understanding"
+  ],
+  "annotators": [],
+  "annotations": []
+}

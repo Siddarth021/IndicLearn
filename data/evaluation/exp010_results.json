@@ -1,0 +1,124 @@
+{
+  "metadata": {
+    "experiment_id": "EXP-010",
+    "status": "PASS",
+    "timestamp": "2026-10-08T21:14:33.666233+00:00",
+    "total_scenarios": 10,
+    "passed_scenarios": 10,
+    "scenario_pass_rate": 1.0,
+    "top1_recommendation_accuracy": 1.0,
+    "action_selection_accuracy": 1.0,
+    "reason_code_accuracy": 1.0,
+    "ranking_consistency": 1.0,
+    "evaluation_mode": "controlled_rule_consistency_evaluation",
+    "scientific_disclaimer": "Controlled rule-consistency benchmark. Does NOT claim human learning effectiveness."
+  },
+  "scenarios": [
+    {
+      "scenario_id": "EXP010_SCEN_001_WEAK_CONCEPT",
+      "passed": true,
+      "top1_match": true,
+      "action_match": true,
+      "reason_match": true
+    },
+    {
+      "scenario_id": "EXP010_SCEN_002_UNCERTAIN_CONCEPT",
+      "passed": true,
+      "top1_match": true,
+      "action_match": true,
+      "reason_match": true
+    },
+    {
+      "scenario_id": "EXP010_SCEN_003_PREREQUISITE_DEFICIT",
+      "passed": true,
+      "top1_match": true,
+      "action_match": true,
+      "reason_match": true
+    },
+    {
+      "scenario_id": "EXP010_SCEN_004_DOWNSTREAM_BLOCKER",
+      "passed": true,
+      "top1_match": true,
+      "action_match": true,
+      "reason_match": true
+    },
+    {
+      "scenario_id": "EXP010_SCEN_005_ASSESSMENT_GAP",
+      "passed": true,
+      "top1_match": true,
+      "action_match": true,
+      "reason_match": true
+    },
+    {
+      "scenario_id": "EXP010_SCEN_006_RECENT_ACTION_PENALTY",
+      "passed": true,
+      "top1_match": true,
+      "action_match": true,
+      "reason_match": true
+    },
+    {
+      "scenario_id": "EXP010_SCEN_007_MASTERED_CONCEPT",
+      "passed": true,
+      "top1_match": true,
+      "action_match": true,
+      "reason_match": true
+    },
+    {
+      "scenario_id": "EXP010_SCEN_008_COLD_START",
+      "passed": true,
+      "top1_match": true,
+      "action_match": true,
+      "reason_match": true
+    },
+    {
+      "scenario_id": "EXP010_SCEN_009_STUDENT_ISOLATION",
+      "passed": true,
+      "top1_match": true,
+      "action_match": true,
+      "reason_match": true
+    },
+    {
+      "scenario_id": "EXP010_SCEN_010_DETERMINISM",
+      "passed": true,
+      "top1_match": true,
+      "action_match": true,
+      "reason_match": true
+    }
+  ],
+  "report": {
+    "experiment_id": "EXP-010",
+    "title": "Controlled Recommendation Rule-Consistency Evaluation",
+    "research_question": "RQ-REC: Does the Phase 7B recommendation engine consistently enforce pedagogical action selection, multi-signal prioritization, and student isolation across controlled synthetic scenarios?",
+    "hypothesis": "The deterministic recommendation engine adheres to 100% of defined pedagogical action rules, prioritization invariants, and student isolation boundaries under controlled test conditions.",
+    "dataset_identifier": "data/evaluation/exp010_recommendation_eval.json",
+    "sample_size": 10,
+    "procedure": "Executed 10 controlled scenarios across high-confidence weakness, uncertainty, prerequisite deficit, downstream blockers, assessment gap, recent-action damping, mastered deprioritization, cold start, student isolation, and determinism.",
+    "metrics": {
+      "scenario_pass_rate": 1.0,
+      "top1_recommendation_accuracy": 1.0,
+      "action_selection_accuracy": 1.0,
+      "reason_code_accuracy": 1.0,
+      "ranking_consistency": 1.0
+    },
+    "observed_results": {
+      "total_scenarios": 10,
+      "passed_scenarios": 10,
+      "overall_status": "PASS"
+    },
+    "interpretation": "The recommendation engine strictly adheres to defined pedagogical rules under controlled conditions. Action selection and reason codes accurately reflect underlying knowledge states and graph dependencies.",
+    "scientific_claims": [
+      "The recommendation engine reliably prioritizes weak concepts, handles unmastered prerequisites, avoids repetitive actions, and maintains deterministic student isolation under controlled simulated conditions."
+    ],
+    "limitations": [
+      "Evaluated strictly on controlled synthetic scenarios, not live student cohort trajectories.",
+      "Does not establish student learning gains, retention, or cognitive-load reduction.",
+      "Recommender weights remain heuristic and require future empirical tuning."
+    ],
+    "reproducibility": {
+      "random_seed": 42,
+      "gold_graph": "data/evaluation/concept_graph_gold.json",
+      "evaluation_suite": "Phase 9 Controlled Recommendation Evaluation"
+    },
+    "timestamp": "2026-10-08T21:14:33.666209+00:00"
+  }
+}

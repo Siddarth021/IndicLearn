@@ -1,0 +1,67 @@
+{
+  "experiment_id": "EXP-005",
+  "name": "RAG Pipeline and Grounded Answer Generation Evaluation",
+  "benchmark_dataset": "data\\evaluation\\rag_eval.json",
+  "corpus_dataset": "data\\evaluation\\signals_and_systems_eval.json",
+  "subject_id": "signals_and_systems",
+  "metrics": {
+    "retrieval": {
+      "total_answerable_queries": 21,
+      "recall_at_1": 0.3333,
+      "recall_at_3": 0.619,
+      "recall_at_5": 0.9524,
+      "mrr": 0.5317,
+      "gold_evidence_recall_at_k": 0.9524,
+      "multi_chunk_evidence_recall": 1.0,
+      "per_category_recall_at_3": {
+        "direct_factual": 0.5,
+        "concept_explanation": 0.75,
+        "relationship_multichunk": 1.0,
+        "telugu_script": 0.0,
+        "romanized_telugu": 1.0,
+        "code_mixed": 0.3333
+      }
+    },
+    "pipeline_and_grounding": {
+      "total_queries": 24,
+      "answerable_queries": {
+        "total": 21,
+        "correctly_answered": 21,
+        "accuracy": 1.0
+      },
+      "insufficient_evidence_queries": {
+        "total": 3,
+        "correctly_identified": 3,
+        "accuracy": 1.0
+      },
+      "grounding_metrics": {
+        "citation_validity_rate": 1.0,
+        "citation_coverage": 1.0,
+        "unsupported_citation_rate": 0.0
+      }
+    },
+    "baselines_comparison": {
+      "baseline_a_extraction_only": {
+        "description": "Direct retrieval evidence selection without generation",
+        "gold_evidence_recall": 0.9524,
+        "generation_evaluated": false
+      },
+      "baseline_b_raw_lexical_llm": {
+        "description": "Raw BM25 lexical retrieval without concept mapping or graph context",
+        "gold_evidence_recall": 0.9048,
+        "generation_evaluated": true
+      },
+      "baseline_c_full_grounded_rag": {
+        "description": "Concept-aware hybrid retrieval with curriculum graph context and grounding verification",
+        "gold_evidence_recall": 0.9524,
+        "generation_evaluated": true
+      }
+    }
+  },
+  "human_answer_quality": "NOT YET EVALUATED",
+  "limitations": [
+    "Evaluated using deterministic MockLLMProvider for offline reproducibility.",
+    "Real external LLM generation quality on colloquial Telugu phrasing is NOT YET EVALUATED.",
+    "Heuristic claim-level sentence splitting may miss complex nested clauses."
+  ]
+}

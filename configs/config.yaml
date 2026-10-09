@@ -1,0 +1,90 @@
+# Central configuration. Env vars INDICLEARN_<SECTION>__<KEY> override (see config/settings.py).
+app:
+  log_level: INFO
+database:
+  url: sqlite:///data/indiclearn.sqlite3
+ingestion:
+  supported_extensions: [".txt", ".md", ".pdf", ".pptx"]
+  max_file_mb: 50
+preprocessing:
+  unicode_form: NFC          # important for Telugu combining marks
+  join_hyphenated_lines: true
+chunking:
+  strategy: recursive_char   # PROPOSED INITIAL HEURISTIC; to be tuned via EXP-00x
+  chunk_size: 800
+  chunk_overlap: 120
+retrieval:
+  top_k: 5
+  strategy: bm25             # options: bm25, tfidf, dense, hybrid
+  hybrid_strategy: rrf      # options: rrf, linear
+  weight_lexical: 0.5
+  weight_dense: 0.5
+  bm25_k1: 1.5
+  bm25_b: 0.75
+embedding:
+  model_name: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  dimension: 384
+  batch_size: 32
+  cache_path: data/cache/embeddings.json
+vector_store:
+  provider: faiss
+  index_path: data/indices/signals_systems
+student_model:
+  # PROPOSED INITIAL HEURISTIC — not validated. Phase 6 Student Knowledge Model.
+  prior_knowledge_score: 0.50
+  prior_confidence: 0.10
+  prior_weight: 1.0
+  evidence_weights:
+    strong: 1.00
+    medium: 0.40
+    weak: 0.10
+  confidence_deltas:
+    strong: 0.20
+    medium: 0.08
+    weak: 0.02
+  recency_half_life_days: 30.0
+  mastery_thresholds:
+    mastered_min_score: 0.80
+    mastered_min_confidence: 0.60
+    developing_min_score: 0.50
+    weak_max_score: 0.40
+    weak_min_confidence: 0.40
+nlp:
+  default_subject_id: signals_and_systems
+  concept_mapping_top_k: 3
+  hybrid_weights:
+    terminology: 0.50
+    lexical: 0.20
+    semantic: 0.30
+  ambiguity_threshold: 0.05
+assessment:
+  # PROPOSED INITIAL HEURISTIC — not validated. Phase 7A Adaptive Assessment Core.
+  enabled: true
+  default_subject_id: signals_and_systems
+  priority_weights:
+    weakness: 0.35
+    uncertainty: 0.25
+    prerequisite: 0.20
+    coverage: 0.12
+    recency: 0.08
+  recency_decay_minutes: 60.0
+  repeat_avoidance_window: 5
+  exclude_mastered: true
+
+recommendation:
+  # PROPOSED INITIAL HEURISTIC — not validated. Phase 7B Personalized Recommendations & Remediation Planner.
+  enabled: true
+  default_subject_id: signals_and_systems
+  top_k: 3
+  priority_weights:
+    weakness: 0.35
+    uncertainty: 0.15
+    prerequisite_deficit: 0.15
+    downstream_blocker: 0.15
+    review_need: 0.10
+    assessment_gap: 0.10
+    recent_action_penalty: 0.25
+  mastered_damping_factor: 0.35
+  recent_decay_minutes: 30.0
+  review_half_life_hours: 72.0
+  default_language: en

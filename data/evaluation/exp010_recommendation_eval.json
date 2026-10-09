@@ -1,0 +1,96 @@
+{
+  "metadata": {
+    "experiment_id": "EXP-010",
+    "title": "Controlled Recommendation Rule-Consistency Evaluation",
+    "benchmark_type": "CONTROLLED RULE-CONSISTENCY BENCHMARK",
+    "subject_id": "signals_and_systems",
+    "version": "1.0",
+    "created_at": "2026-10-06",
+    "scientific_disclaimer": "Controlled algorithmic benchmark evaluating recommendation selection invariants, ranking consistency, and rule adherence. This benchmark measures SOFTWARE CORRECTNESS and ALGORITHMIC VALIDITY under controlled simulated states; it does NOT measure human learning gains, pedagogical effectiveness, or retention.",
+    "evaluation_mode": "controlled_rule_consistency_evaluation"
+  },
+  "scenarios": [
+    {
+      "scenario_id": "EXP010_SCEN_001_WEAK_CONCEPT",
+      "name": "High-Confidence Weakness Triggers Remediation",
+      "description": "Student has an established weakness (S=0.20, C=0.85) on Convolution. Recommender must rank it Top-1 with LOW_KNOWLEDGE and active remediation action.",
+      "target_concept": "cpt_signals_and_systems_convolution",
+      "expected_top_concept": "cpt_signals_and_systems_convolution",
+      "expected_action": ["PRACTICE_CONCEPT", "REVIEW_CONCEPT"],
+      "expected_reason_codes": ["LOW_KNOWLEDGE"],
+      "forbidden_reason_codes": ["MASTERED_SPACED_REVIEW"]
+    },
+    {
+      "scenario_id": "EXP010_SCEN_002_UNCERTAIN_CONCEPT",
+      "name": "Low-Confidence Uncertainty Distinguished from Deficit",
+      "description": "Student has nascent confidence (C=0.15, S=0.45) on Nyquist Rate with zero assessments. Recommender must assign LOW_CONFIDENCE and must NOT assign LOW_KNOWLEDGE.",
+      "target_concept": "cpt_signals_and_systems_nyquist_rate",
+      "expected_top_concept": "cpt_signals_and_systems_nyquist_rate",
+      "expected_action": ["REVIEW_CONCEPT"],
+      "expected_reason_codes": ["LOW_CONFIDENCE"],
+      "forbidden_reason_codes": ["LOW_KNOWLEDGE"]
+    },
+    {
+      "scenario_id": "EXP010_SCEN_003_PREREQUISITE_DEFICIT",
+      "name": "Unmastered Prerequisite Halts Downstream Topic",
+      "description": "Student attempts Convolution while prerequisite LTI System has deficit. Convolution must recommend REVIEW_PREREQUISITE with PREREQUISITE_DEFICIT reason code.",
+      "target_concept": "cpt_signals_and_systems_convolution",
+      "prerequisite_concept": "cpt_signals_and_systems_lti_system",
+      "expected_action": ["REVIEW_PREREQUISITE"],
+      "expected_reason_codes": ["PREREQUISITE_DEFICIT"],
+      "forbidden_reason_codes": []
+    },
+    {
+      "scenario_id": "EXP010_SCEN_004_DOWNSTREAM_BLOCKER",
+      "name": "Downstream Blocker Receives Priority Boost",
+      "description": "LTI System blocks downstream concepts (Convolution) and must receive higher downstream_blocker_score than an isolated leaf concept.",
+      "blocker_concept": "cpt_signals_and_systems_lti_system",
+      "leaf_concept": "cpt_signals_and_systems_aliasing",
+      "expected_reason_codes": ["DOWNSTREAM_BLOCKER"]
+    },
+    {
+      "scenario_id": "EXP010_SCEN_005_ASSESSMENT_GAP",
+      "name": "Study Without Assessment Triggers Assessment Gap Flag",
+      "description": "Student has completed reading on Sampling Theorem (C=0.40) but zero assessments. Recommender must flag ASSESSMENT_GAP and provide grounded action.",
+      "target_concept": "cpt_signals_and_systems_sampling_theorem",
+      "expected_action": ["REVIEW_CONCEPT", "TAKE_ASSESSMENT"],
+      "expected_reason_codes": ["ASSESSMENT_GAP"]
+    },
+    {
+      "scenario_id": "EXP010_SCEN_006_RECENT_ACTION_PENALTY",
+      "name": "Recent Action Damping Prevents Monopolization",
+      "description": "Two equally weak concepts: Concept A was acted upon 2 minutes ago. Concept B must achieve higher priority due to recency penalty on A.",
+      "recent_concept": "cpt_signals_and_systems_convolution",
+      "fresh_concept": "cpt_signals_and_systems_impulse_response",
+      "expected_higher_priority_concept": "cpt_signals_and_systems_impulse_response"
+    },
+    {
+      "scenario_id": "EXP010_SCEN_007_MASTERED_CONCEPT",
+      "name": "Mastered Concept Deprioritized Below Unresolved Needs",
+      "description": "Student has achieved S=0.95, C=0.92 on Linearity. Linearity priority must be damped below active unmastered learning concepts.",
+      "mastered_concept": "cpt_signals_and_systems_linearity",
+      "unmastered_concept": "cpt_signals_and_systems_convolution",
+      "forbidden_top_concept": "cpt_signals_and_systems_linearity"
+    },
+    {
+      "scenario_id": "EXP010_SCEN_008_COLD_START",
+      "name": "Cold Start Recommends Grounded Foundations Safely",
+      "description": "Student with zero history receives recommendations without crash; top items feature UNCERTAIN or LOW_CONFIDENCE.",
+      "expected_action": ["REVIEW_CONCEPT", "REVIEW_PREREQUISITE"],
+      "expected_reason_codes": ["LOW_CONFIDENCE", "UNCERTAIN"]
+    },
+    {
+      "scenario_id": "EXP010_SCEN_009_STUDENT_ISOLATION",
+      "name": "Strict Student Isolation Under Concurrent Queries",
+      "description": "State updates and recommendations for Student A do not cross-contaminate or alter recommendations for Student B.",
+      "student_a_concept": "cpt_signals_and_systems_continuous_time_fourier_transform",
+      "student_b_concept": "cpt_signals_and_systems_sampling_theorem"
+    },
+    {
+      "scenario_id": "EXP010_SCEN_010_DETERMINISM",
+      "name": "Deterministic Output Across Identical Invocations",
+      "description": "Consecutive calls on the exact same student state yield byte-identical recommendation priorities, actions, and orderings.",
+      "target_concept": "cpt_signals_and_systems_convolution"
+    }
+  ]
+}

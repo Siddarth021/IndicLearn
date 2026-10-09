@@ -1,0 +1,351 @@
+{
+  "metadata": {
+    "name": "IndicLearn Cross-Lingual Concept Mapping Evaluation Benchmark",
+    "dataset_type": "MANUAL GOLD SET",
+    "version": "1.0",
+    "created_at": "2026-10-06",
+    "subject_id": "signals_and_systems",
+    "total_queries": 32,
+    "categories": {
+      "en": 8,
+      "te": 8,
+      "te-Latn": 8,
+      "te-en": 8
+    },
+    "description": "Controlled gold evaluation benchmark for engineering student queries across English, Telugu script, Romanized Telugu, and Code-mixed Telugu-English."
+  },
+  "queries": [
+    {
+      "query_id": "EN_001",
+      "text": "What is convolution?",
+      "category": "en",
+      "expected_language": "en",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_convolution"],
+      "gold_technical_terms": ["convolution"],
+      "gold_normalized_form": "What is convolution?"
+    },
+    {
+      "query_id": "EN_002",
+      "text": "Explain LTI system.",
+      "category": "en",
+      "expected_language": "en",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_lti_system"],
+      "gold_technical_terms": ["LTI system"],
+      "gold_normalized_form": "Explain LTI system."
+    },
+    {
+      "query_id": "EN_003",
+      "text": "What is an energy signal?",
+      "category": "en",
+      "expected_language": "en",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_energy_signal"],
+      "gold_technical_terms": ["energy signal"],
+      "gold_normalized_form": "What is an energy signal?"
+    },
+    {
+      "query_id": "EN_004",
+      "text": "Define impulse response.",
+      "category": "en",
+      "expected_language": "en",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_impulse_response"],
+      "gold_technical_terms": ["impulse response"],
+      "gold_normalized_form": "Define impulse response."
+    },
+    {
+      "query_id": "EN_005",
+      "text": "What is continuous-time Fourier transform?",
+      "category": "en",
+      "expected_language": "en",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_continuous_time_fourier_transform"],
+      "gold_technical_terms": ["continuous-time Fourier transform"],
+      "gold_normalized_form": "What is continuous-time Fourier transform?"
+    },
+    {
+      "query_id": "EN_006",
+      "text": "Explain sampling theorem and Nyquist rate.",
+      "category": "en",
+      "expected_language": "en",
+      "expected_script": "Latin",
+      "gold_concept_ids": [
+        "cpt_signals_and_systems_sampling_theorem",
+        "cpt_signals_and_systems_nyquist_rate"
+      ],
+      "gold_technical_terms": ["sampling theorem", "Nyquist rate"],
+      "gold_normalized_form": "Explain sampling theorem and Nyquist rate."
+    },
+    {
+      "query_id": "EN_007",
+      "text": "What is region of convergence in Laplace transform?",
+      "category": "en",
+      "expected_language": "en",
+      "expected_script": "Latin",
+      "gold_concept_ids": [
+        "cpt_signals_and_systems_region_of_convergence",
+        "cpt_signals_and_systems_laplace_transform"
+      ],
+      "gold_technical_terms": ["region of convergence", "Laplace transform"],
+      "gold_normalized_form": "What is region of convergence in Laplace transform?"
+    },
+    {
+      "query_id": "EN_008",
+      "text": "How to check BIBO stability?",
+      "category": "en",
+      "expected_language": "en",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_bibo_stability"],
+      "gold_technical_terms": ["BIBO stability"],
+      "gold_normalized_form": "How to check BIBO stability?"
+    },
+    {
+      "query_id": "TE_001",
+      "text": "కన్వల్యూషన్ అంటే ఏమిటి?",
+      "category": "te",
+      "expected_language": "te",
+      "expected_script": "Telugu",
+      "gold_concept_ids": ["cpt_signals_and_systems_convolution"],
+      "gold_technical_terms": ["కన్వల్యూషన్"],
+      "gold_normalized_form": "కన్వల్యూషన్ అంటే ఏమిటి?"
+    },
+    {
+      "query_id": "TE_002",
+      "text": "LTI సిస్టమ్ అంటే ఏమిటి?",
+      "category": "te",
+      "expected_language": "te",
+      "expected_script": "Mixed",
+      "gold_concept_ids": ["cpt_signals_and_systems_lti_system"],
+      "gold_technical_terms": ["LTI సిస్టమ్"],
+      "gold_normalized_form": "LTI సిస్టమ్ అంటే ఏమిటి?"
+    },
+    {
+      "query_id": "TE_003",
+      "text": "ఎనర్జీ సిగ్నల్ అంటే ఏమిటి?",
+      "category": "te",
+      "expected_language": "te",
+      "expected_script": "Telugu",
+      "gold_concept_ids": ["cpt_signals_and_systems_energy_signal"],
+      "gold_technical_terms": ["ఎనర్జీ సిగ్నల్"],
+      "gold_normalized_form": "ఎనర్జీ సిగ్నల్ అంటే ఏమిటి?"
+    },
+    {
+      "query_id": "TE_004",
+      "text": "ఫోరియర్ ట్రాన్స్‌ఫార్మ్ వివరించండి",
+      "category": "te",
+      "expected_language": "te",
+      "expected_script": "Telugu",
+      "gold_concept_ids": ["cpt_signals_and_systems_continuous_time_fourier_transform"],
+      "gold_technical_terms": ["ఫోరియర్ ట్రాన్స్‌ఫార్మ్"],
+      "gold_normalized_form": "ఫోరియర్ ట్రాన్స్‌ఫార్మ్ వివరించండి"
+    },
+    {
+      "query_id": "TE_005",
+      "text": "నైక్విస్ట్ శాంప్లింగ్ సిద్ధాంతం ఏమిటి?",
+      "category": "te",
+      "expected_language": "te",
+      "expected_script": "Telugu",
+      "gold_concept_ids": ["cpt_signals_and_systems_sampling_theorem"],
+      "gold_technical_terms": ["నైక్విస్ట్ శాంప్లింగ్"],
+      "gold_normalized_form": "నైక్విస్ట్ శాంప్లింగ్ సిద్ధాంతం ఏమిటి?"
+    },
+    {
+      "query_id": "TE_006",
+      "text": "లాప్లేస్ ట్రాన్స్‌ఫార్మ్ అంటే ఏమిటి?",
+      "category": "te",
+      "expected_language": "te",
+      "expected_script": "Telugu",
+      "gold_concept_ids": ["cpt_signals_and_systems_laplace_transform"],
+      "gold_technical_terms": ["లాప్లేస్ ట్రాన్స్‌ఫార్మ్"],
+      "gold_normalized_form": "లాప్లేస్ ట్రాన్స్‌ఫార్మ్ అంటే ఏమిటి?"
+    },
+    {
+      "query_id": "TE_007",
+      "text": "పవర్ సిగ్నల్స్ గురించి చెప్పండి",
+      "category": "te",
+      "expected_language": "te",
+      "expected_script": "Telugu",
+      "gold_concept_ids": ["cpt_signals_and_systems_power_signal"],
+      "gold_technical_terms": ["పవర్ సిగ్నల్స్"],
+      "gold_normalized_form": "పవర్ సిగ్నల్స్ గురించి చెప్పండి"
+    },
+    {
+      "query_id": "TE_008",
+      "text": "Z-ట్రాన్స్‌ఫార్మ్ యొక్క ఉపయోగాలు ఏమిటి?",
+      "category": "te",
+      "expected_language": "te",
+      "expected_script": "Mixed",
+      "gold_concept_ids": ["cpt_signals_and_systems_z_transform"],
+      "gold_technical_terms": ["Z-ట్రాన్స్‌ఫార్మ్"],
+      "gold_normalized_form": "Z-ట్రాన్స్‌ఫార్మ్ యొక్క ఉపయోగాలు ఏమిటి?"
+    },
+    {
+      "query_id": "RO_001",
+      "text": "convolution ante enti?",
+      "category": "te-Latn",
+      "expected_language": "te-Latn",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_convolution"],
+      "gold_technical_terms": ["convolution"],
+      "gold_normalized_form": "convolution ante enti?"
+    },
+    {
+      "query_id": "RO_002",
+      "text": "LTI system ante enti?",
+      "category": "te-Latn",
+      "expected_language": "te-Latn",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_lti_system"],
+      "gold_technical_terms": ["LTI system"],
+      "gold_normalized_form": "LTI system ante enti?"
+    },
+    {
+      "query_id": "RO_003",
+      "text": "energy signal ante enti?",
+      "category": "te-Latn",
+      "expected_language": "te-Latn",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_energy_signal"],
+      "gold_technical_terms": ["energy signal"],
+      "gold_normalized_form": "energy signal ante enti?"
+    },
+    {
+      "query_id": "RO_004",
+      "text": "impulse response ela kanukkuntaru?",
+      "category": "te-Latn",
+      "expected_language": "te-Latn",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_impulse_response"],
+      "gold_technical_terms": ["impulse response"],
+      "gold_normalized_form": "impulse response ela kanukkuntaru?"
+    },
+    {
+      "query_id": "RO_005",
+      "text": "aliasing enduku avuthundi?",
+      "category": "te-Latn",
+      "expected_language": "te-Latn",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_aliasing"],
+      "gold_technical_terms": ["aliasing"],
+      "gold_normalized_form": "aliasing enduku avutundi?"
+    },
+    {
+      "query_id": "RO_006",
+      "text": "nyquist rate kosam formula enti?",
+      "category": "te-Latn",
+      "expected_language": "te-Latn",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_nyquist_rate"],
+      "gold_technical_terms": ["nyquist rate"],
+      "gold_normalized_form": "nyquist rate kosam formula enti?"
+    },
+    {
+      "query_id": "RO_007",
+      "text": "power signal ante emiti?",
+      "category": "te-Latn",
+      "expected_language": "te-Latn",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_power_signal"],
+      "gold_technical_terms": ["power signal"],
+      "gold_normalized_form": "power signal ante enti?"
+    },
+    {
+      "query_id": "RO_008",
+      "text": "laplace transform lo ROC ante enti?",
+      "category": "te-Latn",
+      "expected_language": "te-Latn",
+      "expected_script": "Latin",
+      "gold_concept_ids": [
+        "cpt_signals_and_systems_laplace_transform",
+        "cpt_signals_and_systems_region_of_convergence"
+      ],
+      "gold_technical_terms": ["laplace transform", "ROC"],
+      "gold_normalized_form": "laplace transform lo ROC ante enti?"
+    },
+    {
+      "query_id": "CM_001",
+      "text": "convolution ante enti explain cheyyi",
+      "category": "te-en",
+      "expected_language": "te-en",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_convolution"],
+      "gold_technical_terms": ["convolution"],
+      "gold_normalized_form": "convolution ante enti explain cheyyi"
+    },
+    {
+      "query_id": "CM_002",
+      "text": "LTI system ni simple ga explain cheyyi",
+      "category": "te-en",
+      "expected_language": "te-en",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_lti_system"],
+      "gold_technical_terms": ["LTI system"],
+      "gold_normalized_form": "LTI system ni simple ga explain cheyyi"
+    },
+    {
+      "query_id": "CM_003",
+      "text": "energy signal properties ni clarify cheyyandi",
+      "category": "te-en",
+      "expected_language": "te-en",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_energy_signal"],
+      "gold_technical_terms": ["energy signal"],
+      "gold_normalized_form": "energy signal properties ni clarify cheyyandi"
+    },
+    {
+      "query_id": "CM_004",
+      "text": "continuous-time Fourier transform derivation explain cheyyi",
+      "category": "te-en",
+      "expected_language": "te-en",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_continuous_time_fourier_transform"],
+      "gold_technical_terms": ["continuous-time Fourier transform"],
+      "gold_normalized_form": "continuous-time Fourier transform derivation explain cheyyi"
+    },
+    {
+      "query_id": "CM_005",
+      "text": "sampling theorem concept ardham kaaledu please explain",
+      "category": "te-en",
+      "expected_language": "te-en",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_sampling_theorem"],
+      "gold_technical_terms": ["sampling theorem"],
+      "gold_normalized_form": "sampling theorem concept ardham kaaledu please explain"
+    },
+    {
+      "query_id": "CM_006",
+      "text": "BIBO stability conditions ni describe cheyyandi",
+      "category": "te-en",
+      "expected_language": "te-en",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_bibo_stability"],
+      "gold_technical_terms": ["BIBO stability"],
+      "gold_normalized_form": "BIBO stability conditions ni describe cheyyandi"
+    },
+    {
+      "query_id": "CM_007",
+      "text": "Z-transform properties ni explain cheyandi",
+      "category": "te-en",
+      "expected_language": "te-en",
+      "expected_script": "Latin",
+      "gold_concept_ids": ["cpt_signals_and_systems_z_transform"],
+      "gold_technical_terms": ["Z-transform"],
+      "gold_normalized_form": "Z-transform properties ni explain cheyyandi"
+    },
+    {
+      "query_id": "CM_008",
+      "text": "linearity and time invariance verify cheyyadam ela?",
+      "category": "te-en",
+      "expected_language": "te-en",
+      "expected_script": "Latin",
+      "gold_concept_ids": [
+        "cpt_signals_and_systems_linearity",
+        "cpt_signals_and_systems_time_invariance"
+      ],
+      "gold_technical_terms": ["linearity", "time invariance"],
+      "gold_normalized_form": "linearity and time invariance verify cheyyadam ela?"
+    }
+  ]
+}

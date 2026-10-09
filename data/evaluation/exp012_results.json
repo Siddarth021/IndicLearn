@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "experiment_id": "EXP-012",
+    "status": "NOT_RUN",
+    "reason": "HUMAN_DATA_REQUIRED: No human participant responses supplied in evaluation template.",
+    "timestamp": "2026-10-08T21:14:33.684062+00:00",
+    "framework_validation": {
+      "tasks_count": 5,
+      "all_tasks_valid": true,
+      "likert_items_count": 6,
+      "all_likert_neutral": true,
+      "view_modes": [
+        "GRAPH_VIEW",
+        "LIST_VIEW"
+      ],
+      "framework_valid": true
+    },
+    "sample_size": 0,
+    "scientific_disclaimer": "Human usability evaluation framework. EXP-009 validates software and interface invariants. EXP-012 defines the human usability instrument. If no real participant data is provided, status remains NOT_RUN (HUMAN_DATA_REQUIRED). Zero participant responses are manufactured."
+  },
+  "analysis": {
+    "status": "NOT_AVAILABLE",
+    "reason": "HUMAN_DATA_REQUIRED: No human participant responses supplied in evaluation template."
+  },
+  "report": {
+    "experiment_id": "EXP-012",
+    "title": "Student Learning Dashboard Human Usability Evaluation Framework",
+    "research_question": "RQ-DASH: Can engineering students navigate concept dependencies, understand latent knowledge estimates, and interpret personalized learning recommendations transparently across Graph and List views?",
+    "hypothesis": "Students achieve >80% task completion on concept localization and recommendation interpretation, with mean Likert transparency ratings >= 3.5/5.0 across both visualization modes.",
+    "dataset_identifier": "data/evaluation/exp012_usability_template.json",
+    "sample_size": 0,
+    "procedure": "Structured protocol administering 5 operational tasks (T1-T5) and a 6-item neutral Likert questionnaire (Q01-Q06) evaluating navigation, estimate comprehension, evidence tracing, and Graph vs List views.",
+    "metrics": {
+      "framework_valid": true,
+      "total_tasks_specified": 5,
+      "total_likert_items": 6,
+      "participant_responses_count": 0,
+      "status": "NOT_RUN"
+    },
+    "observed_results": {
+      "validation": {
+        "tasks_count": 5,
+        "all_tasks_valid": true,
+        "likert_items_count": 6,
+        "all_likert_neutral": true,
+        "view_modes": [
+          "GRAPH_VIEW",
+          "LIST_VIEW"
+        ],
+        "framework_valid": true
+      },
+      "analysis": {
+        "status": "NOT_AVAILABLE",
+        "reason": "HUMAN_DATA_REQUIRED: No human participant responses supplied in evaluation template."
+      },
+      "status": "NOT_RUN",
+      "reason": "HUMAN_DATA_REQUIRED: No human participant responses supplied in evaluation template."
+    },
+    "interpretation": "The dashboard usability testing framework is structurally complete and neutral. No human participants have yet been recruited, maintaining zero data fabrication policy. Framework is primed for IRB-approved human validation.",
+    "scientific_claims": [
+      "The dashboard evaluation framework establishes verified schemas, neutral Likert items, and automated aggregation pipelines for human usability studies without data fabrication."
+    ],
+    "limitations": [
+      "Actual usability scores require live participant cohorts under approved ethical protocol.",
+      "Synthetic benchmark EXP-009 proves interface correctness, but does not substitute for human testing.",
+      "No claims regarding student satisfaction or cognitive ergonomics can be made until human evaluation is conducted."
+    ],
+    "reproducibility": {
+      "template_path": "data/evaluation/exp012_usability_template.json",
+      "framework_version": "1.0",
+      "data_collection_status": "AWAITING_HUMAN_PARTICIPANTS"
+    },
+    "timestamp": "2026-10-08T21:14:33.684038+00:00"
+  }
+}

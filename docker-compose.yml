@@ -1,0 +1,20 @@
+# docker compose up --build            -> http://localhost:8000   (fully offline, extractive tutor)
+# docker compose --profile llm up      -> also starts a local Ollama so the tutor can rephrase answers
+services:
+  studio:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      INDICLEARN_ALLOW_GUEST: "true"
+      INDICLEARN_MAX_UPLOAD_MB: "40"
+      # INDICLEARN_LLM_BACKEND: ollama
+      # INDICLEARN_OLLAMA_URL: http://ollama:11434
+    volumes: ["studio-data:/data"]
+    restart: unless-stopped
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["llm"]
+    volumes: ["ollama:/root/.ollama"]
+volumes:
+  studio-data:
+  ollama:
