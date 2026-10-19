@@ -17,7 +17,8 @@ offline, extractive behaviour that existed before.
 
 Providers (all plain HTTPS via ``urllib`` - no extra dependencies)
 ------------------------------------------------------------------
-* ``gemini``    Google Gemini API   (``INDICLEARN_GEMINI_API_KEY`` or ``GEMINI_API_KEY``)
+* ``gemini``    Google Gemini API   (``INDICLEARN_GEMINI_API_KEY`` or ``GEMINI_API_KEY``; more accounts:
+                ``INDICLEARN_GEMINI_API_KEY_2`` ... ``_9``, or several keys separated by commas)
 * ``sarvam``    Sarvam AI, Indic-first, OpenAI-compatible (``INDICLEARN_SARVAM_API_KEY``)
 * ``openai``    any OpenAI-compatible server: OpenAI, OpenRouter, Groq, vLLM, LM Studio ...
                 (``INDICLEARN_OPENAI_BASE_URL`` + ``INDICLEARN_OPENAI_API_KEY`` + ``INDICLEARN_OPENAI_MODEL``)
@@ -297,6 +298,20 @@ def partial_answer(raw: str) -> str:
     return "".join(out)
 
 
+def gemini_keys() -> list[str]:
+    """All Gemini keys, in order: INDICLEARN_GEMINI_API_KEY (may hold several, comma-separated), then _2 ... _9."""
+    env = os.environ.get
+    raw = [env("INDICLEARN_GEMINI_API_KEY") or env("GEMINI_API_KEY") or env("GOOGLE_API_KEY") or ""]
+    raw += [env(f"INDICLEARN_GEMINI_API_KEY_{i}") or "" for i in range(2, 10)]
+    keys: list[str] = []
+    for chunk in raw:
+        for k in chunk.split(","):
+            k = k.strip().strip('"').strip("'")
+            if k and k not in keys:
+                keys.append(k)
+    return keys
+
+
 # --------------------------------------------------------------------------- providers
 @dataclass
 class Provider:
@@ -325,6 +340,7 @@ class Provider:
 @dataclass
 class GeminiProvider(Provider):
     key: str = ""
+    account: int = 1  # which Google account's key (each account has its own free quota)
     base: str = "https://generativelanguage.googleapis.com/v1beta"
     audio: bool = True
 
@@ -629,6 +645,12 @@ Return ONLY JSON:
 
 
 # --------------------------------------------------------------------------- the brain
+def label(p: Provider) -> str:
+    """'gemini:model', or 'gemini#2:model' for the second Google account."""
+    acc = getattr(p, "account", 1)
+    return f"{p.name}{'#' + str(acc) if acc > 1 else ''}:{p.model}"
+
+
 @dataclass
 class Brain:
     providers: list[Provider] = field(default_factory=list)
@@ -646,12 +668,13 @@ class Brain:
         out: list[Provider] = []
         for name in order:
             if name == "gemini":
-                key = env("INDICLEARN_GEMINI_API_KEY") or env("GEMINI_API_KEY") or env("GOOGLE_API_KEY")
-                if key:
-                    # The free tier allows only ~20 requests/day PER MODEL, so a comma list of models is tried in
-                    # turn: each one adds its own free quota before the chain moves on to the next engine.
-                    for m in [x.strip() for x in env("INDICLEARN_GEMINI_MODEL", DEFAULT_GEMINI_MODELS).split(",") if x.strip()]:
-                        out.append(GeminiProvider("gemini", m, timeout, key=key))
+                keys = gemini_keys()
+                # The free tier allows only ~20 requests/day PER MODEL PER ACCOUNT. Order: the best model on every
+                # account first, then the next model, ... - whichever account still has quota answers; one that hits
+                # its limit cools down on its own while the others carry on.
+                for m in [x.strip() for x in env("INDICLEARN_GEMINI_MODEL", DEFAULT_GEMINI_MODELS).split(",") if x.strip()]:
+                    for i, key in enumerate(keys, 1):
+                        out.append(GeminiProvider("gemini", m, timeout, key=key, account=i))
             elif name == "sarvam":
                 key = env("INDICLEARN_SARVAM_API_KEY") or env("SARVAM_API_KEY")
                 if key:
@@ -702,10 +725,10 @@ class Brain:
                 m = p.pick_model()
                 chain.append(f"ollama:{m} (offline)" if m else "ollama (not running)")
             else:
-                chain.append(f"{p.name}:{p.model}")
-        return {"chain": chain + ["extractive"], "cooling_down": [p.name for p in self.providers if p.down_until > now_],
+                chain.append(label(p))
+        return {"chain": chain + ["extractive"], "cooling_down": [label(p) for p in self.providers if p.down_until > now_],
                 "offline_llm": any(isinstance(p, OllamaProvider) and p.reachable() for p in self.providers),
-                "errors": {p.name: p.last_error for p in self.providers if p.last_error}}
+                "errors": {label(p).split(":")[0]: p.last_error for p in self.providers if p.last_error}}
 
     def why_unavailable(self) -> str:
         """One readable line for the UI when no AI engine answered."""
@@ -727,13 +750,13 @@ class Brain:
                     raise RuntimeError("Ollama is not running or has no model pulled")
                 raw = p.complete("Reply with JSON only.", 'Return {"ok": true, "word": "namaste"}', True, 256)
                 got = parse_json(raw)
-                out.append({"provider": p.name, "model": p.model, "ok": bool(got), "seconds": round(time.time() - t0, 1),
+                out.append({"provider": label(p).split(":")[0], "model": p.model, "ok": bool(got), "seconds": round(time.time() - t0, 1),
                             "error": "" if got else f"unexpected reply: {raw[:120]!r}"})
                 if got:
                     p.last_error, p.down_until = "", 0.0
             except Exception as e:
                 p.last_error = _friendly_error(e)
-                out.append({"provider": p.name, "model": p.model, "ok": False, "seconds": round(time.time() - t0, 1), "error": p.last_error})
+                out.append({"provider": label(p).split(":")[0], "model": p.model, "ok": False, "seconds": round(time.time() - t0, 1), "error": p.last_error})
         return out
 
     # ---- core call with failover
@@ -763,7 +786,7 @@ class Brain:
                 if validate is not None:
                     val = validate(val)
                 if val:
-                    log.info("brain: %s answered in %.1fs", p.name, time.time() - t0)
+                    log.info("brain: %s answered in %.1fs", label(p), time.time() - t0)
                     p.last_error = ""
                     return val, p.name
                 p.last_error = "replied, but not in the expected format" if raw else "empty reply"
@@ -782,7 +805,7 @@ class Brain:
                     p.last_error = _friendly_error(e)
                 if shown and on_delta is not None:
                     on_delta(None)
-                log.warning("brain: %s failed (%s) - trying next", p.name, str(e)[:200])
+                log.warning("brain: %s failed (%s) - trying next", label(p), str(e)[:200])
         return None
 
     # ---- tasks

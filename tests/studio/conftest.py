@@ -52,7 +52,7 @@ def _hermetic_models(monkeypatch, tmp_path_factory):
     monkeypatch.setenv("INDICLEARN_EMBEDDING_BACKEND", "none")
     monkeypatch.setenv("INDICLEARN_TRANSLATOR_BACKEND", "none")
     monkeypatch.setenv("INDICLEARN_OLLAMA", "off")
-    for k in ("INDICLEARN_GEMINI_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY", "INDICLEARN_SARVAM_API_KEY", "SARVAM_API_KEY",
+    for k in ("INDICLEARN_GEMINI_API_KEY", "INDICLEARN_GEMINI_API_KEY_2", "GEMINI_API_KEY", "GOOGLE_API_KEY", "INDICLEARN_SARVAM_API_KEY", "SARVAM_API_KEY",
               "INDICLEARN_OPENAI_BASE_URL", "INDICLEARN_ANTHROPIC_API_KEY", "ANTHROPIC_API_KEY"):
         monkeypatch.delenv(k, raising=False)
     from indiclearn.studio import neural

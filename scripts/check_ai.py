@@ -23,7 +23,7 @@ def main() -> int:
     n = load_dotenv()
     env_file = ROOT / ".env"
     print(f".env file: {'found, ' + str(n) + ' setting(s) loaded' if env_file.exists() else 'NOT FOUND at ' + str(env_file) + '  (copy .env.example to .env and add your key)'}")
-    for k in ("INDICLEARN_GEMINI_API_KEY", "INDICLEARN_SARVAM_API_KEY", "INDICLEARN_OPENAI_API_KEY", "INDICLEARN_ANTHROPIC_API_KEY"):
+    for k in ("INDICLEARN_GEMINI_API_KEY", "INDICLEARN_GEMINI_API_KEY_2", "INDICLEARN_SARVAM_API_KEY", "INDICLEARN_OPENAI_API_KEY", "INDICLEARN_ANTHROPIC_API_KEY"):
         v = os.environ.get(k, "")
         print(f"  {k:32s}", f"set ({len(v)} chars)" if v else "empty")
 

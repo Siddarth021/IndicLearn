@@ -65,7 +65,7 @@ def test_failover_skips_a_dead_provider_and_cools_it_down():
 
 
 def test_brain_off_and_no_keys_means_no_providers(monkeypatch):
-    for k in ("INDICLEARN_GEMINI_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY", "INDICLEARN_SARVAM_API_KEY", "SARVAM_API_KEY",
+    for k in ("INDICLEARN_GEMINI_API_KEY", "INDICLEARN_GEMINI_API_KEY_2", "GEMINI_API_KEY", "GOOGLE_API_KEY", "INDICLEARN_SARVAM_API_KEY", "SARVAM_API_KEY",
               "INDICLEARN_OPENAI_BASE_URL", "INDICLEARN_ANTHROPIC_API_KEY", "ANTHROPIC_API_KEY", "INDICLEARN_LLM_BACKEND"):
         monkeypatch.delenv(k, raising=False)
     monkeypatch.setenv("INDICLEARN_OLLAMA", "on")
@@ -553,3 +553,40 @@ def test_english_words_inside_a_telugu_reply_are_read_by_the_english_voice(monke
     with wave.open(io.BytesIO(out)) as w:
         assert w.getframerate() == 16000 and w.getnframes() > 3000  # both pieces joined, resampled
     assert join_wavs([tone(16000)])  # single piece is fine
+
+
+def test_second_gemini_account_takes_over_when_the_first_is_out_of_quota(monkeypatch):
+    from indiclearn.studio import brain as B
+
+    for k in ("INDICLEARN_SARVAM_API_KEY", "SARVAM_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY"):
+        monkeypatch.delenv(k, raising=False)
+    monkeypatch.setenv("INDICLEARN_BRAIN", "gemini")
+    monkeypatch.setenv("INDICLEARN_GEMINI_API_KEY", "key-A")
+    monkeypatch.setenv("INDICLEARN_GEMINI_API_KEY_2", "key-B")
+    monkeypatch.setenv("INDICLEARN_GEMINI_MODEL", "m1,m2")
+    b = B.Brain.from_env()
+    assert [(p.model, p.key) for p in b.providers] == [("m1", "key-A"), ("m1", "key-B"), ("m2", "key-A"), ("m2", "key-B")]
+    calls = []
+
+    def fake(self, system, user, json_mode=True, max_tokens=2048):
+        calls.append((self.model, self.key))
+        if self.key == "key-A":
+            raise RuntimeError("HTTP 429: quota exceeded GenerateRequestsPerDay")
+        return '{"ok": true}'
+
+    monkeypatch.setattr(B.GeminiProvider, "complete", fake)
+    assert b._run("s", "u")[0] == {"ok": True}
+    assert calls == [("m1", "key-A"), ("m1", "key-B")]  # account A was out of quota: account B answered
+    calls.clear()
+    b._run("s", "u")
+    assert calls == [("m1", "key-B")]  # A is now cooling down - not retried every time
+    assert "gemini#2:m1" in b.status()["chain"]
+
+
+def test_gemini_keys_accept_a_comma_list_and_skip_duplicates(monkeypatch):
+    from indiclearn.studio import brain as B
+
+    monkeypatch.setenv("INDICLEARN_GEMINI_API_KEY", "a, b")
+    monkeypatch.setenv("INDICLEARN_GEMINI_API_KEY_2", "b")
+    monkeypatch.setenv("INDICLEARN_GEMINI_API_KEY_3", "c")
+    assert B.gemini_keys() == ["a", "b", "c"]
