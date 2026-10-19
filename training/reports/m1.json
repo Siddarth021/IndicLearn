@@ -1,0 +1,220 @@
+{
+  "model": "m1",
+  "n_test": 1586,
+  "model_metrics": {
+    "precision": 0.6943,
+    "recall": 0.9231,
+    "f1": 0.7925,
+    "accuracy": 0.7068
+  },
+  "baseline_rules_keep_all": {
+    "precision": 0.6066,
+    "recall": 1.0,
+    "f1": 0.7551,
+    "accuracy": 0.6066
+  },
+  "threshold": 0.2,
+  "samples": [
+    {
+      "span": "Planted clique",
+      "gold": 0,
+      "p_concept": 0.925
+    },
+    {
+      "span": "Encapsulation",
+      "gold": 1,
+      "p_concept": 0.831
+    },
+    {
+      "span": "Quantization",
+      "gold": 1,
+      "p_concept": 0.774
+    },
+    {
+      "span": "Window size",
+      "gold": 1,
+      "p_concept": 0.73
+    },
+    {
+      "span": "High-frequency (HF)",
+      "gold": 1,
+      "p_concept": 0.774
+    },
+    {
+      "span": "Higher-order",
+      "gold": 0,
+      "p_concept": 0.84
+    },
+    {
+      "span": "Global replacement",
+      "gold": 1,
+      "p_concept": 0.842
+    },
+    {
+      "span": "Big O notation",
+      "gold": 1,
+      "p_concept": 0.855
+    },
+    {
+      "span": "Secure Real-time Transport Protocol (SRTP)",
+      "gold": 1,
+      "p_concept": 0.813
+    },
+    {
+      "span": "Carrier power",
+      "gold": 1,
+      "p_concept": 0.846
+    },
+    {
+      "span": "Bistable circuit",
+      "gold": 1,
+      "p_concept": 0.772
+    },
+    {
+      "span": "Synchronous motor",
+      "gold": 1,
+      "p_concept": 0.927
+    },
+    {
+      "span": "Prim's algorithm",
+      "gold": 1,
+      "p_concept": 0.883
+    },
+    {
+      "span": "Connection-oriented transport protocol (COTP)",
+      "gold": 0,
+      "p_concept": 0.876
+    },
+    {
+      "span": "Swap partition",
+      "gold": 1,
+      "p_concept": 0.746
+    },
+    {
+      "span": "Secondary winding",
+      "gold": 1,
+      "p_concept": 0.797
+    },
+    {
+      "span": "output impedance",
+      "gold": 1,
+      "p_concept": 0.532
+    },
+    {
+      "span": "Ellipticity parameter",
+      "gold": 1,
+      "p_concept": 0.728
+    },
+    {
+      "span": "Subtree remains unchanged",
+      "gold": 0,
+      "p_concept": 0.057
+    },
+    {
+      "span": "Classifier",
+      "gold": 0,
+      "p_concept": 0.936
+    },
+    {
+      "span": "Magnetic field",
+      "gold": 1,
+      "p_concept": 0.903
+    },
+    {
+      "span": "FET",
+      "gold": 1,
+      "p_concept": 0.8
+    },
+    {
+      "span": "inverse DTFT",
+      "gold": 1,
+      "p_concept": 0.638
+    },
+    {
+      "span": "Logic system",
+      "gold": 0,
+      "p_concept": 0.913
+    },
+    {
+      "span": "Thyristors",
+      "gold": 1,
+      "p_concept": 0.827
+    },
+    {
+      "span": "Instructions say",
+      "gold": 0,
+      "p_concept": 0.023
+    },
+    {
+      "span": "Normal-to-normal",
+      "gold": 1,
+      "p_concept": 0.195
+    },
+    {
+      "span": "Input string",
+      "gold": 1,
+      "p_concept": 0.116
+    },
+    {
+      "span": "Artificial neurons",
+      "gold": 1,
+      "p_concept": 0.879
+    },
+    {
+      "span": "Cancer-free",
+      "gold": 0,
+      "p_concept": 0.053
+    },
+    {
+      "span": "Spectrum efficiency",
+      "gold": 1,
+      "p_concept": 0.597
+    },
+    {
+      "span": "Encapsulation",
+      "gold": 1,
+      "p_concept": 0.929
+    },
+    {
+      "span": "Power delivered",
+      "gold": 0,
+      "p_concept": 0.025
+    },
+    {
+      "span": "Cobham thesis",
+      "gold": 0,
+      "p_concept": 0.037
+    },
+    {
+      "span": "Point-to-Point Protocol (PPP)",
+      "gold": 1,
+      "p_concept": 0.924
+    },
+    {
+      "span": "Single-phase rectifiers",
+      "gold": 1,
+      "p_concept": 0.74
+    },
+    {
+      "span": "Angular displacement",
+      "gold": 1,
+      "p_concept": 0.557
+    },
+    {
+      "span": "Transmitted power",
+      "gold": 1,
+      "p_concept": 0.155
+    },
+    {
+      "span": "DFT bin",
+      "gold": 1,
+      "p_concept": 0.931
+    },
+    {
+      "span": "Protocol data units (PDU)",
+      "gold": 1,
+      "p_concept": 0.618
+    }
+  ],
+  "minutes": 8.8
+}

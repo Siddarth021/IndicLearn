@@ -1,0 +1,209 @@
+{
+  "model": "m4",
+  "n_test_scored": 288,
+  "well_formed": 0.7743,
+  "answer_matches_gold": 0.2882,
+  "samples": [
+    {
+      "input": "question: Common-mode rejection ratio (CMRR) | passage: An ideal op amp is usually considered to have the following characteristics: Arbitrarily high open-loop gain G = vout / vin Infinite input imped",
+      "gold": "Q: A high Common-mode Rejection Ratio (CMRR) in an operational amplifier indicates what? A) Extremely high open-loop gain B) Low output impedance C) Excellent rejection of common-mode noise D) High input impedance ANSWER: C",
+      "model": "Q: What is the primary purpose of the common-mode rejection ratio (CMRR) in an op amp circuit? A) To measure the power-to-noise ratio of the input to the inverting input. B) To determine the frequency response of the output to the input. C) To ensure the output is always zero. D) To calculate the total output voltage. ANSWER: A"
+    },
+    {
+      "input": "question: Memory segmentation | passage: The Intel 8086 (also as iAPX 86) is a 16-bit, complex instruction set microprocessor designed by Intel, and first released in June 1978. 8086 gave rise to x86,",
+      "gold": "Q: How does the 8086 generate a 20-bit physical address from a 16-bit segment and offset? A) By shifting the segment left by 4 bits and then adding the offset B) By simply adding the 16-bit segment and offset values together C) By using a dedicated memory management unit to translate the address D) By concatenating the segment and offset values to form a 32-bit address ANSWER: A",
+      "model": "Q: What is the primary purpose of a memory segmentation in a CPU? A) To increase the clock speed of the CPU B) To reduce the total number of ICs in the CPU C) To ensure that the CPU is able to run on a single IC D) To allow the CPU to run faster ANSWER: C"
+    },
+    {
+      "input": "question: Electromechanical relays | passage: In electrical engineering, a protective relay is a relay device designed to trip a circuit breaker when a fault is detected. The first protective relays w",
+      "gold": "Q: Why is a shading coil often used in an electromechanical AC relay? A) To prevent contact chatter by maintaining force during current zero-crossings B) To reduce the weight of the moving armature C) To measure the power factor of the circuit D) To increase the overall magnetic flux significantly ANSWER: A",
+      "model": "Q: What is the primary purpose of a protective relay in a circuit breaker? A) To eliminate the need for a breaker B) To provide only rudimentary indication of the location and origin of the fault C) To increase the power consumption of the circuit D) To prevent over-voltage and reverse power flow ANSWER: B"
+    },
+    {
+      "input": "question: Hooke's law | passage: In physics, Hooke's law is an empirical law which states that the force (F) needed to extend or compress a spring by some distance (x) scales linearly with respect to ",
+      "gold": "Q: In the general tensor form of Hooke's law, what does the tensor represent? A) A single scalar constant for all directions B) A matrix relating components of stress to components of strain C) A measure of the weight of the material D) A fixed number representing the maximum force the material can take ANSWER: B",
+      "model": "Q: Why is Hooke's law considered an empirical law? A) It states that the force needed to extend or compress a spring by some distance scales linearly with respect to that distance. B) It is a first-order linear approximation to the real response of springs and other elastic bodies to applied forces. C) It allows the force to be applied to the spring without requiring a mat. D) It guarantees the force is always equal to the force. ANSWER: B"
+    },
+    {
+      "input": "question: ReLU activation | passage: Ridge functions are multivariate functions acting on a linear combination of the input variables. Often used examples include: Linear activation: ′ ReLU activation",
+      "gold": "Q: How does the ReLU activation function compare to the identity function in a deep network? A) ReLU has a finite output range like the identity function B) ReLU is always continuously differentiable at all points C) Both produce identical outputs for any given input D) ReLU is nonsaturating and avoids the vanishing gradient problem ANSWER: D",
+      "model": "Q: What is the primary purpose of using sigmoid activation functions in neural networks? A) To increase the output range of the neural network B) To reduce the number of neurons in a neural network C) To decrease the total number of neurons in the network D) To provide a linear representation of the neuron's firing rate ANSWER: D"
+    },
+    {
+      "input": "question: Window function | passage: In signal processing and statistics, a window function (also known as an apodization function or tapering function) is a mathematical function that is zero-valued ",
+      "gold": "Q: Why is a window function applied to a signal segment before performing a spectral analysis? A) To filter out all high-frequency noise components B) To convert the signal from analog to digital format C) To increase the total energy of the signal D) To reduce discontinuities at the edges of the sampled data ANSWER: D",
+      "model": "Q: What is the primary purpose of using a window function in signal processing? A) To increase the signal's amplitude B) To reduce the frequency content of the signal C) To eliminate the need for spectral leakage D) To convert the signal into a continuous waveform ANSWER: C"
+    },
+    {
+      "input": "question: Requirements specification | passage: Time spent early in the software production cycle can reduce costs at later stages. For example, a problem found in the early stages (such as requiremen",
+      "gold": "Q: What is the primary purpose of the requirements specification in the development lifecycle? A) To estimate the final project profit margin B) To serve as a source code template for programmers C) To replace the need for systems analysis D) To provide a baseline for the development and testing teams ANSWER: D",
+      "model": "Q: What is the primary benefit of using a requirements specification in a software project? A) It eliminates the need for any documentation. B) It increases the overall cost of the project. C) It reduces the time required for testing and implementation. D) It makes the project more efficient. ANSWER: C"
+    },
+    {
+      "input": "question: Relational model | passage: The sizes, capabilities, and performance of databases and their respective DBMSs have grown in orders of magnitude. These performance increases were enabled by th",
+      "gold": "Q: Which fundamental shift in data retrieval did the relational model introduce compared to navigational models like CODASYL? A) It reduced the reliance on hardware-specific disk addresses. B) It replaced physical pointers with content-based searching. C) All of the above. D) It organized data into tables rather than linked lists. ANSWER: C",
+      "model": "Q: What is the primary purpose of using a relational model in a database? A) To increase the size of the database B) To reduce the number of physical disks required C) To ensure that all data is stored in the same format D) To allow applications to search for data by content rather than by following links ANSWER: D"
+    },
+    {
+      "input": "question: Constellation diagram | passage: There are three major classes of digital modulation techniques used for transmission of digitally represented data: Amplitude-shift keying (ASK) Frequency-sh",
+      "gold": "Q: What does the separation of axes into 'in-phase' and 'quadrature' represent in a constellation diagram? A) The time delay between two carrier waves. B) The difference between digital and analog signals. C) The physical distance between the transmitter and receiver. D) The orthogonality between the sine and cosine components of the signal. ANSWER: D",
+      "model": "Q: What is the primary purpose of a constellation diagram in a digital modulation scheme? A) To provide a reference signal for the demodulator to compare the signal's phase against. B) To represent the real and imaginary axes of the signal. C) To show the amplitude of each point along the complex plane. D) To indicate the frequency of the modulation signal. ANSWER: A"
+    },
+    {
+      "input": "question: Consistency | passage: In database theory, the CAP theorem, also named Brewer's theorem after computer scientist Eric Brewer, states that any distributed data store can provide at most two o",
+      "gold": "Q: In the context of the CAP theorem, what happens if a system chooses consistency over availability during a network partition? A) It automatically switches to a different database node. B) It returns an error or times out to prevent serving potentially outdated information. C) It processes the request using the last available stale data. D) It ignores the partition and updates all nodes regardless of the error. ANSWER: B",
+      "model": "Q: What is the primary purpose of a CAP theorem in a distributed data store? A) To ensure that all clients see the same data at the same time. B) To guarantee that all data is written to all nodes in the system. C) To provide a guarantee that data is always available. D) To determine the number of requests that the system can handle. ANSWER: A"
+    },
+    {
+      "input": "question: LF | passage: Variability (or Variation) in the beat-to-beat interval is a physiological phenomenon. Power spectral analysis of the beat-to-beat variations of heart rate or the heart period ",
+      "gold": "Q: What is the current understanding of the Low-frequency (LF) component's physiological origin? A) It is solely caused by Mayer waves B) It is unrelated to autonomic nervous system activity C) It reflects a mixture of both SNS and PSNS activity D) It reflects only sympathetic nervous system activity ANSWER: C",
+      "model": "Q: What is the primary function of a LF peak in a heartbeat? A) To increase the heart rate B) To decrease the rate of heartbeat C) To reduce the heart's rate D) To amplify the heartbeat ANSWER: C"
+    },
+    {
+      "input": "question: JPEG | passage: JPEG ( JAY-peg, short for Joint Photographic Experts Group and sometimes retroactively referred to as JPEG 1) is a commonly used method of lossy compression for digital image",
+      "gold": "Q: Why is JPEG considered 'lossy' compression? A) It stores only the file header and deletes the pixel data B) It requires a high-speed internet connection to decompress C) It discards data that the human eye is less likely to notice D) It uses encryption that cannot always be decrypted correctly ANSWER: C",
+      "model": "Q: Why is JPEG considered the most widely used image compression standard in the world? A) Because it is the only compression method that can achieve 10:1 compression with a loss in image quality that, while perceptible, is widely agreed upon to be acceptable. B) Because the DCT algorithm is used in all digital image compression systems. C) Because JPA is only used for digital images. D) Because DCT is the most common image compression algorithm. ANSWER: A"
+    },
+    {
+      "input": "question: TCM | passage: Confusion matrices are not limited to single-label classification (where only one class is present) or hard-label settings (where classes are either fully present, 1, or absen",
+      "gold": "Q: How does TCM differ from a standard confusion matrix in multi-label settings? A) TCM uses optimal transport to handle partial class presence. B) TCM only works for binary classification. C) TCM replaces the matrix with a directed acyclic graph. D) TCM requires all labels to be mutually exclusive. ANSWER: A",
+      "model": "Q: Why is the Transport-based Confusion Matrix (TCM) preferred over the standard confusion matrix for single-label classification? A) It requires less entropy for classification. B) It uses less computational power. C) It is easier to interpret. D) It eliminates the need for a convolution matrix. ANSWER: D"
+    },
+    {
+      "input": "question: Binary phase-shift keying (BPSK) | passage: There are three major classes of digital modulation techniques used for transmission of digitally represented data: Amplitude-shift keying (ASK) F",
+      "gold": "Q: Why is BPSK often considered the most robust modulation scheme compared to higher-order schemes like QPSK? A) It requires less bandwidth for the same data rate. B) Its constellation points are furthest apart, allowing greater tolerance for noise. C) It does not require a carrier wave. D) It supports higher data rates than QPSK. ANSWER: B",
+      "model": "Q: What is the primary purpose of using binary phase-shift keying (BPSK) in digital signal transmission? A) To increase the amplitude of the signal B) To convert the signal into a digital signal C) To change the carrier wave in response to the data signal D) To replace the demodulator with a reference signal ANSWER: C"
+    },
+    {
+      "input": "question: Knowledge representation (KR) | passage: Knowledge representation (KR) aims to model information in a structured manner to formally represent it as knowledge in knowledge-based systems where",
+      "gold": "Q: Why is knowledge representation preferred over conventional procedural code for complex problem-solving? A) It reduces the semantic gap between users and developers B) It eliminates the need for an inference engine C) It is faster to execute D) It requires less memory ANSWER: A",
+      "model": "Q: What is the primary purpose of KR in the context of artificial intelligence? A) To model information in a structured manner to formally represent it as knowledge in knowledge-based systems B) To understand, reason, and interpret knowledge C) To provide a form that a computer can use to solve complex tasks D) To help automate the design and build of complex systems ANSWER: A"
+    },
+    {
+      "input": "question: Quadrature phase-shift keying (QPSK) | passage: There are three major classes of digital modulation techniques used for transmission of digitally represented data: Amplitude-shift keying (AS",
+      "gold": "Q: Which statement best describes the primary advantage of using QPSK over BPSK? A) QPSK does not require a reference signal. B) QPSK is simpler to implement than BPSK. C) QPSK allows double the data rate in the same bandwidth as BPSK. D) QPSK always has a lower bit error rate. ANSWER: C",
+      "model": "Q: What is the primary purpose of a quadrature phase-shift keying (QPSK) in a digital signal? A) To increase the amplitude of the signal. B) To convert the signal into a binary signal. C) To change the carrier wave in response to the data signal. D) To transform the signal to a non-linear signal. ANSWER: C"
+    },
+    {
+      "input": "question: IPv6 addresses | passage: In IPv6, the address size was increased from 32 bits in IPv4 to 128 bits, thus providing up to 2128 (approximately 3.403×1038) addresses. This is deemed sufficient ",
+      "gold": "Q: What is a key design goal of IPv6 that goes beyond simply increasing the address space? A) To eliminate the need for subnet masks completely B) To make all addresses globally unique and routable C) To ensure backward compatibility with all IPv4 devices D) To make routing tables smaller and more efficient ANSWER: D",
+      "model": "Q: What is the primary purpose of the new IPv6 design in routers? A) To increase the number of IP addresses B) To eliminate the need for a routing table C) To reduce the size of the IP address D) To allow for the aggregation of subnetwork routing prefixes ANSWER: D"
+    },
+    {
+      "input": "question: Elastic body | passage: In physics, Hooke's law is an empirical law which states that the force (F) needed to extend or compress a spring by some distance (x) scales linearly with respect to",
+      "gold": "Q: Which of the following describes the behavior of a 'linear-elastic' material under small deformations? A) The material's response becomes non-linear immediately B) The deformation is directly proportional to the applied stress C) The material permanently deforms as soon as force is applied D) The material fractures instantly without any measurable displacement ANSWER: B",
+      "model": "Q: What is the primary function of an elastic body in the context of Hooke's law? A) To measure the force required to extend or compress a spring by some distance. B) To calculate the total possible deformation of the spring. C) To convert the force to kinetic energy. D) To increase the force of gravity. ANSWER: A"
+    },
+    {
+      "input": "question: Routh Hurwitz criterion | passage: In control theory and the theory of differential equations, the Routh–Hurwitz stability criterion is a mathematical test that is a necessary and sufficient",
+      "gold": "Q: What is the primary condition for a linear time-invariant system to be stable using the Routh-Hurwitz criterion? A) All roots of the characteristic polynomial must have negative real parts. B) All roots of the characteristic polynomial must be real. C) All coefficients of the characteristic polynomial must be equal. D) The characteristic polynomial must be of an even degree. ANSWER: A",
+      "model": "Q: What is the primary purpose of the Routh-Hurwitz criterion in the context of control theory? A) To evaluate the stability of a linear time-invariant (LTI) dynamical system or control system. B) To determine whether all the roots of the characteristic polynomial of the linear system have negative real parts. C) To calculate the determinants of the system's output signal. D) To measure the total number of real parts in the system. ANSWER: B"
+    },
+    {
+      "input": "question: discrete Fourier transform (DFT) | passage: In mathematics, the discrete-time Fourier transform (DTFT) is a form of Fourier analysis that is applicable to a sequence of discrete values. The ",
+      "gold": "Q: How is the DFT related to the DTFT? A) The DFT is a sampling of one period of the continuous DTFT B) The DFT does not require periodicity C) The DFT is the inverse of the DTFT D) The DFT represents an infinite-length signal ANSWER: A",
+      "model": "Q: What is the primary purpose of using the discrete Fourier transform (DTFT) in Fourier analysis? A) To convert a continuous signal into a discrete one. B) To increase the frequency of the signal. C) To calculate the original continuous function. D) To reduce the time-domain error. ANSWER: C"
+    },
+    {
+      "input": "question: Feature-based sentiment analysis | passage: It refers to determining the opinions or sentiments expressed on different features or aspects of entities, e.g., of a cell phone, a digital camer",
+      "gold": "Q: What is the primary advantage of using a feature-based approach over document-level sentiment analysis? A) It captures nuanced opinions about specific attributes of an entity. B) It only requires identifying the overall sentiment of the document. C) It completely eliminates the need for machine learning algorithms. D) It reduces the total amount of text that needs to be processed. ANSWER: A",
+      "model": "Q: What is the primary advantage of feature-based sentiment analysis over traditional sentiment analysis? A) It allows for the capture of nuances about objects of interest. B) It eliminates the need for any statistical methods. C) It uses a combination of features and attributes to find the best fit. D) It requires less computational power than standard sentiment analysis. ANSWER: A"
+    },
+    {
+      "input": "question: First Order Logic (FOL) | passage: Knowledge-representation is a field of artificial intelligence that focuses on designing computer representations that capture information about the world ",
+      "gold": "Q: What is a primary role of First Order Logic in knowledge representation systems? A) To provide hardware architecture B) To optimize database storage C) To provide a formal basis for automated reasoning D) To design user interfaces ANSWER: C",
+      "model": "Q: What is the primary purpose of using First Order Logic (FOL) in a complex system? A) To provide a formal representation for complex problems. B) To simplify the design of complex software. C) To increase the computational speed of the system. D) To eliminate the need for a reasoning engine. ANSWER: A"
+    },
+    {
+      "input": "question: Discrete cosine transform (DCT) | passage: JPEG ( JAY-peg, short for Joint Photographic Experts Group and sometimes retroactively referred to as JPEG 1) is a commonly used method of lossy co",
+      "gold": "Q: In the context of image compression, what does moving an image into the 'transform domain' achieve? A) It makes the image easier to resize without distortion B) It encrypts the image to protect copyright C) It converts a color image into a black and white image D) It concentrates signal information into fewer, highly compressible coefficients ANSWER: D",
+      "model": "Q: What is the primary purpose of the DCT algorithm in the development of JPEG? A) To increase the resolution of the image B) To reduce the number of pixels in the image C) To convert the image into a digital image D) To improve the image quality ANSWER: C"
+    },
+    {
+      "input": "question: Six-pulse bridge | passage: For an uncontrolled three-phase bridge rectifier, six diodes are used, and the circuit again has a pulse number of six. For this reason, it is also commonly refer",
+      "gold": "Q: In a three-phase bridge rectifier, what does the 'pulse number of six' specifically refer to? A) The multiplication factor of the input RMS voltage B) The number of voltage peaks in the DC output per AC cycle C) The number of diodes used in the bridge D) The number of AC supply phases utilized ANSWER: B",
+      "model": "Q: Why is a six-pulse bridge commonly referred to as a single-phase bridge? A) Because it requires fewer diodes than a three-phase diode. B) Because the bridge is uncontrolled for high-voltage applications. C) Because its pulsating DC voltage results from the differences of the instantaneous positive and negative phase voltages, phase-shifting by 30°. D) Because double-diodes are preferred over double-powder bridges for low-power applications. ANSWER: C"
+    },
+    {
+      "input": "question: Bias–variance tradeoff | passage: In machine learning, supervised learning (SL) is a type of machine learning paradigm where an algorithm learns to map input data to a specific output based ",
+      "gold": "Q: Why does a learning algorithm with very low bias often have high variance? A) Because low bias requires more training data than high variance algorithms. B) Because a flexible algorithm can fit different training sets in very different ways. C) Because the variance is mathematically defined as the inverse of bias. D) Because low bias algorithms are inherently unstable and produce random results. ANSWER: B",
+      "model": "Q: What is the primary purpose of a bias–variance tradeoff in supervised learning? A) To increase the model's computational speed B) To ensure the model is able to predict the output for new, unseen data C) To eliminate the need for a teacher in the training process D) To prevent the model from generating false positives ANSWER: B"
+    },
+    {
+      "input": "question: Uncertainty principle | passage: One of the pitfalls of the STFT is that it has a fixed resolution. The width of the windowing function relates to how the signal is represented—it determines",
+      "gold": "Q: How does the uncertainty principle constrain the design of an STFT? A) It prevents the use of Gaussian windows B) It defines the maximum number of frequency bins possible C) It sets a minimum possible window size for all signals D) It dictates that time and frequency resolutions have a fundamental trade-off ANSWER: D",
+      "model": "Q: What is the primary purpose of the Gaussian window function in an STFT? A) To measure the frequency response of a signal. B) To calculate the amplitude of the signal. C) To convert the signal into a time-resolved signal. D) To increase the signal's frequency response. ANSWER: C"
+    },
+    {
+      "input": "question: Pushdown automaton | passage: In the theory of computation, a branch of theoretical computer science, a pushdown automaton (PDA) is a type of automaton that employs a stack. Pushdown automat",
+      "gold": "Q: Why is a pushdown automaton considered more powerful than a finite-state machine? A) It can access input symbols multiple times B) It uses an infinite tape for storage C) It is always deterministic D) It possesses a stack memory to store and retrieve data ANSWER: D",
+      "model": "Q: Why is a pushdown automaton considered more capable than a finite-state machine? A) It can recognize all deterministic context-free languages. B) It cannot recognize all nondeterministic languages. C) It only works on elements other than the top element. D) It does not require a stack. ANSWER: C"
+    },
+    {
+      "input": "question: Amplitude modulation | passage: Amplitude modulation (AM) is a signal modulation technique used in electronic communication, most commonly for transmitting messages with a radio wave. In amp",
+      "gold": "Q: Why is the carrier wave essential in standard Amplitude Modulation? A) It converts digital data to analog B) It provides a frequency reference and amplitude reference for the receiver C) It reduces the bandwidth of the message signal D) It is only required for spark gap transmitters ANSWER: B",
+      "model": "Q: Why is amplitude modulation preferred over angle modulation for transmitting audio signals? A) It requires less bandwidth for transmission. B) It eliminates the need for a phase filter. C) It uses only the carrier signal. D) It produces sidebands on either side of the carrier frequency. ANSWER: D"
+    },
+    {
+      "input": "question: 20 | passage: Maxwell's equations are a set of coupled partial differential equations that describe how electric and magnetic fields are generated by electric charges and currents. Together ",
+      "gold": "Q: Why did Maxwell introduce the concept of displacement current to Ampère's circuital law? A) To allow magnetic fields to create stationary electrostatic charges. B) To account for the frictional resistance of charged particles in vacuum. C) To satisfy the continuity equation and account for time-varying electric fields. D) To prove that magnetic monopoles can exist under high frequency. ANSWER: C",
+      "model": "Q: How does Maxwell's equations relate the electric and magnetic fields to total charge and total current? A) They describe the magnetic and electric fields at the atomic scale. B) They relate the electrical and magnetism fields to all charges and currents. C) They refer to the electromagnetic response of materials at the large-scale. D) They define two new auxiliary fields that describe the large - scale behavior of matter without having to consider atomic-scale charges and quantum phenomena like spins. ANSWER: D"
+    },
+    {
+      "input": "question: Differential algebraic equations (DAEs) | passage: A number of coupled differential equations form a system of equations. If is a vector whose elements are functions; …, and is a vector-valu",
+      "gold": "Q: Under what condition does an implicit system of equations F(x, y, y') = 0 become a differential algebraic equation (DAE) rather than an explicit ODE system? A) When the boundary conditions are non-homogeneous B) When the Jacobian matrix ∂F/∂y' is singular C) When the independent variable is absent from the system D) When the equation contains no nonlinear terms ANSWER: B",
+      "model": "Q: Why are differential algebraic equations (DAEs) generally more involved to solve than (nonsingular) ODE systems? A) Because DAEs are always more computationally expensive to solve. B) Because they require a Jacobian matrix to be symbolized. C) Because the matrix is always non-sinular. D) Because differential equations have fundamentally different characteristics. ANSWER: D"
+    },
+    {
+      "input": "question: Backpropagation | passage: Interest in neural networks revived during the 1980s because of the novel backpropagation algorithm, which allowed multi-layer neural networks to be trained effici",
+      "gold": "Q: What is the primary role of backpropagation in deep neural networks? A) To compute gradients and update weights to minimize prediction error B) To optimize the architecture by adding more hidden layers C) To initialize the weights randomly before training begins D) To perform inference on new, unseen data samples ANSWER: A",
+      "model": "Q: What is the primary purpose of using backpropagation in a neural network? A) To reduce the number of nodes in the network. B) To increase the size of the neural network. C) To eliminate the need for a control algorithm. D) To improve the performance of the training algorithm. ANSWER: D"
+    },
+    {
+      "input": "question: Negative feedback configuration | passage: An ideal op amp is usually considered to have the following characteristics: Arbitrarily high open-loop gain G = vout / vin Infinite input impedanc",
+      "gold": "Q: How does applying negative feedback primarily affect the gain of an op-amp circuit? A) It makes the circuit gain unpredictable B) It reduces the gain and stabilizes it via external components C) It increases the total open-loop gain D) It eliminates the requirement for a power supply ANSWER: B",
+      "model": "Q: What is the primary purpose of a negative feedback configuration in a op-amp circuit? A) To reduce the power consumption of the inverting input B) To eliminate the need for a phase shift C) To increase the output voltage D) To ensure the input voltage is zero ANSWER: D"
+    },
+    {
+      "input": "question: Evaluation of sentiment analysis | passage: The accuracy of a sentiment analysis system is, in principle, how well it agrees with human judgments. This is usually measured by variant measure",
+      "gold": "Q: Why is it challenging to directly compare the error rates of computer systems to human raters in sentiment analysis? A) Computer systems are only tested on a small subset of data. B) Computer systems are programmed to be more accurate than humans. C) Human raters are not allowed to use the same tools as the systems. D) Human raters typically only agree with each other about 80% of the time. ANSWER: D",
+      "model": "Q: What is the primary purpose of evaluating a sentiment analysis system? A) To measure the accuracy of the system's performance. B) To determine the exact number of errors in the system. C) To evaluate the reliability of a system against human judgments. D) To assess the accuracy and reliability of the computer system. ANSWER: C"
+    },
+    {
+      "input": "question: CMOS | passage: The binary number system was refined by Gottfried Wilhelm Leibniz (published in 1705), influenced by the ancient I Ching's binary system. Leibniz established that using the b",
+      "gold": "Q: How does a semiconductor logic gate fundamentally differ from a relay logic gate in its operation? A) A semiconductor gate uses moving parts, while a relay uses solid-state components. B) A semiconductor gate acts as a high-gain voltage amplifier, while a relay creates a continuous metallic path. C) A semiconductor gate consumes more power than a relay. D) A semiconductor gate is larger and slower than a relay. ANSWER: B",
+      "model": "Q: What is the primary purpose of CMOS in a computer? A) To increase the speed of the processor B) To reduce the number of transistors in the system C) To convert a single transistor into a multiple-pole transistor D) To simplify the design of the system ANSWER: C"
+    },
+    {
+      "input": "question: Routh array | passage: For a second-order polynomial all coefficients must be positive: > For a third-order polynomial all coefficients must be positive: > and also we need − > For a fourth-",
+      "gold": "Q: In the Routh array method, what does the number of sign changes in the first column indicate? A) The total number of roots of the polynomial. B) The number of roots with positive real parts. C) The number of roots exactly on the imaginary axis. D) The stability of the system's input signal. ANSWER: B",
+      "model": "Q: If a polynomial has all roots in the open left half-plane, what condition must be met? A) All coefficients must be positive. B) All first-column elements of the array must have the same sign. C) All roots must be located on the left side. D) All elements must be in the right side. ANSWER: B"
+    },
+    {
+      "input": "question: Deterministic noise | passage: A fourth issue is the degree of noise in the desired output values (the supervisory target variables). If the desired output values are often incorrect (becaus",
+      "gold": "Q: What situation leads to deterministic noise in a learning problem? A) When the input features are not scaled to the [-1, 1] interval. B) When the target function is too complex for the learning model. C) When the learning model is too simple to capture the true function. D) When the training labels are randomly assigned by a human. ANSWER: B",
+      "model": "Q: What is the primary cause of deterministic noise in supervised learning algorithms? A) It causes the learning algorithm to overfit B) It prevents the algorithm from overfitting C) It increases the learning rate D) It affects the learning model's performance ANSWER: B"
+    },
+    {
+      "input": "question: Single-sideband modulation (SSB) | passage: Amplitude modulation (AM) is a signal modulation technique used in electronic communication, most commonly for transmitting messages with a radio ",
+      "gold": "Q: What is the primary advantage of Single-sideband modulation compared to standard AM? A) It improves power efficiency and reduces required bandwidth B) It eliminates the need for a carrier frequency C) It requires a simpler receiver design D) It allows for faster data rates ANSWER: A",
+      "model": "Q: Why is single-sideband modulation (SSB) preferred over angle modulation for transmitting audio signals? A) It eliminates the need for a carrier signal B) It requires less bandwidth for transmission power C) It uses fewer filtering filters D) It reduces the bandwidth requirement ANSWER: A"
+    },
+    {
+      "input": "question: Rank | passage: In linear algebra, the rank of a matrix A is the dimension of the vector space generated (or spanned) by its columns. This corresponds to the maximal number of linearly indep",
+      "gold": "Q: What is the rank of an m × n matrix that consists entirely of non-zero identical rows? A) n B) m C) 1 D) min(m, n) ANSWER: C",
+      "model": "Q: What is the primary purpose of a matrix's rank in linear algebra? A) To measure the \"nondegenerateness\" of the system of linear equations and linear transformation encoded by A. B) To determine the number of linearly independent columns of A. C) To define the dimension of the vector space spanned by its columns. D) To indicate the degree to which the matrix is a vector space. ANSWER: C"
+    },
+    {
+      "input": "question: 10 | passage: Maxwell's equations are a set of coupled partial differential equations that describe how electric and magnetic fields are generated by electric charges and currents. Together ",
+      "gold": "Q: If the net electric flux exiting a closed Gaussian surface is zero, which statement must be true? A) The net enclosed electric charge within the surface is zero. B) The electric field must be identically zero at every point on the surface. C) There are no electric charges present anywhere inside or outside the surface. D) The magnetic field through the surface must be constantly changing. ANSWER: A",
+      "model": "Q: How does Maxwell's equations relate the electric and magnetic fields to total charge and total current? A) They describe the magnetic and electric fields at the atomic scale. B) They relate the electrical and mechanical fields to the total charge of the material. C) They refer to the physical and mechanical properties of materials at the molecular scale. D) They define two new auxiliary fields that describe the large-scale behavior of matter without having to consider atomic-scale charges and quantum phenomena like spins. ANSWER: D"
+    },
+    {
+      "input": "question: Cycle property | passage: In graph theory, a minimum spanning tree (MST) or minimum weight spanning tree is a subset of the edges of a connected, edge-weighted undirected graph that connects",
+      "gold": "Q: Why is the heaviest edge in a cycle never included in a minimum spanning tree? A) Replacing it with a lighter edge reduces total weight B) Removing it would disconnect the graph C) It violates the cut property D) It creates a cycle with lower total weight ANSWER: A",
+      "model": "Q: What is the primary purpose of a cycle property in a minimum spanning tree? A) To reduce the number of vertices in the graph B) To increase the total number of edges in the tree C) To ensure the tree is always symmetric D) To prevent the tree from crashing ANSWER: B"
+    }
+  ],
+  "minutes": 52.7
+}

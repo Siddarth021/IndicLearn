@@ -1,5 +1,12 @@
 # OPTIONAL local neural models (downloaded once from Hugging Face, then run offline)
 sentence-transformers>=3.0   # multilingual-e5-small dense retrieval
 transformers>=4.40           # NLLB-200 translator
-torch>=2.2
+torch>=2.2                   # for an RTX GPU install the CUDA build first: pip install torch --index-url https://download.pytorch.org/whl/cu121
+sacremoses>=0.1              # English tokenisation for IndicTrans2 (pure Python, works on Windows)
+librosa>=0.10                # audio decoding for speech recognition
+soundfile>=0.12
 faiss-cpu>=1.8               # legacy research pipeline only
+# indictranstoolkit           # OPTIONAL. IndicTrans2 already works without it (built-in light processor, also on
+                              # Windows). On Linux/macOS the official toolkit adds placeholder handling: pip install indictranstoolkit
+# parler-tts                  # OPTIONAL natural voices: pip install git+https://github.com/huggingface/parler-tts.git
+# easyocr>=1.7              # OPTIONAL OCR that also reads Telugu/Hindi inside pictures; then set INDICLEARN_OCR_LANGS=en,te

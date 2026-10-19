@@ -1,156 +1,72 @@
 # IndicLearn Studio
 
-**A multilingual study studio for students.** Upload your notes → read them in the app → ask a tutor bot in
-**English, తెలుగు, हिन्दी or संस्कृतम्** → take quizzes → watch a **personal mind map** grow from your questions and quiz results.
-Everything runs **locally – no hosted LLM or external API** is needed.
-
-| | |
-| :-- | :-- |
-| Upload & read | PDF, PPTX, DOCX, Markdown, TXT. Structure-aware parsing (headings from font sizes / slide titles / styles). |
-| Default knowledge map | Built *only* from the document: topic hierarchy, prerequisite flow, related links. Same for every student. |
-| Personal map | The default map + your mastery colours, progress rings and "doubt" nodes created by questions the notes could not answer. |
-| Tutor bot | Grounded, extractive answers with page citations; replies in the language you write in; refuses to guess. |
-| Quizzes | Cloze, "which definition", true/false – generated from your own notes; every answer updates the map. |
-| Learn from the map | Hover/click for definitions, examples, prerequisites; Radial / Tree / Flow layouts; guided tour along the learning path. |
+**Learn engineering from your own notes, in your own language.** Upload a chapter, slides or a paper →
+read it in the app → ask doubts in **English, తెలుగు, Romanized Telugu ("convolution ante enti?"), हिन्दी**
+or by **voice** → get a step-by-step explanation in your language → take quizzes → watch a **mind map** of the
+subject grow with what you learn.
 
 ## Run it
 
 ```bash
-pip install -r requirements.txt
-PYTHONPATH=src python -m indiclearn.studio      # http://127.0.0.1:8000
-# or: run.bat (Windows) · ./run.sh (Linux/macOS) · docker compose up --build
+run.bat                       # Windows: creates .venv, installs requirements, opens http://127.0.0.1:8000
+# or
+pip install -r requirements.txt && pip install -r requirements-models.txt
+PYTHONPATH=src python -m indiclearn.studio
 ```
 
-Configuration is by environment variables (see `.env.example`). Optional **local** models (never a hosted API):
+Copy `.env.example` to `.env` and add keys (all optional). Check every engine with `check_ai.bat`.
 
-```bash
-pip install -r requirements-models.txt          # sentence-transformers / transformers / torch
-INDICLEARN_EMBEDDING_BACKEND=sentence_transformers   # dense multilingual retrieval (multilingual-e5-small)
-INDICLEARN_TRANSLATOR_BACKEND=nllb                   # translate quoted passages into the chat language
-INDICLEARN_LLM_BACKEND=ollama                        # a local Ollama daemon rephrases the grounded answer
+## How it decides who answers
+
+Every AI feature walks the same chain and never fails hard - if one engine is down it moves on:
+
+| Order | Engine | Cost | Used for |
+|---|---|---|---|
+| 1 | **Gemini** (`gemini-3.8-flash`, `3.5-flash`, `flash-latest`, `2.5-flash`) | free tier, **~20 requests/day per model** - rotated | tutor, map, quizzes, translation |
+| 2 | **Sarvam** `sarvam-105b` (+ Saaras speech-to-text, Bulbul voices) | free credits, then pay-as-you-go | same + **voice in / voice out** |
+| 3 | **Gemma 4 E2B** via Ollama, on your PC | free, offline | same (map is upgraded in the background) |
+| 4 | Trained **M1-M4** + rules | free, offline, CPU | map filter, definitions, prerequisite links, quizzes |
+
+Students see answers **stream in word by word** (first words in ~1.5-3 s). Plain English and Telugu-script
+questions skip the extra "understand" call, which halves the free-tier usage.
+
+## What a student gets
+
+* **Tutor** - grounded on the notes with page chips, answers in the language of the question (explicit
+  "telugu lo cheppu" / "in Hindi" wins), English technical terms kept in English, reasoning steps, key terms,
+  a quick-check MCQ and tap-to-ask follow-ups. 🌐 Convert any reply to 13 languages. 🔊 Listen (natural voice).
+* **🎙 Voice doubts** - the server recogniser understands Telugu, English and the mix, is given the document's
+  own terms, and stops by itself when the student stops talking.
+* **Quizzes** - understanding-level MCQs written in the background right after upload (instant to open);
+  every answer key is double-checked by a second blind pass, wrong-keyed questions are dropped.
+* **Mind map** - AI concept map (or rules + M1/M2/M3 offline), labels never clipped, progress colours.
+* Works on phones (tutor opens as a closable full-screen sheet).
+
+## Models
+
+| | Model | Where it comes from |
+|---|---|---|
+| M1 concept filter | XLM-RoBERTa-base, fine-tuned | `training/` (teacher-labelled B.Tech corpus) |
+| M2 description writer | Flan-T5-base, fine-tuned | `training/` |
+| M3 prerequisite / related links | XLM-RoBERTa-base, fine-tuned | `training/` + LectureBank 2 |
+| M4 quiz generator | Flan-T5-base, fine-tuned | `training/` + SciQ |
+| Offline tutor | Gemma 4 E2B (Ollama) | `setup_offline.bat` |
+| Search / speech / translation / voices | multilingual-e5-small, Telugu Whisper, IndicTrans2, MMS-TTS | `python scripts/download_models.py` |
+
+Install the trained models: download the zip from the private Kaggle dataset
+`gundetisiddarth/indiclearn-models`, then `python scripts/install_models.py <zip>`.
+How they were built and how well they do: **`training/README.md`** and `training/reports/`.
+
+## Layout
+
+```
+src/indiclearn/studio/   the app (FastAPI): brain.py (engines), tutor.py, quizbank.py, speech.py, kgraph*.py, neural.py
+frontend/                the web UI (plain ES modules + d3)
+training/                corpus -> teacher labels -> datasets -> Kaggle training -> reports
+scripts/                 download_models.py, install_models.py, setup_offline.py, check_ai.py
+models/                  pretrained/ (downloaded) and trained/ (M1-M4)  - not in git
+tests/studio/            app tests:  PYTHONPATH=src pytest tests/studio
+old_useful_trash/        parked old files (not deleted, not in git)
 ```
 
-Tests: `PYTHONPATH=src pytest` (271 tests: 252 research-pipeline + 19 studio).
-The previous dark dashboard is kept in `legacy_frontend_dark/`; the original research pipeline (`src/indiclearn/{rag,nlp,...}`) is untouched.
-Read **docs/STUDIO_GUIDE** (the project explainer) for how every part works.
-
----
-
-# Research track (original prototype)
-
-
-**A Dynamic Personalized Knowledge Map for Engineering Students using Indic Language NLP** — Research-Grade Prototype.
-
-Initial scope: Telugu (native script, Romanized, Telugu–English code-mixed) + English; academic subject demo: Signals and Systems.
-
----
-
-## Status Summary
-
-```text
-250 unit and integration tests passing
-Ruff clean (zero linter warnings)
-```
-
-| Phase | Description | Status |
-| :--- | :--- | :---: |
-| **Phase 1** | Document Ingestion, Normalization & Recursive Chunking | **TESTED** |
-| **Phase 2** | Multilingual Embeddings, Vector Stores & Hybrid Retrieval (EXP-002) | **TESTED** |
-| **Phase 3** | Academic Knowledge Graph Construction & Validation (EXP-003) | **TESTED** |
-| **Phase 4** | Indic NLP (Language/Code-Mix Detection, Romanization, Concept Mapping) (EXP-004) | **TESTED** |
-| **Phase 5** | Scope-Controlled RAG & Grounded Answer Generation (EXP-005) | **TESTED** |
-| **Phase 5.1** | RAG Research Hardening & Graph-Enrichment Ablations (EXP-005A) | **TESTED** |
-| **Phase 5.2** | Scope Control & Adversarial Query Hardening (EXP-005B) | **TESTED** |
-| **Phase 6** | Student Knowledge Modeling & Evidence-Weighted Updates (EXP-006) | **TESTED** |
-| **Phase 6.1** | Student Model Consistency & Epistemic Audit | **TESTED** |
-| **Phase 7A** | Adaptive Assessment Core & Question Selection (EXP-007) | **TESTED** |
-| **Phase 7B** | Personalized Recommendations & Remediation Planner (EXP-008) | **TESTED** |
-| **Phase 8** | Visual Knowledge Map & Student Learning Dashboard (EXP-009) | **TESTED** |
-| **Phase 9** | Research Evaluation & Human Validation Framework (EXP-010 to EXP-014) | **TESTED** |
-
----
-
-## Controlled Evaluation & Validation Matrix
-
-| Experiment | Focus Area | Status | Verified Metric Summary |
-| :--- | :--- | :---: | :--- |
-| **EXP-005A** | RAG Multilingual Retrieval & Ablations | **PASS** | R@5 = 0.9200, MRR = 0.5677, Gold Evidence R@5 = 0.9100 |
-| **EXP-005B** | Scope Control & Adversarial Hard Negatives | **PASS** | Scope Accuracy = 1.0000, False Acceptance Rate = 0.0000 |
-| **EXP-006** | Student Knowledge Model Invariants | **PASS** | 10/10 scenarios passed, 27/27 invariants (100.0%) |
-| **EXP-007** | Adaptive Assessment Policy Invariants | **PASS** | 10/10 scenarios passed, 21/21 invariants (100.0%) |
-| **EXP-008** | Recommendation & Remediation Invariants | **PASS** | 12/12 scenarios passed, 33/33 invariants (100.0%) |
-| **EXP-009** | Presentation & Dashboard Invariants | **PASS** | 15/15 scenarios passed (100.0%) |
-| **EXP-010** | Recommendation Policy & Rule Consistency | **PASS** | 10/10 scenarios passed (100.0%), Top-1 Accuracy = 1.0000 |
-| **EXP-011** | Adaptive Assessment Diagnostic Policy | **PASS** | 10/10 scenarios passed (100.0%), Repeat Avoidance = 1.0000 |
-| **EXP-012** | Dashboard Human Usability Framework | **NOT_RUN** | Framework verified; $N=0$; `HUMAN_DATA_REQUIRED` |
-| **EXP-013** | RAG Human Annotation Framework | **NOT_RUN** | Framework verified (7 dims); $N=0$; `HUMAN_DATA_REQUIRED` |
-| **EXP-014** | Multilingual Human Evaluation Framework | **NOT_RUN** | Framework verified (4 tracks); $N=0$; `HUMAN_DATA_REQUIRED` |
-
-*Scientific Policy*: Zero fabricated participant data. Experiments EXP-012 through EXP-014 are strictly marked `HUMAN_DATA_REQUIRED` / `NOT_RUN` pending human-subject recruitment under institutional ethical review.
-
----
-
-## Setup & Execution
-
-### 1. Environment Setup
-```bash
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\Activate.ps1
-pip install -e ".[dev]"
-cp .env.example .env
-```
-
-### 2. Testing and Code Quality
-```bash
-python -m pytest -q
-python -m ruff check .
-```
-
-### 3. Running Controlled Benchmarks
-```bash
-# Core Benchmarks (Phases 5-8)
-python scripts/run_exp005a.py
-python scripts/run_exp005b.py
-python scripts/run_exp006.py
-python scripts/run_exp007.py
-python scripts/run_exp008.py
-python scripts/run_exp009.py
-
-# Phase 9 Evaluation Framework (EXP-010 to EXP-014)
-python scripts/run_exp010.py
-python scripts/run_exp011.py
-python scripts/run_exp012.py
-python scripts/run_exp013.py
-python scripts/run_exp014.py
-```
-
-### 4. Running the Dashboard Application
-```bash
-python -m uvicorn indiclearn.api.app:app --reload --port 8000
-```
-Open `http://localhost:8000` to interact with the student learning dashboard and visual knowledge map.
-
----
-
-## Epistemic Hierarchy & Research Governance
-
-IndicLearn strictly distinguishes four levels of evaluation:
-1. **Software Verification**: Automated test suites validating unit logic, data structures, and invariants.
-2. **Controlled Algorithmic Benchmarks**: Deterministic evaluation of retrieval, extraction, scope control, and policy selection against curated gold standards.
-3. **Human Usability & Linguistic Evaluation**: Protocols, guidelines, and schemas for empirical studies with native speakers (`docs/HUMAN_EVALUATION_PROTOCOL.md`).
-4. **Controlled Learning-Effectiveness Trials**: Pre/post/delayed-retention randomized controlled trial protocol for future educational research (`docs/LEARNING_EFFECTIVENESS_STUDY.md`).
-
-**No learning-effectiveness claims are made** without completing empirical human-subject trials.
-
----
-
-## Documentation Index
-
-- `docs/PROJECT_CONTEXT.md`: Single source of truth for project status, architecture, and constraints.
-- `docs/RESEARCH_EVALUATION.md`: Formal research questions, registry summary, and statistical criteria.
-- `docs/HUMAN_EVALUATION_PROTOCOL.md`: Protocol, participant inclusion/exclusion, and tasks T1-T9.
-- `docs/LEARNING_EFFECTIVENESS_STUDY.md`: Pre/post RCT trial design with exact statistical power analysis ($N=128$ completing, $N=152$ enrolled).
-- `docs/DECISIONS.md`: Architectural Decision Records (DEC-001 through DEC-045).
-- `docs/EXPERIMENTS.md`: Full empirical reports for EXP-001 through EXP-014.
-- `docs/ARCHITECTURE.md`: Subsystem layer descriptions.
-- `docs/HANDOFF.md`: Comprehensive phase-by-phase handoff history.
+Licence notes: MMS-TTS voices and NLLB are CC-BY-NC (non-commercial); Wikipedia-derived data is CC BY-SA.

@@ -1,0 +1,131 @@
+{
+  "m1": {
+    "train": {
+      "n": 12102,
+      "labels": {
+        "1": 7446,
+        "0": 4656
+      },
+      "sources": {
+        "teacher": 12102
+      }
+    },
+    "val": {
+      "n": 1662,
+      "labels": {
+        "0": 626,
+        "1": 1036
+      },
+      "sources": {
+        "teacher": 1662
+      }
+    },
+    "test": {
+      "n": 1586,
+      "labels": {
+        "0": 624,
+        "1": 962
+      },
+      "sources": {
+        "teacher": 1586
+      }
+    }
+  },
+  "m2": {
+    "train": {
+      "n": 7595,
+      "labels": {
+        "-": 7595
+      },
+      "sources": {
+        "teacher": 7595
+      }
+    },
+    "val": {
+      "n": 1052,
+      "labels": {
+        "-": 1052
+      },
+      "sources": {
+        "teacher": 1052
+      }
+    },
+    "test": {
+      "n": 972,
+      "labels": {
+        "-": 972
+      },
+      "sources": {
+        "teacher": 972
+      }
+    }
+  },
+  "m3": {
+    "train": {
+      "n": 14060,
+      "labels": {
+        "related": 3216,
+        "prereq": 2226,
+        "none": 8618
+      },
+      "sources": {
+        "teacher": 11705,
+        "lecturebank": 2355
+      }
+    },
+    "val": {
+      "n": 1650,
+      "labels": {
+        "related": 456,
+        "prereq": 246,
+        "none": 948
+      },
+      "sources": {
+        "teacher": 1650
+      }
+    },
+    "test": {
+      "n": 1440,
+      "labels": {
+        "none": 830,
+        "related": 390,
+        "prereq": 220
+      },
+      "sources": {
+        "teacher": 1440
+      }
+    }
+  },
+  "m4": {
+    "train": {
+      "n": 10746,
+      "labels": {
+        "-": 10746
+      },
+      "sources": {
+        "sciq": 9662,
+        "teacher": 1084
+      }
+    },
+    "val": {
+      "n": 955,
+      "labels": {
+        "-": 955
+      },
+      "sources": {
+        "teacher": 138,
+        "sciq": 817
+      }
+    },
+    "test": {
+      "n": 962,
+      "labels": {
+        "-": 962
+      },
+      "sources": {
+        "sciq": 824,
+        "teacher": 138
+      }
+    }
+  }
+}

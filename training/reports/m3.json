@@ -1,0 +1,28 @@
+{
+  "model": "m3",
+  "n_test": 1440,
+  "model_macro_f1": 0.5224,
+  "per_class": {
+    "none": {
+      "precision": 0.805,
+      "recall": 0.6566,
+      "f1": 0.7233,
+      "accuracy": 0.7104
+    },
+    "prereq": {
+      "precision": 0.2928,
+      "recall": 0.4045,
+      "f1": 0.3397,
+      "accuracy": 0.7597
+    },
+    "related": {
+      "precision": 0.4662,
+      "recall": 0.5487,
+      "f1": 0.5041,
+      "accuracy": 0.7076
+    }
+  },
+  "baseline_majority_macro_f1": 0.2438,
+  "baseline_cooccurrence_macro_f1": 0.1421,
+  "minutes": 8.9
+}

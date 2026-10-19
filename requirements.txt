@@ -9,3 +9,5 @@ numpy>=1.26
 fastapi>=0.110
 uvicorn>=0.29
 python-multipart>=0.0.9
+pypdfium2>=4.30                # renders scanned PDF pages for OCR
+rapidocr-onnxruntime>=1.2.3     # OCR for text inside pictures (scanned PDFs, image slides); no PyTorch needed

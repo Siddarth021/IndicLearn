@@ -18,6 +18,8 @@ dependencies = [
   "fastapi>=0.110",
   "uvicorn>=0.29",
   "python-multipart>=0.0.9",
+  "pypdfium2>=4.30",           # render scanned pages for OCR
+  "rapidocr-onnxruntime>=1.2.3",  # OCR for text stored as pictures
 ]
 
 [project.optional-dependencies]
@@ -42,6 +44,9 @@ src = ["src", "tests"]
 [tool.ruff.lint.per-file-ignores]
 # FastAPI's Depends() default is idiomatic; the optional-model fallbacks must never crash a request.
 "src/indiclearn/studio/*" = ["B008", "BLE001", "S110", "SIM102", "SIM103", "C405", "RUF017", "RUF007", "PLC0206", "B023", "E501", "PLR"]
+# Download and training scripts report every failure readably instead of crashing with a traceback,
+# and run as __main__ with the project root pushed onto sys.path.
+"scripts/phase2/*" = ["BLE001", "E402", "S112", "C408", "S603", "S607", "T201", "E501", "PLR", "PLW", "S110"]
 
 [tool.mypy]
 python_version = "3.10"

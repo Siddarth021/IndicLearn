@@ -1,0 +1,210 @@
+{
+  "model": "m2",
+  "n_test_scored": 300,
+  "rougeL_f": 0.2635,
+  "echo_rate": 0.0,
+  "baseline_copy_context_rougeL_f": 0.1623,
+  "samples": [
+    {
+      "input": "define: Worst-case | context: Since an algorithm's running time may vary among different inputs of the same size, one commonly considers the worst-case time complexity, which is the maximum amount of ",
+      "gold": "The maximum time required for an algorithm to execute over all possible inputs of a specific size.",
+      "model": "The maximum amount of time required for inputs of a given size, which determines the algorithm's running time."
+    },
+    {
+      "input": "define: SQL | context: These model data as rows and columns in a series of tables, and the vast majority use SQL for writing and querying data.",
+      "gold": "The standard query language used for managing, manipulating, and retrieving data within relational database management systems.",
+      "model": "SQL is a programming language used to create, query, and store data in relational databases."
+    },
+    {
+      "input": "define: Time-domain | context: Time-domain methods are based on the beat-to-beat or NN intervals (typically determined from RR intervals), which are analysed to give variables such as: SDNN (standard ",
+      "gold": "Time-domain methods analyze beat-to-beat or NN intervals to derive variables like SDNN, which represent total variability in the recording period.",
+      "model": "A classification method based on the beat-to-beat or NN intervals used in NN training."
+    },
+    {
+      "input": "define: CMOS version | context: The 80C86, the CMOS version of the 8086, was used in many portable computers and embedded systems, including the GridPad, Toshiba T1200, HP 110, and finally the 1998–19",
+      "gold": "CMOS version refers to a type of semiconductor manufacturing process used to build microprocessors like the 8086.",
+      "model": "The CMOS version of the 8086 was a portable computer processor developed by IBM in the 1990s."
+    },
+    {
+      "input": "define: Linear time-invariant (LTI) | context: In control theory and the theory of differential equations, the Routh–Hurwitz stability criterion is a mathematical test that is a necessary and sufficie",
+      "gold": "A mathematical model for a system where parameters are constant over time and the system output is a linear function of its input.",
+      "model": "A dynamical system with a linear time-invariant function, requiring a Routh-Hurwitz stability criterion for stability."
+    },
+    {
+      "input": "define: Restart marker | context: At a restart marker, block-to-block predictor variables are reset, and the bitstream is synchronized to a byte boundary.",
+      "gold": "Special codes inserted into the JPEG bitstream that allow the decoder to recover and synchronize after errors or data corruption.",
+      "model": "A synchronization marker that resets block-to-block predictor variables, synchronizing the bitstream to a byte boundary."
+    },
+    {
+      "input": "define: Transverse-magnetic (TM) | context: P-polarization is commonly referred to as transverse-magnetic (TM), and has also been termed pi-polarized or π-polarized, or tangential plane polarized.",
+      "gold": "Electromagnetic wave mode where the magnetic field is entirely transverse to the direction of wave propagation.",
+      "model": "Transverse-magnetic (TM) is a type of p-polarization where the magnetic field is inversely proportional to the direction of propagation."
+    },
+    {
+      "input": "define: Quadrature amplitude modulation (QAM) | context: With more than 8 phases, the error-rate becomes too high and there are better, though more complex, modulations available such as quadrature am",
+      "gold": "A modulation scheme that transmits data by changing both the amplitude and the phase of the carrier signal to represent multiple bits per symbol.",
+      "model": "Quadrature amplitude modulation (QAM) is a modulation technique that uses a quadrature modulator to modulate the frequency of a signal."
+    },
+    {
+      "input": "define: Backpropagation | context: Interest in neural networks revived during the 1980s because of the novel backpropagation algorithm, which allowed multi-layer neural networks to be trained efficien",
+      "gold": "An algorithm used for training neural networks by calculating the gradient of the loss function and propagating the error backward through the network layers.",
+      "model": "An algorithm used to train multi-layer neural networks by propagating error gradients backward through network layers."
+    },
+    {
+      "input": "define: PSNS | context: Decreased PSNS activity or increased SNS activity will result in reduced HRV.",
+      "gold": "The parasympathetic nervous system (PSNS) contributes to decreased heart rate and is a primary driver of high-frequency (HF) HRV components.",
+      "model": "The primary neuron in a human body that receives a signal from a central nervous system to transmit information."
+    },
+    {
+      "input": "define: Multiclass classification | context: Folding activation functions are extensively used in the pooling layers in convolutional neural networks, and in output layers of multiclass classification",
+      "gold": "Multiclass classification is a machine learning task where the model predicts the class of an input from a predefined set of more than two categories.",
+      "model": "A classification task where multiple classifiers are trained on a single model, often using multi-class activation functions."
+    },
+    {
+      "input": "define: Reliability | context: The transport layer also controls the reliability of a given link between a source and destination host through flow control, error control, and acknowledgments of seque",
+      "gold": "A service quality where the transport layer ensures all data arrives correctly and in order at the destination host.",
+      "model": "The property of a link between a source and a destination host that determines the flow of data."
+    },
+    {
+      "input": "define: Maxwell equations | context: Heaviside's version from 1890s is the form recognized today in the group of equations known as Maxwell's equations.",
+      "gold": "The Maxwell equations are a set of four fundamental equations describing classical electromagnetism.",
+      "model": "Mathematical equations relating a function of a variable to its derivatives, often derived from Heaviside's version from the 1890s."
+    },
+    {
+      "input": "define: False positive | context: The actual classification is negative and the predicted classification is positive (0,1). This is called a false positive result because the negative sample is incorr",
+      "gold": "An outcome where the actual class is negative but the classifier incorrectly predicts it as positive.",
+      "model": "A result where a classifier incorrectly identified the negative sample as being positive."
+    },
+    {
+      "input": "define: Phase shift | context: When the phase shift is exactly ±90°, and the amplitudes are the same, then circular polarization is produced (fourth and fifth figures).",
+      "gold": "Difference in phase angle between two oscillating components or waves evaluated at a specific point in time.",
+      "model": "The change in the phase of a waveform, which can cause circular polarization."
+    },
+    {
+      "input": "define: Elastic material | context: A rod of any elastic material may be viewed as a linear spring.",
+      "gold": "A substance characterized by the ability to undergo deformation under stress and recover its original shape when the stress is released.",
+      "model": "An elastic material is a material that exhibits elastic properties, such as elastic resistance, forming a rod."
+    },
+    {
+      "input": "define: voltage-feedback op amp (VFOA) | context: Very high-frequency circuits often use a current-feedback operational amplifier, because their bandwidth doesn't decrease with gain like voltage-feedb",
+      "gold": "An amplifier that primarily amplifies the voltage difference between its input terminals.",
+      "model": "A type of high-frequency circuit where the output voltage is directly proportional to the input voltage."
+    },
+    {
+      "input": "define: probabilistic Turing machine | context: P: The complexity class of decision problems that can be solved on a deterministic Turing machine in polynomial time NP: The complexity class of decisio",
+      "gold": "A variation of a standard Turing machine that can make random choices during its computation, often used in complexity analysis.",
+      "model": "A Turing machine is a computational model that can solve any problem in polynomial time using a finite number of inputs."
+    },
+    {
+      "input": "define: OSI reference model | context: Neither the OSI Reference Model, nor any OSI protocol specifications, outline any programming interfaces, other than deliberately abstract service descriptions.",
+      "gold": "The ISO-published model that decomposes communication system functions into seven hierarchical layers for standardization.",
+      "model": "The OSI Reference Model is a formal specification that defines the foundational programming interfaces for the OSI architecture."
+    },
+    {
+      "input": "define: Polymorphism | context: In fact, subtype polymorphism as enforced by the type checker in OOP languages cannot guarantee behavioral subtyping in most if not all contexts.",
+      "gold": "The ability of an object to take on many forms, allowing methods to perform different actions based on the object.",
+      "model": "A property of a language where subclasses of the same class can be derived from one another."
+    },
+    {
+      "input": "define: displacement current | context: Maxwell's addition states that magnetic fields also relate to changing electric fields, which Maxwell called displacement current.",
+      "gold": "A quantity representing the rate of change of electric displacement field that acts as a source of magnetic field.",
+      "model": "A magnetic field that changes electric fields due to changes in magnetic fields, which Maxwell states is related to changing electric fields."
+    },
+    {
+      "input": "define: Protocol data units (PDU) | context: At each level N, two entities at the communicating devices (layer N peers) exchange protocol data units (PDUs) by means of a layer N protocol.",
+      "gold": "The structured data units exchanged between peer entities at the same layer in a communication system.",
+      "model": "Protocol data units (PDUs) are data units that are exchanged between two communicating devices by a layer N protocol."
+    },
+    {
+      "input": "define: Scalar springs | context: ",
+      "gold": "Systems where the deformation and the associated stress can be fully described by a single scalar value rather than requiring complex vector or tensor notation.",
+      "model": "Scalar springs are a type of scalar waveform where the amplitude of the waveform increases exponentially over time."
+    },
+    {
+      "input": "define: Precleaning | context: To deal with this situation, various precleaning policies are implemented.",
+      "gold": "A strategy that initiates disk I/O for dirty pages before they are actually selected for replacement to reduce latency.",
+      "model": "Precleaning is the process of removing a node from a database before it is emptied to prevent recurrence."
+    },
+    {
+      "input": "define: Social media platforms | context: Further complicating the matter is the rise of anonymous social media platforms such as 4chan and Reddit.",
+      "gold": "Social media platforms are online communication channels that facilitate the creation and sharing of user-generated content and opinions.",
+      "model": "Social media platforms are a collection of social media platforms, such as 4chan and Reddit, that allow users to interact with each other and share information."
+    },
+    {
+      "input": "define: Neurovisceral integration | context: The neurovisceral integration is a model of HRV that views the central autonomic network as the decision maker of cognitive, behavioral and physiological r",
+      "gold": "Neurovisceral integration is a model describing how the central autonomic network regulates cognitive, behavioral, and physiological responses.",
+      "model": "A model of HRV that views the central autonomic network as the decision maker of cognitive, behavioral, and physiological regulation."
+    },
+    {
+      "input": "define: Plane wave | context: However, for understanding electromagnetic waves and polarization in particular, it is easier to just consider coherent plane waves; these are sinusoidal waves of one par",
+      "gold": "Idealized wave whose wavefronts are parallel infinite planes perpendicular to the direction of wave propagation.",
+      "model": "A sinusoidal waveform with a specific direction, frequency, phase, and polarization state."
+    },
+    {
+      "input": "define: Angle modulation | context: In angle modulation, the term A(t) is constant and the second term of the equation has a functional relationship to the modulating message signal.",
+      "gold": "A broad category of modulation techniques involving changes to the phase or frequency of a carrier wave, keeping amplitude constant.",
+      "model": "The process of converting a signal into a frequency-domain representation using a vector field."
+    },
+    {
+      "input": "define: Speed-torque characteristics | context: Polyphase motors have rotor bars shaped to give different speed-torque characteristics.",
+      "gold": "The graphical relationship between motor speed and developed torque under varying load conditions.",
+      "model": "The characteristics of a motor that determine its speed and torque."
+    },
+    {
+      "input": "define: Filtering | context: Rectifiers yield a unidirectional but pulsating direct current; half-wave rectifiers produce far more ripple than full-wave rectifiers, and much more filtering is needed t",
+      "gold": "The process of removing AC harmonics from a rectified output to create a smoother DC voltage.",
+      "model": "The process of eliminating harmonics of the AC frequency from the output of a circuit."
+    },
+    {
+      "input": "define: Binary system | context: The binary number system was refined by Gottfried Wilhelm Leibniz (published in 1705), influenced by the ancient I Ching's binary system.",
+      "gold": "A number system using only two digits, 0 and 1, forming the basis for digital logic and computing.",
+      "model": "A mathematical representation of a binary number system, consisting of alternating zeros and ones, used to represent binary numbers."
+    },
+    {
+      "input": "define: Transport layer | context: The transport layer provides the functional and procedural means of transferring variable-length data sequences from a source host to a destination host from one app",
+      "gold": "The OSI layer that provides reliable, end-to-end data transfer between hosts while maintaining quality of service.",
+      "model": "The functional and procedural layer responsible for transferring variable-length data sequences from a source host to a destination host, maintaining quality-of-service functions."
+    },
+    {
+      "input": "define: Offset pairs | context: Far pointers are 32-bit segment:offset pairs resolving to 20-bit external addresses.",
+      "gold": "Offset pairs are the 32-bit segment:offset combinations used in the 8086 to form a 20-bit physical memory address.",
+      "model": "Pairs of addresses assigned to a pointer in a far pointer, which are resolvable to 20-bit external addresses."
+    },
+    {
+      "input": "define: Tree rotations | context: Insertions and deletions may require the tree to be rebalanced by one or more tree rotations.",
+      "gold": "The structural operations used to rebalance an AVL tree when a node's balance factor becomes -2 or +2.",
+      "model": "Tree rotations are the process of rebalancing a tree by adjusting its height, width, and depth to rebalance it."
+    },
+    {
+      "input": "define: Internet service provider (ISP) | context: In a typical home or small-office setup, a single router is the only device visible to an Internet service provider (ISP), and the ISP may try to pro",
+      "gold": "A commercial organization that provides users with access to the internet and IP addresses.",
+      "model": "An organization that provides services for the Internet, such as routers, servers, and software."
+    },
+    {
+      "input": "define: Spectral leakage | context: But that method also changes the frequency content of the signal by an effect called spectral leakage.",
+      "gold": "An artifact occurring when a signal's frequency does not align perfectly with discrete sampling points, causing energy to spread into adjacent frequency bins.",
+      "model": "A phenomenon where a signal's frequency content changes as it passes through a filter, affecting the frequency content of the signal."
+    },
+    {
+      "input": "define: Quantization | context: In the transform domain, the process of reducing information is called quantization.",
+      "gold": "The process of mapping a large set of values to a smaller set, used in JPEG to reduce the precision of coefficients in the transform domain.",
+      "model": "The process of reducing the number of bits in a signal, which is a fundamental process in the transform domain."
+    },
+    {
+      "input": "define: Function | context: The function is an element of some space of possible functions, usually called the hypothesis space.",
+      "gold": "A mathematical relationship that maps inputs to outputs for a given learning problem.",
+      "model": "A function is an element of a space of possible functions, typically the hypothesis space."
+    },
+    {
+      "input": "define: Digital modulation | context: Phase-shift keying (PSK) is a digital modulation process which conveys data by changing (modulating) the phase of a constant frequency carrier wave.",
+      "gold": "The process of varying one or more properties of a waveform to transmit information, specifically focusing on discrete data signals rather than analog signals.",
+      "model": "Digital modulation is the process of transmitting data by changing the phase of a constant frequency carrier wave."
+    },
+    {
+      "input": "define: Neutral class | context: Whether and how to use a neutral class depends on the nature of the data: if the data is clearly clustered into neutral, negative and positive language, it makes sense",
+      "gold": "A neutral class is a category in sentiment classification for text that does not express a clear positive or negative opinion.",
+      "model": "A class containing all possible values in a dataset, such as positive, negative, or negative, used to classify data."
+    }
+  ],
+  "minutes": 26.0
+}
