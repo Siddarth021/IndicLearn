@@ -13,6 +13,8 @@ from pydantic import BaseModel, Field
 
 from indiclearn.studio.auth import AuthError
 from indiclearn.studio.courses.papers import PaperError
+
+STARTED = __import__("time").time()
 from indiclearn.studio.service import StudioService
 
 
@@ -103,7 +105,7 @@ def build_router(svc: StudioService) -> APIRouter:
 
     @r.get("/health")
     def health() -> dict[str, Any]:
-        return {"ok": True}
+        return {"ok": True, "app": "indiclearn", "started": STARTED}
 
     @r.get("/ai/status")
     def ai_status(test: int = 0) -> dict[str, Any]:

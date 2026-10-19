@@ -14,7 +14,9 @@ async function req(method, url, body, isForm) {
   let data = null;
   try { data = await r.json(); } catch (e) { /* no body */ }
   if (!r.ok) {
-    const msg = typeof data?.detail === "string" ? data.detail : (data?.detail?.[0]?.msg || r.statusText);
+    let msg = typeof data?.detail === "string" ? data.detail : (data?.detail?.[0]?.msg || r.statusText);
+    if (r.status === 404 && msg === "Not Found")  // route missing: an older server is still running
+      msg = "The app was updated but an older server is still running. Close every IndicLearn window and start run.bat again.";
     throw new ApiError(msg, r.status);
   }
   return data;
