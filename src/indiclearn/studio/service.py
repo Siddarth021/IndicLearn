@@ -52,6 +52,17 @@ SAMPLES = [
 ]
 
 
+class _NoBrainModels:
+    """The models without the AI engine: used when a student has used up today's AI answers."""
+
+    def __init__(self, models: Any) -> None:
+        self._m = models
+        self.brain = None
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._m, name)
+
+
 def _err(msg: str, status: int = 400) -> AuthError:
     return AuthError(msg, status)
 
@@ -367,8 +378,14 @@ class StudioService:
         d, ix, nodes, edges = self._load(user_id, doc_id)
         past = [{"role": m["role"], "content": m["content"]} for m in self.history(user_id, doc_id, 8)]
         self.db.run("INSERT INTO chat_messages(user_id,doc_id,role,content,meta_json,ts) VALUES (?,?,?,?,?,?)", (user_id, doc_id, "user", message, "{}", now()))
-        rep = tutor.answer(message, ui_lang, ix, nodes, edges, d["title"], d["lang"] or "en", d["unit_label"] or "Page", focus_node, auto_lang, self.models, past,
-                           on_delta)
+        rep = self._cached_answer(doc_id, message, ui_lang, focus_node, auto_lang, past)
+        if rep is None:
+            models = self.models if self._ai_allowed(user_id) else _NoBrainModels(self.models)
+            rep = tutor.answer(message, ui_lang, ix, nodes, edges, d["title"], d["lang"] or "en", d["unit_label"] or "Page", focus_node, auto_lang, models, past,
+                               on_delta)
+            self._store_answer(doc_id, message, ui_lang, focus_node, auto_lang, past, rep)
+        elif on_delta is not None:
+            on_delta(None)  # nothing to stream: the cached answer arrives whole
         out: dict[str, Any] = {"lang": rep.lang, "intent": rep.intent, "grounded": rep.grounded, "relevance": rep.relevance, "citations": rep.citations, "linked": rep.linked,
                                "focus_node": rep.focus_node, "related": rep.related, **rep.extra}
         text = rep.text
@@ -404,6 +421,53 @@ class StudioService:
         return out
 
     # ------------------------------------------------------------------- quiz
+    # ---------------------------------------------------- AI budget: answer cache + optional daily limit per student
+    _CACHE_TTL = 7 * 86400
+
+    @staticmethod
+    def _answer_key(doc_id: str, message: str, ui_lang: str, focus_node: str | None, auto_lang: bool) -> str:
+        norm = re.sub(r"\s+", " ", re.sub(r"[^\w\s]", "", message.lower())).strip()
+        return hashlib.sha1(f"{doc_id}|{norm}|{ui_lang}|{focus_node or ''}|{int(auto_lang)}".encode()).hexdigest()
+
+    @staticmethod
+    def _cacheable(message: str, past: list[dict[str, str]], focus_node: str | None = None) -> bool:
+        """Only self-contained questions. "Explain it again" depends on the conversation, so it is never served from cache;
+        "Summarise this topic" with a focused topic is self-contained (the topic is part of the key)."""
+        if len(message.split()) < 3:
+            return False
+        if past and tutor._REFERS_BACK.search(message):
+            return bool(focus_node) and not re.search(r"(?i)\b(again|more|previous|above|same|another)\b|మళ్ళీ|ఇంకా|फिर|और", message)
+        return True
+
+    def _cached_answer(self, doc_id: str, message: str, ui_lang: str, focus_node: str | None, auto_lang: bool, past: list) -> Any:
+        if not self._cacheable(message, past, focus_node):
+            return None
+        r = self.db.one("SELECT payload_json, created_at FROM answer_cache WHERE key=?", (self._answer_key(doc_id, message, ui_lang, focus_node, auto_lang),))
+        if not r or now() - r["created_at"] > self._CACHE_TTL:
+            return None
+        d = jload(r["payload_json"], {})
+        d["evidence"] = [tuple(x) for x in d.get("evidence", [])]
+        d["extra"] = {**d.get("extra", {}), "cached": True}
+        return tutor.TutorReply(**d)
+
+    def _store_answer(self, doc_id: str, message: str, ui_lang: str, focus_node: str | None, auto_lang: bool, past: list, rep: Any) -> None:
+        # keep only real AI answers (no "AI was busy" fallbacks, no quiz/recommend actions)
+        if rep.action or rep.extra.get("notice") or not rep.extra.get("engine") or not self._cacheable(message, past, focus_node):
+            return
+        import dataclasses
+
+        self.db.run("INSERT OR REPLACE INTO answer_cache(key, payload_json, created_at) VALUES (?,?,?)",
+                    (self._answer_key(doc_id, message, ui_lang, focus_node, auto_lang), jdump(dataclasses.asdict(rep)), now()))
+
+    def _ai_allowed(self, user_id: str) -> bool:
+        """INDICLEARN_AI_DAILY_LIMIT > 0 caps AI answers per student per day (protects a shared free quota on a VPS)."""
+        limit = int(os.environ.get("INDICLEARN_AI_DAILY_LIMIT", "0") or 0)
+        if limit <= 0:
+            return True
+        since = now() - 86400
+        n = self.db.one("SELECT COUNT(*) c FROM chat_messages WHERE user_id=? AND role='assistant' AND ts>? AND meta_json LIKE '%\"engine\"%'", (user_id, since))["c"]
+        return n < limit
+
     def quiz_new(self, user_id: str, doc_id: str, scope: str | None, n: int, ui_lang: str) -> dict[str, Any]:
         d, ix, nodes, _e = self._load(user_id, doc_id)
         n = max(1, min(int(n or 5), 10))

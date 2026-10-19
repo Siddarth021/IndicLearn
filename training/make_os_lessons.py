@@ -53,14 +53,18 @@ def write(brain: B.Brain, unit: dict, topic: dict) -> dict | None:
                "(tie-breaking, what is counted); a live solved example is shown separately.\n" if numerical else ""))
 
     def ok(v: object) -> object:
-        return v if isinstance(v, dict) and v.get("summary") and isinstance(v.get("sections"), list) and len(v["sections"]) >= 2 else None
+        full = isinstance(v, dict) and v.get("summary") and isinstance(v.get("sections"), list) and len(v["sections"]) >= 2
+        return v if full and all(isinstance(v.get(k), list) and v[k] for k in ("key_terms", "exam_tips", "mistakes")) and v.get("example") else None
 
     r = brain._run(SYSTEM_LESSON, user, True, 6000, ok)
     return r[0] if r else None
 
 
-def review(brain: B.Brain, lesson: dict) -> tuple[dict, str, int]:
-    r = brain._run(SYSTEM_REVIEW, json.dumps(lesson, ensure_ascii=False), True, 4000,
+def review(brain: B.Brain, lesson: dict, rules: list[str] | None = None) -> tuple[dict, str, int]:
+    system = SYSTEM_REVIEW + ("\nGROUND TRUTH - the app solves this topic's numericals with exactly these rules; any statement that "
+                              "contradicts them (or teaches a different method, formula or tie-break) is an error to fix:\n- "
+                              + "\n- ".join(rules) if rules else "")
+    r = brain._run(system, json.dumps(lesson, ensure_ascii=False), True, 4000,
                    lambda v: v if isinstance(v, dict) and v.get("verdict") in ("ok", "fix") else None)
     if not r:
         return lesson, "unreviewed", 0
@@ -91,6 +95,7 @@ def main() -> None:
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--workers", type=int, default=3)
     ap.add_argument("--te-only", action="store_true", help="only (re)translate lessons that have no Telugu yet")
+    ap.add_argument("--recheck-numerical", action="store_true", help="re-review numerical topics against the solver's exact rules")
     a = ap.parse_args()
     load_dotenv(str(ROOT / ".env"))
     os.environ["INDICLEARN_BRAIN"] = os.environ.get("WRITER", "sarvam,gemini")
@@ -109,7 +114,9 @@ def main() -> None:
             if line.strip():
                 d = json.loads(line)
                 have[d["topic"]] = d
-    if a.te_only:
+    if a.recheck_numerical:
+        jobs = [(u, t) for u in syl["units"] for t in u["topics"] if t.get("numerical") and t["id"] in have]
+    elif a.te_only:
         jobs = [(u, t) for u in syl["units"] for t in u["topics"] if t["id"] in have and not have[t["id"]].get("te")]
     else:
         jobs = [(u, t) for u in syl["units"] for t in u["topics"] if (not a.topics or t["id"] in a.topics) and (a.force or t["id"] not in have)]
@@ -117,6 +124,16 @@ def main() -> None:
 
     def work(job: tuple[dict, dict]) -> dict | None:
         u, t = job
+        if a.recheck_numerical:
+            from indiclearn.studio.courses.lessons import RULES
+
+            d = dict(have[t["id"]])
+            en, by, nfix = review(reviewer, d["en"], RULES.get(t["numerical"]))
+            print(f"  {t['id']:<24} rechecked by {by}: {nfix} fixes", flush=True)
+            if nfix:
+                d["en"], d["te"] = en, None  # the Telugu was made from the old text
+            d["rechecked_by"] = by
+            return d
         if a.te_only:
             d = dict(have[t["id"]])
             d["te"] = translate(te_brain, d["en"], "te")

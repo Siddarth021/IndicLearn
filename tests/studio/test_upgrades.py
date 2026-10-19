@@ -137,3 +137,33 @@ def test_quiz_retry_and_rename(client, auth, sample_md):
         assert rr.status_code == 400  # nothing to retry
     assert client.put(f"/api/docs/{d['id']}", json={"title": "  OS Unit 3  "}, headers=auth).json()["title"] == "OS Unit 3"
     assert client.put(f"/api/docs/{d['id']}", json={"title": " "}, headers=auth).status_code == 400
+
+
+def test_answer_cache_and_daily_limit(client, auth, sample_md, monkeypatch):
+    import time
+
+    from indiclearn.studio import tutor
+
+    d = client.post("/api/docs", files={"file": ("n.md", sample_md.read_bytes(), "text/markdown")}, headers=auth).json()
+    for _ in range(60):
+        if client.get(f"/api/docs/{d['id']}", headers=auth).json()["status"] == "ready":
+            break
+        time.sleep(0.5)
+    calls = []
+
+    def fake(question, *a, **k):
+        calls.append(question)
+        return tutor.TutorReply("A convolution answer [p.1]", "explain", "en", extra={"engine": "fake"})
+
+    monkeypatch.setattr(tutor, "answer", fake)
+    q = "what is convolution in signals"
+    a1 = client.post(f"/api/docs/{d['id']}/chat", json={"message": q, "lang": "en"}, headers=auth).json()
+    a2 = client.post(f"/api/docs/{d['id']}/chat", json={"message": q + "?", "lang": "en"}, headers=auth).json()
+    assert a1["text"] == a2["text"] and len(calls) == 1 and a2.get("cached")  # the second ask spent no AI
+    client.post(f"/api/docs/{d['id']}/chat", json={"message": "explain it again", "lang": "en"}, headers=auth)
+    assert len(calls) == 2  # follow-ups are never served from cache
+    monkeypatch.setenv("INDICLEARN_AI_DAILY_LIMIT", "1")
+    seen = []
+    monkeypatch.setattr(tutor, "answer", lambda *a, **k: seen.append(a[10]) or tutor.TutorReply("notes only", "explain", "en"))
+    client.post(f"/api/docs/{d['id']}/chat", json={"message": "what is the z transform used for", "lang": "en"}, headers=auth)
+    assert seen and getattr(seen[0], "brain", "x") is None  # over the limit: answered from the notes, no AI
