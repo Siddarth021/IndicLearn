@@ -18,12 +18,13 @@ export function md(src) {
   const out = []; let list = false;
   const inline = (s) => s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/(^|[\s(])_(.+?)_(?=[\s).,;:]|$)/g, "$1<em>$2</em>").replace(/`([^`]+)`/g, "<code>$1</code>");
   for (const ln of lines) {
-    if (/^\s*[•\-*]\s+/.test(ln)) { if (!list) { out.push("<ul style='margin:4px 0 8px;padding-left:18px'>"); list = true; } out.push("<li>" + inline(ln.replace(/^\s*[•\-*]\s+/, "")) + "</li>"); continue; }
-    if (list) { out.push("</ul>"); list = false; }
+    if (/^\s*[•\-*]\s+/.test(ln)) { if (list !== "ul") { if (list) out.push(`</${list}>`); out.push("<ul style='margin:4px 0 8px;padding-left:18px'>"); list = "ul"; } out.push("<li>" + inline(ln.replace(/^\s*[•\-*]\s+/, "")) + "</li>"); continue; }
+    if (/^\s*\d{1,2}[.)]\s+/.test(ln)) { if (list !== "ol") { if (list) out.push(`</${list}>`); out.push("<ol style='margin:4px 0 8px;padding-left:22px'>"); list = "ol"; } out.push("<li>" + inline(ln.replace(/^\s*\d{1,2}[.)]\s+/, "")) + "</li>"); continue; }
+    if (list) { out.push(`</${list}>`); list = false; }
     if (ln.trim() === "") continue;
     out.push("<p>" + inline(ln) + "</p>");
   }
-  if (list) out.push("</ul>");
+  if (list) out.push(`</${list}>`);
   return out.join("");
 }
 let toastEl;
@@ -35,3 +36,25 @@ export function toast(msg, err = false) {
 }
 export const debounce = (fn, ms = 150) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 export const STATUS_COLORS = { new: "#B9AE92", doubt: "#E0A53A", revise: "#C4584A", learning: "#CFA444", mastered: "#5E8F5A" };
+
+// Maths: render $...$, $$...$$ and \( \) with KaTeX (vendored, works offline). Loaded on first use only.
+let katexReady = null;
+function loadKatex() {
+  if (katexReady) return katexReady;
+  const add = (tag, attrs) => new Promise((res, rej) => { const e = Object.assign(document.createElement(tag), attrs); e.onload = res; e.onerror = rej; document.head.append(e); });
+  katexReady = add("link", { rel: "stylesheet", href: "/static/vendor/katex/katex.min.css" })
+    .then(() => add("script", { src: "/static/vendor/katex/katex.min.js" }))
+    .then(() => add("script", { src: "/static/vendor/katex/auto-render.min.js" }))
+    .catch(() => { katexReady = null; });
+  return katexReady;
+}
+const HAS_MATH = /\$[^$\n]+\$|\\\(|\\\[|\\(frac|lambda|sum|times|leq|geq|alpha|beta|sigma|mu|infty)\b/;
+export async function mathify(el) {
+  if (!el || !HAS_MATH.test(el.textContent || "")) return;
+  await loadKatex();
+  try {
+    window.renderMathInElement?.(el, { throwOnError: false, delimiters: [
+      { left: "$$", right: "$$", display: true }, { left: "\\[", right: "\\]", display: true },
+      { left: "$", right: "$", display: false }, { left: "\\(", right: "\\)", display: false }] });
+  } catch (e) { /* leave the text as it is */ }
+}

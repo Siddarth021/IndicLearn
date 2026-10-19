@@ -221,7 +221,40 @@ def ocr_image(img: Any, langs: list[str] | None = None) -> list[OcrLine]:
         logger.warning("OCR failed on one image: %s", e)
         return []
     # real text has letters; drop speckle such as "|" or "..."
-    return [ln for ln in lines if len(re.findall(r"\w", ln.text)) >= 2]
+    out = [ln for ln in lines if len(re.findall(r"\w", ln.text)) >= 2]
+    for ln in out:
+        ln.text = respace(ln.text)
+    return out
+
+
+_LONG_RUN = re.compile(r"[A-Za-z]{12,}")
+_KEEP_WHOLE = {w for w in """multiprogramming multiprocessing multithreading multithreaded multiprocessor interprocess microkernel
+hyperthreading virtualization hypervisor synchronization synchronisation deadlocked preemptive nonpreemptive multitasking
+bootstrapping fragmentation segmentation electrocardiogram backpropagation convolutional autoencoder transformers
+initialization initialisation implementation representation classification optimization optimisation authentication
+authorization authorisation microcontroller microprocessor interoperability characteristics""".split()}
+
+
+def respace(text: str) -> str:
+    """Put back the spaces OCR drops between English words ("OutcomerecordedatNknown,fixedcoordinates" ->
+    "Outcome recorded at N known, fixed coordinates"). Only long letter runs are split, so real words stay whole."""
+    t = re.sub(r"([,;:])(?=[A-Za-z])", r"\1 ", text)  # ",fixed" -> ", fixed"
+    t = re.sub(r"(?<=[a-z])\((?=[A-Za-z])", " (", t)  # "data(sometimes" -> "data (sometimes"
+    try:
+        import wordninja
+    except ImportError:  # optional: without it only the punctuation spacing is fixed
+        return t
+
+    def split(m: re.Match) -> str:
+        run = m.group(0)
+        if run.lower() in _KEEP_WHOLE:
+            return run
+        parts = wordninja.split(run)
+        if len(parts) < 2 or sum(len(p) for p in parts) / len(parts) < 3:  # gibberish or a real long word: leave it
+            return run
+        return " ".join(parts)
+
+    return _LONG_RUN.sub(split, t)
 
 
 def ocr_bytes(data: bytes, langs: list[str] | None = None) -> list[OcrLine]:

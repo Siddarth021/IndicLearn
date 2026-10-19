@@ -25,7 +25,7 @@ from indiclearn.studio.courses import oscalc
 
 HERE = Path(__file__).resolve().parent
 QTYPES = {"auto": "Any type", "fill": "Fill in the blank", "mcq": "Multiple choice", "short": "Short answer",
-          "long": "Long answer / explain", "numerical": "Numerical problem"}
+          "long": "Long answer / explain", "numerical": "Numerical problem", "msq": "Multiple select (MSQ)", "nat": "Numerical answer (NAT)"}
 DIFFICULTY = {"easy": "Easy", "college": "College level", "tough": "Tough"}
 
 PRESETS = [
@@ -36,6 +36,9 @@ PRESETS = [
               {"count": 3, "marks": 5, "qtype": "long"}, {"count": 3, "marks": 5, "qtype": "numerical"}]},
     {"id": "unit", "name": "Unit test", "total": 15, "minutes": 40,
      "rows": [{"count": 5, "marks": 1, "qtype": "mcq"}, {"count": 2, "marks": 2, "qtype": "short"}, {"count": 1, "marks": 6, "qtype": "numerical"}]},
+    {"id": "gate", "name": "GATE-style (OS)", "total": 15, "minutes": 30, "style": "gate",
+     "rows": [{"count": 3, "marks": 1, "qtype": "mcq"}, {"count": 1, "marks": 1, "qtype": "msq"}, {"count": 1, "marks": 1, "qtype": "nat"},
+              {"count": 2, "marks": 2, "qtype": "mcq"}, {"count": 1, "marks": 2, "qtype": "msq"}, {"count": 2, "marks": 2, "qtype": "nat"}]},
     {"id": "custom", "name": "Custom", "total": 20, "minutes": 60, "rows": [{"count": 4, "marks": 5, "qtype": "auto"}]},
 ]
 
@@ -101,6 +104,10 @@ def validate(bp: dict[str, Any]) -> dict[str, Any]:
             raise PaperError(f"{QTYPES[r['qtype']]} questions carry 1 or 2 marks.")
         if r["qtype"] == "numerical" and r["marks"] < 2:
             raise PaperError("A numerical problem needs at least 2 marks.")
+        if r["qtype"] == "msq" and r["marks"] > 2:
+            raise PaperError("MSQ questions carry 1 or 2 marks (as in GATE).")
+        if r["qtype"] == "nat" and r["marks"] > 5:
+            raise PaperError("NAT questions carry 1-5 marks.")
     got = sum(r["count"] * r["marks"] for r in rows)
     if total and got != total:
         raise PaperError(f"The rows add up to {got} marks, but the paper is set to {total}. Change a row or the total.")
@@ -109,7 +116,8 @@ def validate(bp: dict[str, Any]) -> dict[str, Any]:
     units = [u for u in (bp.get("units") or []) if isinstance(u, str)]
     known = {u["id"] for u in syllabus(bp.get("subject") or "os")["units"]}
     units = [u for u in units if u in known] or sorted(known)
-    return {"subject": "os", "name": str(bp.get("name") or "Practice paper")[:60], "total": got, "minutes": minutes or max(30, got * 3),
+    style = "gate" if bp.get("style") == "gate" or any(r["qtype"] in ("msq", "nat") for r in rows) else "college"
+    return {"subject": "os", "style": style, "name": str(bp.get("name") or "Practice paper")[:60], "total": got, "minutes": minutes or max(30, got * 3),
             "units": units, "difficulty": bp.get("difficulty") if bp.get("difficulty") in DIFFICULTY else "college", "rows": rows}
 
 
@@ -120,22 +128,24 @@ def _kw_hits(text: str, kw: str) -> int:
     return len(re.findall(r"(?<![a-z0-9])" + re.escape(kw.lower()) + r"(?![a-z0-9])", text))
 
 
-def coverage(notes_text: str, units: list[str], subject: str = "os") -> dict[str, Any]:
+def coverage(notes_text: str, units: list[str], subject: str = "os", min_hits: int = 2) -> dict[str, Any]:
     """Which ticked syllabus topics the uploaded notes actually teach (>= 2 keyword mentions)."""
     low = notes_text.lower()
     covered, missing = [], []
     for u, t in topics_of(units, subject):
         score = sum(_kw_hits(low, k) for k in t["keywords"])
-        (covered if score >= 2 else missing).append(t["id"])
+        (covered if score >= min_hits else missing).append(t["id"])
     return {"covered": covered, "missing": missing}
 
 
 # --------------------------------------------------------------------------- assembling a paper
 
 
-def _slot_kind(qtype: str, marks: int, rng: random.Random, can_num: bool) -> str:
+def _slot_kind(qtype: str, marks: int, rng: random.Random, can_num: bool, style: str = "college") -> str:
     if qtype != "auto":
         return qtype
+    if style == "gate":
+        return rng.choice(["mcq", "mcq", "msq", "nat"] if can_num else ["mcq", "msq"])
     if marks == 1:
         return rng.choice(["fill", "mcq"])
     if marks <= 3:
@@ -144,7 +154,7 @@ def _slot_kind(qtype: str, marks: int, rng: random.Random, can_num: bool) -> str
 
 
 def _bank_type(kind: str, marks: int) -> list[str]:
-    if kind in ("fill", "mcq"):
+    if kind in ("fill", "mcq", "msq"):
         return [kind]
     if kind == "short":
         return ["short", "medium"] if marks >= 3 else ["short"]
@@ -192,18 +202,48 @@ def assemble(bp: dict[str, Any], topic_ids: list[str], fresh: list[dict], used: 
     num_kinds_used: dict[str, int] = {}
     for row in bp["rows"]:
         for _ in range(row["count"]):
-            kind = _slot_kind(row["qtype"], row["marks"], rng, bool(num_topics))
+            kind = _slot_kind(row["qtype"], row["marks"], rng, bool(num_topics), bp.get("style", "college"))
+            diff = {"easy": "easy", "college": "medium", "tough": "hard"}[bp["difficulty"]]
+            val_topics = [t for t in num_topics if syl_topics[t][1]["numerical"] in oscalc.VALUE_GENERATORS]
+            msq_topics = [t for t in num_topics if syl_topics[t][1]["numerical"] in ("pages", "disk", "cpu")]
+            if kind == "nat" and not val_topics:
+                kind = "mcq"
             if kind == "numerical" and not num_topics:
                 kind = "long"
                 if "no_numerical" not in notes:
                     notes.append("no_numerical")
             q = None
-            if kind == "numerical":
+            pick_t = lambda ts: min(ts, key=lambda x: (num_kinds_used.get(syl_topics[x][1]["numerical"], 0), topic_count.get(x, 0), rng.random()))  # noqa: E731
+            if kind == "nat":
+                t = pick_t(val_topics)
+                num_kinds_used[syl_topics[t][1]["numerical"]] = num_kinds_used.get(syl_topics[t][1]["numerical"], 0) + 1
+                g = oscalc.gen_nat(syl_topics[t][1]["numerical"], rng, row["marks"], diff, t)
+                q = {"id": "nat-" + uuid.uuid4().hex[:8], "kind": "nat", "topic": t, "blocks": g["blocks"], "answer_blocks": g["answer"],
+                     "value": g["value"], "tolerance": g["tolerance"]}
+            elif kind == "msq" and msq_topics and (not [c for c in pool if c["qtype"] == "msq" and c["id"] not in taken] or rng.random() < 0.5):
+                t = pick_t(msq_topics)
+                g = None
+                for _ in range(8):
+                    g = oscalc.gen_msq_numeric(syl_topics[t][1]["numerical"], rng, row["marks"], diff, t)
+                    if g:
+                        break
+                if g:
+                    num_kinds_used[syl_topics[t][1]["numerical"]] = num_kinds_used.get(syl_topics[t][1]["numerical"], 0) + 1
+                    q = {"id": "msq-" + uuid.uuid4().hex[:8], "kind": "msq", "topic": t, "blocks": g["blocks"], "options": g["options"],
+                         "correct": g["correct"], "answer_blocks": g["answer"]}
+            elif kind == "mcq" and bp.get("style") == "gate" and row["marks"] >= 2 and val_topics and rng.random() < 0.6:
+                t = pick_t(val_topics)
+                num_kinds_used[syl_topics[t][1]["numerical"]] = num_kinds_used.get(syl_topics[t][1]["numerical"], 0) + 1
+                g = oscalc.gen_mcq_numeric(syl_topics[t][1]["numerical"], rng, row["marks"], diff, t)
+                q = {"id": "mcqn-" + uuid.uuid4().hex[:8], "kind": "mcq", "topic": t, "blocks": g["blocks"], "options": g["options"],
+                     "correct": g["correct"], "answer_blocks": g["answer"]}
+            if q is not None:
+                pass
+            elif kind == "numerical":
                 # spread numericals over different problem kinds (scheduling, paging, deadlock, disk...)
-                t = min(num_topics, key=lambda x: (num_kinds_used.get(syl_topics[x][1]["numerical"], 0), topic_count.get(x, 0), rng.random()))
+                t = pick_t(num_topics)
                 nk = syl_topics[t][1]["numerical"]
                 num_kinds_used[nk] = num_kinds_used.get(nk, 0) + 1
-                diff = {"easy": "easy", "college": "medium", "tough": "hard"}[bp["difficulty"]]
                 g = oscalc.generate(nk, rng, row["marks"], diff, t)
                 q = {"id": "num-" + uuid.uuid4().hex[:8], "kind": "numerical", "topic": t, "blocks": g["blocks"], "answer_blocks": g["answer"]}
             else:
@@ -229,6 +269,8 @@ def assemble(bp: dict[str, Any], topic_ids: list[str], fresh: list[dict], used: 
                 continue
             topic_count[q["topic"]] = topic_count.get(q["topic"], 0) + 1
             q["marks"] = row["marks"]
+            if bp.get("style") == "gate":  # GATE marking: wrong MCQ costs 1/3 of its marks; MSQ and NAT have no negative marks
+                q["negative"] = round(row["marks"] / 3, 2) if q["kind"] == "mcq" else 0
             q["topic_label"] = syl_topics[q["topic"]][1]["label"]
             q["unit"] = syl_topics[q["topic"]][0]["id"]
             questions.append(q)
@@ -239,7 +281,8 @@ def assemble(bp: dict[str, Any], topic_ids: list[str], fresh: list[dict], used: 
 
 def public(paper: dict[str, Any], answers: bool) -> dict[str, Any]:
     """Questions only, unless the student asked for the answers."""
-    keep = ("n", "id", "kind", "marks", "topic", "topic_label", "unit", "blocks", "options", "source")
-    qs = [{k: q.get(k) for k in keep} | ({k: q.get(k) for k in ("correct", "answer_text", "answer_blocks", "scheme", "diagram")} if answers else {})
+    keep = ("n", "id", "kind", "marks", "negative", "topic", "topic_label", "unit", "blocks", "options", "source")
+    secret = ("correct", "answer_text", "answer_blocks", "scheme", "diagram", "value", "tolerance")
+    qs = [{k: q.get(k) for k in keep} | ({k: q.get(k) for k in secret} if answers else {})
           for q in paper["questions"]]
     return {**{k: v for k, v in paper.items() if k != "questions"}, "questions": qs, "answers_included": answers}

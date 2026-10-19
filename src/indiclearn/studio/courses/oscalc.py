@@ -407,3 +407,159 @@ GENERATORS = {"cpu": gen_cpu, "pages": gen_pages, "bankers": gen_bankers, "disk"
 
 def generate(kind: str, rng: random.Random, marks: int, difficulty: str, topic: str) -> dict[str, Any]:
     return GENERATORS[kind](rng, marks, difficulty, topic)
+
+
+# --------------------------------------------------------------------------- GATE-style single answers (NAT / numeric MCQ)
+# Each returns (question blocks, exact value, worked-answer blocks). The value is what a GATE NAT box would take.
+
+
+def _cpu_value(rng: random.Random, difficulty: str) -> tuple[list[dict], float, list[dict]]:
+    q = gen_cpu(rng, 4, difficulty, rng.choice(["fcfs-sjf", "priority-sched", "round-robin"]))
+    d = q["data"]
+    r = schedule(d["procs"], d["algos"][0], d["quantum"], d["larger_is_higher"])
+    what = rng.choice(["waiting", "turnaround"])
+    val = sum(x["wt" if what == "waiting" else "tat"] for x in r["rows"]) / len(r["rows"])
+    blocks = [{"p": q["blocks"][0]["p"].split(" Draw the Gantt chart")[0] + " The processes are scheduled using "
+                    + q["blocks"][0]["p"].split("using ", 1)[1].split(".")[0] + "." + q["blocks"][0]["p"].split("using ", 1)[1].split(".", 1)[1]
+                    + f" What is the average {what} time? (Answer up to 2 decimal places.)"}, q["blocks"][1]]
+    traps = []
+    for a in ("fcfs", "sjf", "srtf", "prio_np", "prio_p", "rr"):
+        if a != d["algos"][0]:
+            rr = schedule(d["procs"], a, d["quantum"] or 2, d["larger_is_higher"])
+            traps.append(round(sum(x["wt" if what == "waiting" else "tat"] for x in rr["rows"]) / len(rr["rows"]), 2))
+    traps.append(round(sum(x["tat" if what == "waiting" else "wt"] for x in r["rows"]) / len(r["rows"]), 2))
+    _TRAPS[id(blocks)] = traps
+    return blocks, round(val, 2), q["answer"][: 3] + [{"p": f"Average {what} time = {round(val, 2)}"}]
+
+
+def _pages_value(rng: random.Random, difficulty: str) -> tuple[list[dict], float, list[dict]]:
+    refs = [rng.randint(0, 6) for _ in range({"easy": 10, "medium": 12, "hard": 15}.get(difficulty, 12))]
+    frames, algo = rng.choice([3, 4]), rng.choice(list(PAGE_ALGOS))
+    r = replace_pages(refs, frames, algo)
+    blocks = [{"p": f"A process has the page reference string {', '.join(map(str, refs))} and is given {frames} page frames, initially "
+                    f"empty. The number of page faults with {PAGE_ALGOS[algo]} page replacement is ______."}]
+    table = [["Ref", *[str(s["ref"]) for s in r["steps"]]], ["Fault", *["F" if s["fault"] else "" for s in r["steps"]]]]
+    _TRAPS[id(blocks)] = [replace_pages(refs, frames, a)["faults"] for a in PAGE_ALGOS if a != algo] + [replace_pages(refs, frames + 1, algo)["faults"], r["hits"]]
+    return blocks, r["faults"], [{"table": table}, {"p": f"Page faults = {r['faults']}."}]
+
+
+def _disk_value(rng: random.Random, difficulty: str) -> tuple[list[dict], float, list[dict]]:
+    cyl = 200
+    reqs = rng.sample(range(1, cyl - 1), {"easy": 5, "medium": 7, "hard": 8}.get(difficulty, 7))
+    head, algo, up = rng.randint(40, 140), rng.choice(["sstf", "scan", "cscan", "look", "clook"]), rng.random() < 0.6
+    r = disk(head, reqs, algo, cyl, up)
+    blocks = [{"p": f"A disk has {cyl} cylinders (0-{cyl - 1}); the head is at {head}, moving towards {'higher' if up else 'lower'} numbers. "
+                    f"Requests: {', '.join(map(str, reqs))}. With {DISK_ALGOS[algo]} (SCAN/C-SCAN go to the disk end; the C-SCAN/C-LOOK return jump "
+                    "counts), the total head movement in cylinders is ______."}]
+    _TRAPS[id(blocks)] = [disk(head, reqs, a, cyl, up)["total"] for a in DISK_ALGOS if a != algo] + [disk(head, reqs, algo, cyl, not up)["total"]]
+    return blocks, r["total"], [{"p": f"{' -> '.join(map(str, r['path']))}; total = {r['total']}."}]
+
+
+def _eat_value(rng: random.Random, difficulty: str) -> tuple[list[dict], float, list[dict]]:
+    q = gen_eat(rng, 2, difficulty)
+    d = q["data"]
+    val = d["h"] / 100 * (d["t"] + d["m"]) + (1 - d["h"] / 100) * (d["t"] + 2 * d["m"])
+    t, m, h = d["t"], d["m"], d["h"] / 100
+    blocks = [{"p": f"A paging system has a TLB lookup time of {t} ns and a memory access time of {m} ns, with a TLB hit ratio of {d['h']}%. "
+                    "The TLB is searched before the page table; on a miss the page table is read from memory, then the data. "
+                    "The effective memory access time in ns is ______."}]
+    _TRAPS[id(blocks)] = [round(h * m + (1 - h) * 2 * m, 2), round(h * (t + m) + (1 - h) * (t + m), 2), round(h * t + (1 - h) * (t + m), 2), t + 2 * m]
+    return blocks, round(val, 2), q["answer"]
+
+
+def _paging_value(rng: random.Random, difficulty: str) -> tuple[list[dict], float, list[dict]]:
+    page = rng.choice([1024, 2048, 4096])
+    table = rng.sample(range(32), 8)
+    addr = rng.randrange(0, 8 * page)
+    p, o = divmod(addr, page)
+    blocks = [{"p": f"Page size is {page} bytes and the page table maps pages 0-7 to frames {', '.join(map(str, table))} respectively. "
+                    f"The physical address (in decimal) of logical address {addr} is ______."}]
+    _TRAPS[id(blocks)] = [addr, table[p] * page, table[p] + o, table[o % 8] * page + p, (table[p] + 1) * page + o]
+    return blocks, table[p] * page + o, [{"p": f"Page = {addr} div {page} = {p}, offset = {o}; frame {table[p]} -> {table[p]} x {page} + {o} = {table[p] * page + o}."}]
+
+
+_TRAPS: dict[int, list] = {}  # common-mistake answers per generated question (for MCQ distractors)
+
+VALUE_GENERATORS = {"cpu": _cpu_value, "pages": _pages_value, "disk": _disk_value, "eat": _eat_value, "paging": _paging_value}
+
+
+def gen_nat(kind: str, rng: random.Random, marks: int, difficulty: str, topic: str) -> dict[str, Any]:
+    blocks, val, ans = VALUE_GENERATORS[kind](rng, difficulty)
+    _TRAPS.pop(id(blocks), None)
+    tol = 0.01 if isinstance(val, float) and val != int(val) else 0
+    return {"kind": "nat", "topic": topic, "marks": marks, "blocks": blocks, "value": val, "tolerance": tol,
+            "answer": ans + [{"p": f"Answer: {val:g}" + (f" (accepted range {val - tol:.2f} to {val + tol:.2f})" if tol else "")}]}
+
+
+def gen_mcq_numeric(kind: str, rng: random.Random, marks: int, difficulty: str, topic: str) -> dict[str, Any]:
+    """A numerical as a 4-option MCQ (GATE 2-mark style); distractors are the classic wrong answers' neighbourhood."""
+    blocks, val, ans = VALUE_GENERATORS[kind](rng, difficulty)
+    traps = [t for t in _TRAPS.pop(id(blocks), []) if t != val and t >= 0]
+    isint = float(val) == int(val) and all(float(t) == int(t) for t in traps)
+    opts = {val}
+    rng.shuffle(traps)
+    for t in traps:  # the answers a student gets by a typical mistake make the best distractors
+        if len(opts) < 4:
+            opts.add(t)
+    while len(opts) < 4:
+        d = rng.choice([-3, -2, -1, 1, 2, 3]) if isint else round(rng.choice([-1, 1]) * rng.uniform(0.4, 3.0), 2)
+        cand = (int(val) + d) if isint else round(val + d, 2)
+        if cand >= 0:
+            opts.add(cand)
+    options = sorted(opts)
+    blocks = [{"p": blocks[0]["p"].replace(" is ______.", ":").replace("(Answer up to 2 decimal places.)", "").strip()}] + blocks[1:]
+    fmt = (lambda x: str(int(x))) if isint else (lambda x: f"{float(x):.2f}")
+    return {"kind": "mcq", "topic": topic, "marks": marks, "blocks": blocks, "options": [fmt(o) for o in options],
+            "correct": options.index(val), "answer": ans}
+
+
+def gen_msq_numeric(kind: str, rng: random.Random, marks: int, difficulty: str, topic: str) -> dict[str, Any] | None:
+    """GATE MSQ with an exactly computed key: compare four algorithms on one input ("which give at most K faults?")."""
+    if kind == "pages":
+        refs = [rng.randint(0, 6) for _ in range({"easy": 10, "medium": 12, "hard": 15}.get(difficulty, 12))]
+        frames = rng.choice([3, 4])
+        cands = [("FIFO", replace_pages(refs, frames, "fifo")["faults"]), ("LRU", replace_pages(refs, frames, "lru")["faults"]),
+                 ("Optimal", replace_pages(refs, frames, "opt")["faults"]), (f"FIFO with {frames + 1} frames", replace_pages(refs, frames + 1, "fifo")["faults"])]
+        stem = f"Reference string {', '.join(map(str, refs))}; {frames} frames, initially empty. Which of the following cause at most {{k}} page faults?"
+        unit = "faults"
+    elif kind == "disk":
+        reqs = rng.sample(range(1, 199), 7)
+        head, up = rng.randint(40, 140), rng.random() < 0.6
+        algos = rng.sample(["fcfs", "sstf", "scan", "cscan", "look", "clook"], 4)
+        cands = [(DISK_ALGOS[a], disk(head, reqs, a, 200, up)["total"]) for a in algos]
+        stem = (f"Disk with cylinders 0-199, head at {head} moving towards {'higher' if up else 'lower'} numbers, requests "
+                f"{', '.join(map(str, reqs))} (SCAN/C-SCAN go to the end; C-SCAN/C-LOOK return jump counted). Which of the following "
+                "give a total head movement of at most {k} cylinders?")
+        unit = "cylinders"
+    elif kind == "cpu":
+        n = {"easy": 4, "medium": 5, "hard": 5}.get(difficulty, 5)
+        procs, at = [], 0
+        for i in range(n):
+            procs.append({"pid": f"P{i + 1}", "at": at, "bt": rng.randint(1, 9), "pr": 0})
+            at += rng.choice([0, 1, 2])
+        q = rng.choice([2, 3])
+        algos = [("fcfs", "FCFS"), ("sjf", "SJF (non-preemptive)"), ("srtf", "SRTF"), ("rr", f"Round Robin (q = {q})")]
+        cands = []
+        for a, name in algos:
+            r = schedule(procs, a, q)
+            cands.append((name, round(sum(x["wt"] for x in r["rows"]) / n, 2)))
+        stem = ("Processes (arrival, burst): " + ", ".join(f"{p['pid']}({p['at']}, {p['bt']})" for p in procs)
+                + ". Ties by arrival then process number; in RR a new arrival joins the queue before the preempted process. "
+                "Which of the following give an average waiting time of at most {k}?")
+        unit = "time units"
+    else:
+        return None
+    vals = sorted({v for _n, v in cands})
+    if len(vals) < 2:
+        return None
+    # choose K so that 1-3 options are correct (never all four, never none)
+    ks = [v for v in vals if 1 <= sum(1 for _n, x in cands if x <= v) <= 3]
+    if not ks:
+        return None
+    k = rng.choice(ks)
+    rng.shuffle(cands)
+    correct = [i for i, (_n, v) in enumerate(cands) if v <= k]
+    kk = f"{k:g}"
+    return {"kind": "msq", "topic": topic, "marks": marks, "blocks": [{"p": stem.replace("{k}", kk)}], "options": [n for n, _v in cands],
+            "correct": correct, "answer": [{"p": "; ".join(f"{n}: {v:g} {unit}" for n, v in cands) + f". At most {kk}: "
+                                                 + ", ".join(cands[i][0] for i in correct) + "."}]}

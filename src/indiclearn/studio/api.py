@@ -51,6 +51,10 @@ class MarkIn(BaseModel):
     kind: str
 
 
+class RenameIn(BaseModel):
+    title: str = Field(max_length=200)
+
+
 class PaperIn(BaseModel):
     blueprint: dict[str, Any]
     doc_ids: list[str] | None = None
@@ -192,9 +196,37 @@ def build_router(svc: StudioService) -> APIRouter:
 
         return courses()
 
+    @r.get("/courses/os/lessons")
+    def lessons_index(u: dict = Depends(current)) -> dict[str, Any]:
+        from indiclearn.studio.courses import lessons
+
+        return lessons.index(svc.db, u["id"])
+
+    @r.get("/courses/os/lessons/{topic}")
+    def lesson_get(topic: str, lang: str = "en", seed: int | None = None, u: dict = Depends(current)) -> dict[str, Any]:
+        from indiclearn.studio.courses import lessons
+
+        return wrap(lessons.lesson, svc.db, u["id"], topic, lang, seed, getattr(svc.models, "brain", None))
+
+    @r.post("/courses/os/lessons/{topic}/mark")
+    def lesson_mark(topic: str, status: str = "learned", u: dict = Depends(current)) -> dict[str, Any]:
+        from indiclearn.studio.courses import lessons
+
+        return wrap(lessons.mark, svc.db, u["id"], topic, status)
+
     @r.get("/papers")
     def papers_list(u: dict = Depends(current)) -> list[dict[str, Any]]:
         return svc.exams.list(u["id"])
+
+    @r.post("/papers/pattern")
+    async def paper_pattern(file: UploadFile = File(...), u: dict = Depends(current)) -> dict[str, Any]:
+        """A past question paper (PDF / Word / photo) -> a blueprint the student can edit."""
+        from indiclearn.studio.courses.pattern import blueprint_from
+
+        data = await file.read(15 * 1024 * 1024 + 1)
+        if len(data) > 15 * 1024 * 1024:
+            raise HTTPException(413, "That file is larger than 15 MB.")
+        return wrap(blueprint_from, data, file.filename or "paper.jpg", getattr(svc.models, "brain", None))
 
     @r.post("/papers")
     def paper_new(b: PaperIn, u: dict = Depends(current)) -> dict[str, Any]:
@@ -221,6 +253,10 @@ def build_router(svc: StudioService) -> APIRouter:
     @r.get("/docs/{doc_id}")
     def doc(doc_id: str, u: dict = Depends(current)) -> dict[str, Any]:
         return wrap(lambda: svc._doc_public(svc._doc(u["id"], doc_id)))
+
+    @r.put("/docs/{doc_id}")
+    def rename(doc_id: str, b: RenameIn, u: dict = Depends(current)) -> dict[str, Any]:
+        return wrap(svc.rename_doc, u["id"], doc_id, b.title)
 
     @r.delete("/docs/{doc_id}")
     def delete(doc_id: str, u: dict = Depends(current)) -> dict[str, bool]:
@@ -313,6 +349,10 @@ def build_router(svc: StudioService) -> APIRouter:
     def quiz(doc_id: str, b: QuizIn, u: dict = Depends(current)) -> dict[str, Any]:
         out = wrap(svc.quiz_new, u["id"], doc_id, b.scope, b.n, b.lang)
         return out
+
+    @r.post("/quiz/{quiz_id}/retry")
+    def quiz_retry(quiz_id: str, u: dict = Depends(current)) -> dict[str, Any]:
+        return wrap(svc.quiz_retry, u["id"], quiz_id)
 
     @r.post("/quiz/{quiz_id}/answer")
     def answer(quiz_id: str, b: AnswerIn, u: dict = Depends(current)) -> dict[str, Any]:

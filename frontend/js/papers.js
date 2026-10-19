@@ -2,7 +2,7 @@
 // gets a printable question paper; answers stay hidden until asked for (per question, all, or as a PDF key).
 import { api, getToken } from "./api.js";
 import { getLang } from "./i18n.js";
-import { h, md, toast } from "./util.js";
+import { h, md, toast, mathify } from "./util.js";
 
 const L = {
   en: {
@@ -17,8 +17,11 @@ const L = {
     pdf_q: "Question paper (PDF)", pdf_a: "Answer key (PDF)", show_all: "Show all answers", hide_all: "Hide answers",
     show: "Show answer", hide: "Hide answer", answer: "Answer", scheme: "Marking scheme", diagram: "Diagram expected",
     history: "Your papers", none: "No papers yet.", open: "Open", del: "Delete", new: "New paper", no_num: "No numerical topics in the units you ticked, so numerical slots got long-answer questions.",
-    short: "The question bank ran short for some slots; try more units.",
-    qt: { auto: "Any type", fill: "Fill in the blank", mcq: "Multiple choice", short: "Short answer", long: "Long answer", numerical: "Numerical" },
+    short: "The question bank ran short for some slots; try more units.", match: "Match my college paper", matching: "Reading your paper…",
+    match_p: "Upload a past paper (PDF, Word or a phone photo) — the marks pattern, time and units are copied for you to check.",
+    matched: "Copied the pattern: {n} questions, {m} marks. Check the rows below, then make your paper.", nat_box: "Answer: ________ (type the number)",
+    gate_rules: "GATE marking: MCQ wrong answer −1/3 of its marks · MSQ and NAT have no negative marks and no partial marks.",
+    qt: { auto: "Any type", fill: "Fill in the blank", mcq: "Multiple choice", short: "Short answer", long: "Long answer", numerical: "Numerical", msq: "MSQ (GATE)", nat: "NAT (GATE)" },
     df: { easy: "Easy", college: "College level", tough: "Tough" },
   },
   te: {
@@ -33,8 +36,11 @@ const L = {
     pdf_q: "ప్రశ్నాపత్రం (PDF)", pdf_a: "జవాబుల key (PDF)", show_all: "అన్ని జవాబులు చూపించు", hide_all: "జవాబులు దాచు",
     show: "జవాబు చూపించు", hide: "జవాబు దాచు", answer: "జవాబు", scheme: "మార్కుల విభజన", diagram: "ఉండాల్సిన diagram",
     history: "మీ పేపర్లు", none: "ఇంకా పేపర్లు లేవు.", open: "తెరువు", del: "తొలగించు", new: "కొత్త పేపర్", no_num: "ఎంచుకున్న units లో numerical topics లేవు, అందుకే వాటి బదులు long-answer ప్రశ్నలు ఇచ్చాము.",
-    short: "కొన్ని slots కి ప్రశ్నలు సరిపోలేదు; ఇంకా units ఎంచుకోండి.",
-    qt: { auto: "ఏదైనా", fill: "ఖాళీలు పూరించండి", mcq: "బహుళైచ్ఛిక", short: "చిన్న జవాబు", long: "పెద్ద జవాబు", numerical: "Numerical" },
+    short: "కొన్ని slots కి ప్రశ్నలు సరిపోలేదు; ఇంకా units ఎంచుకోండి.", match: "నా కాలేజ్ పేపర్ లాగా", matching: "మీ పేపర్ చదువుతోంది…",
+    match_p: "పాత paper (PDF, Word లేదా phone photo) upload చేయండి — marks pattern, సమయం, units కాపీ అవుతాయి, మీరు check చేసుకోండి.",
+    matched: "Pattern కాపీ అయింది: {n} ప్రశ్నలు, {m} మార్కులు. కింద rows check చేసి పేపర్ చేయండి.", nat_box: "జవాబు: ________ (సంఖ్య రాయండి)",
+    gate_rules: "GATE marking: MCQ తప్పు జవాబుకి −1/3 మార్కులు · MSQ, NAT కి negative marks, partial marks లేవు.",
+    qt: { auto: "ఏదైనా", fill: "ఖాళీలు పూరించండి", mcq: "బహుళైచ్ఛిక", short: "చిన్న జవాబు", long: "పెద్ద జవాబు", numerical: "Numerical", msq: "MSQ (GATE)", nat: "NAT (GATE)" },
     df: { easy: "సులభం", college: "కాలేజ్ స్థాయి", tough: "కష్టం" },
   },
 };
@@ -43,9 +49,12 @@ const T = (k, v = {}) => { const d = L[getLang()] || L.en; let s = k.split(".").
 let course = null;
 let state = null;
 let lastPaper = null;
+let pendingUnits = null;
+// a lesson's "Practice paper on this unit" opens the builder with just that unit ticked
+export function presetUnits(ids) { pendingUnits = ids; if (state) state.units = [...ids]; }
 
 function fresh(preset) {
-  return { preset: preset.id, name: preset.name, total: preset.total, minutes: preset.minutes, difficulty: "college",
+  return { preset: preset.id, name: preset.name, style: preset.style || "college", total: preset.total, minutes: preset.minutes, difficulty: "college",
            units: course.units.map((u) => u.id), rows: preset.rows.map((r) => ({ ...r })) };
 }
 
@@ -55,6 +64,7 @@ export async function renderPapers(v) {
     try { course = (await api.courses())[0]; } catch (e) { v.append(h("div", { class: "empty" }, e.message)); return; }
   }
   if (!state) state = fresh(course.presets[0]);
+  if (pendingUnits) { state.units = [...pendingUnits]; pendingUnits = null; }
   v.append(h("div", { class: "pagehead" }, h("div", {}, h("span", { class: "small-caps" }, course.title), h("h1", {}, T("title") + " ", h("em", {}, T("em"))), h("p", {}, T("sub")))));
   const out = h("div", { class: "paperout" });
   v.append(builder(out), out, historyCard(out));
@@ -65,6 +75,20 @@ function builder(out) {
   const card = h("div", { class: "card pbuild" });
   const draw = () => {
     card.innerHTML = "";
+    // copy the pattern of a real past paper (PDF / Word / phone photo)
+    const pf = h("input", { type: "file", hidden: true, accept: ".pdf,.docx,.txt,.md,.jpg,.jpeg,.png,.webp,image/*", onchange: async () => {
+      const f = pf.files[0]; if (!f) return;
+      mbtn.disabled = true; mbtn.textContent = T("matching");
+      try {
+        const r = await api.paperPattern(f);
+        state = { ...r.blueprint, preset: "matched", rows: r.blueprint.rows.map((x) => ({ ...x })) };
+        toast(T("matched", { n: r.questions_found, m: r.blueprint.total }));
+        lastPaper = null; out.innerHTML = ""; // the paper on screen belonged to the old pattern
+        draw();
+      } catch (e) { toast(e.message, true); mbtn.disabled = false; mbtn.textContent = "📷 " + T("match"); }
+    } });
+    const mbtn = h("button", { class: "btn ghost sm", onclick: () => pf.click() }, "📷 " + T("match"));
+    card.append(h("div", { class: "pmatch" }, h("div", {}, h("b", {}, T("match")), h("small", {}, T("match_p"))), mbtn, pf));
     // paper type presets
     card.append(h("div", { class: "small-caps" }, T("type")),
       h("div", { class: "pseg" }, ...course.presets.map((p) => h("button", { class: "segbtn" + (state.preset === p.id ? " on" : ""), onclick: () => { state = { ...fresh(p), units: state.units }; draw(); } },
@@ -116,7 +140,7 @@ async function make(out, btn) {
   out.innerHTML = ""; out.append(h("div", { class: "card empty" }, h("span", { class: "spin" }), " " + T("making")));
   out.scrollIntoView({ behavior: "smooth", block: "start" });
   try {
-    const bp = { name: state.name || "Practice paper", total: state.total, minutes: state.minutes, difficulty: state.difficulty, units: state.units, rows: state.rows };
+    const bp = { name: state.name || "Practice paper", style: state.style, total: state.total, minutes: state.minutes, difficulty: state.difficulty, units: state.units, rows: state.rows };
     lastPaper = await api.paperNew(bp);
     showPaper(out, lastPaper);
     refreshHistory();
@@ -142,6 +166,7 @@ function showPaper(out, p) {
     if (units.length) info.push(T("missing", { t: units.join(", ") }));
   }
   if (p.notes?.includes("no_numerical")) info.push(T("no_num"));
+  if (bp.style === "gate") info.push(T("gate_rules"));
   if (p.notes?.includes("short_of_questions")) info.push(T("short"));
   const sheet = h("article", { class: "card sheet" },
     h("header", {}, h("h2", {}, `${p.course_title} — ${bp.name}`), h("div", { class: "meta" }, h("span", {}, `${T("total")}: ${p.total}`), h("span", {}, `${T("time")}: ${bp.minutes}`))));
@@ -154,7 +179,8 @@ function showPaper(out, p) {
     } }, T("show"));
     const el = h("section", { class: "pq" }, h("div", { class: "pqn" }, q.n + "."), h("div", { class: "pqb" }, ...blocks(q.blocks),
       q.options ? h("ol", { class: "opts", type: "a" }, ...q.options.map((o) => h("li", {}, o))) : null,
-      h("div", { class: "pqfoot" }, h("span", { class: "chip" }, q.topic_label), q.source === "notes" ? h("span", { class: "chip gold" }, "from your notes") : null, toggle), ans),
+      q.kind === "nat" ? h("div", { class: "natbox" }, T("nat_box")) : null,
+      h("div", { class: "pqfoot" }, bp.style === "gate" ? h("span", { class: "chip gold" }, KIND[q.kind] + (q.negative ? ` · −${q.negative}` : "")) : null, h("span", { class: "chip" }, q.topic_label), q.source === "notes" ? h("span", { class: "chip gold" }, "from your notes") : null, toggle), ans),
       h("div", { class: "pqm" }, `[${q.marks}]`));
     qEls.push({ ans, toggle, q });
     sheet.append(el);
@@ -169,16 +195,21 @@ function showPaper(out, p) {
     h("a", { class: "btn", href: pdfUrl(p.id, false), target: "_blank", rel: "noopener" }, "⎙ " + T("pdf_q")),
     h("a", { class: "btn ghost", href: pdfUrl(p.id, true), target: "_blank", rel: "noopener" }, T("pdf_a")), allBtn),
     h("div", { class: "pinfo" }, ...info.map((s) => h("p", {}, s))), sheet);
+  mathify(sheet);
 }
 
 function blocks(bs) {
   return bs.map((b) => b.table ? h("div", { class: "tblwrap" }, h("table", { class: "ptable" }, ...b.table.map((r, i) => h("tr", {}, ...r.map((c) => h(i ? "td" : "th", {}, c)))))) : h("p", {}, b.p));
 }
 
+const KIND = { mcq: "MCQ", msq: "MSQ", nat: "NAT", fill: "Fill", short: "Short", medium: "Answer", long: "Long", numerical: "Numerical" };
+
 function fillAnswer(el, q) {
   if (!q) return;
   el.innerHTML = "";
   el.append(h("b", {}, T("answer")));
+  if (q.kind === "msq" && Array.isArray(q.correct)) el.append(h("p", {}, h("b", {}, q.correct.map((i) => `(${"abcd"[i]}) ${q.options[i]}`).join("   ·   "))));
+  else if (q.answer_blocks && q.options && q.correct !== null && q.correct !== undefined) el.append(h("p", {}, h("b", {}, `(${"abcd"[q.correct]}) ${q.options[q.correct]}`)));
   if (q.answer_blocks) el.append(...blocks(q.answer_blocks));
   else {
     if (q.options && q.correct !== null && q.correct !== undefined) el.append(h("p", {}, h("b", {}, `(${"abcd"[q.correct]}) ${q.options[q.correct]}`)));
@@ -186,6 +217,7 @@ function fillAnswer(el, q) {
     if (q.diagram) el.append(h("p", { class: "small" }, `${T("diagram")}: ${q.diagram}`));
     if (q.scheme?.length) el.append(h("div", { class: "small-caps" }, T("scheme")), h("ul", {}, ...q.scheme.map((s) => h("li", {}, `${s.point} — ${s.marks}`))));
   }
+  mathify(el);
 }
 
 let historyEl = null;

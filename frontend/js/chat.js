@@ -1,6 +1,6 @@
 import { api } from "./api.js";
 import { t, getLang, LANGS, unitName } from "./i18n.js";
-import { h, md, toast } from "./util.js";
+import { h, md, toast, mathify } from "./util.js";
 import { S, emit, on, clearOwner } from "./state.js";
 import { renderQuiz } from "./quizcard.js";
 
@@ -170,6 +170,7 @@ export function createTutor(root) {
 
     function paint(cur) {
       body.innerHTML = md(cur.text || ""); linkPages(body, r);
+      queueMicrotask(() => mathify(el)); // after the rest of the bubble is painted
       extras.innerHTML = "";
       if (r.notice) extras.append(h("div", { class: "notice", title: r.notice }, "⚠ " + t("ai_down"))); // technical reason only in the tooltip
       if (r.beyond_notes || r.used_general_knowledge) extras.append(h("div", { class: "beyond" }, "◐ " + (cur.beyond_notes || lb("beyond", state.shown))));

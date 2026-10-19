@@ -8,14 +8,16 @@ import { createMapView } from "./mapview.js";
 import { renderQuiz } from "./quizcard.js";
 import { createHud } from "./hud.js";
 import { renderPapers } from "./papers.js";
+import { renderCourse } from "./course.js";
 
 const $app = document.getElementById("app-root");
-const DOCLESS = new Set(["library", "papers"]); // views that work without an open document
+const DOCLESS = new Set(["library", "course", "papers"]); // views that work without an open document
 let views = {}, tutor = null, reader = null, mapView = null, pollTimer = null;
 const ICON = {
   library: '<path d="M4 5h4v14H4zM10 5h4v14h-4zM16.5 6.5l3.2-.8 3 11.7-3.2.8z"/>', study: '<path d="M4 5h7a3 3 0 0 1 3 3v11a3 3 0 0 0-3-3H4zM20 5h-7a3 3 0 0 0-3 3v11a3 3 0 0 1 3-3h7z"/>',
   map: '<circle cx="12" cy="12" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M10 11 6.5 7.5M14 11l3.5-3.5M10 13l-3.5 3.5M14 13l3.5 3.5"/>',
   quiz: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17v.01"/>', progress: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  course: '<path d="M3 7l9-4 9 4-9 4z"/><path d="M7 9v5c0 1.7 2.2 3 5 3s5-1.3 5-3V9M21 7v6"/>',
   papers: '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
 };
 const svgIcon = (k) => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.innerHTML = ICON[k]; return s; };
@@ -69,7 +71,7 @@ function shell(keepView = false) {
   const side = h("aside", { class: "side" });
   side.append(h("div", { class: "brand" }, h("b", {}, "Indic", h("i", {}, "Learn")), h("span", { class: "small-caps" }, t("tagline"))));
   const nav = h("nav", { class: "nav", "aria-label": "Main" });
-  const items = [["library", "nav_library"], ["study", "nav_study"], ["map", "nav_map"], ["quiz", "nav_quiz"], ["progress", "nav_progress"], ["papers", "nav_papers"]];
+  const items = [["library", "nav_library"], ["study", "nav_study"], ["map", "nav_map"], ["quiz", "nav_quiz"], ["progress", "nav_progress"], ["course", "nav_course"], ["papers", "nav_papers"]];
   for (const [k, label] of items) {
     const b = h("button", { "data-v": k, class: S.view === k ? "on" : "", onclick: () => go(k), disabled: !DOCLESS.has(k) && !S.doc }, svgIcon(k), h("span", {}, t(label)));
     nav.append(b);
@@ -81,7 +83,7 @@ function shell(keepView = false) {
   const main = h("main", {});
   const tutorEl = h("aside", { class: "tutor", id: "tutor" });
   views = {};
-  for (const k of ["library", "study", "map", "quiz", "progress", "papers"]) { views[k] = h("div", { class: "view" + (k === "study" || k === "map" ? " flush" : ""), hidden: true }); main.append(views[k]); }
+  for (const k of ["library", "study", "map", "quiz", "progress", "course", "papers"]) { views[k] = h("div", { class: "view" + (k === "study" || k === "map" ? " flush" : ""), hidden: true }); main.append(views[k]); }
   app.append(side, main, tutorEl); $app.append(app);
   tutor = createTutor(tutorEl); reader = createReader(views.study); mapView = createMapView(views.map);
   if (S.doc) { reader.load(); }
@@ -104,6 +106,7 @@ function go(view, opts = {}) {
   else if (view === "quiz") renderQuizPage();
   else if (view === "progress") renderProgress();
   else if (view === "papers") renderPapers(views.papers);
+  else if (view === "course") renderCourse(views.course);
   opts.then?.();
 }
 on("nav", ({ view, select, then }) => { go(view, { select }); if (then) setTimeout(then, 350); });
@@ -159,6 +162,9 @@ async function renderLibrary() {
     drop.append(h("div", { class: "small-caps", style: { marginTop: "18px" } }, t("or_sample")));
     drop.append(h("div", { class: "samples" }, ...S.info.samples.map((s) => h("button", { class: "btn sm ghost", onclick: async () => { try { await api.sample(s.key); renderLibrary(); } catch (e) { toast(e.message, true); } } }, s.title))));
   }
+  // on phones the side bar becomes a bottom tab bar: language + account live at the top of the library instead
+  v.append(h("div", { class: "mobile-only acct" }, langPicker(), h("span", { class: "small-caps" }, S.user.display_name),
+    h("button", { class: "linkbtn", onclick: async () => { try { await api.logout(); } catch (e) { /* ignore */ } setToken(null); S.user = null; S.doc = null; authScreen(); } }, t("sign_out"))));
   v.append(h("div", { class: "hero" }, h("div", {}, h("span", { class: "small-caps" }, "IndicLearn · " + t("tagline")), h("h1", {}, t("hero_a") + " ", h("em", {}, t("hero_b"))), h("p", {}, t("hero_p"))), drop));
   v.append(h("div", { class: "small-caps", style: { marginBottom: "12px" } }, t("your_library")));
   const grid = h("div", { class: "docs" }); v.append(grid);
@@ -178,10 +184,18 @@ function docCard(d) {
   card.append(h("div", { class: "meta" }, h("span", { class: "chip gold" }, (d.lang || "…").toUpperCase()), h("span", { class: "chip" }, d.ext.replace(".", "").toUpperCase()),
     ready ? h("span", { class: "chip" }, `${d.stats.concepts ?? 0} ${t("concepts")}`) : null, ready ? h("span", { class: "chip" }, t(d.unit_label === "Slide" ? "slides_n" : d.unit_label === "Part" ? "parts_n" : "pages_n", { n: d.n_pages })) : null));
   card.append(h("h3", {}, d.title));
-  if (d.status === "processing") card.append(h("div", { class: "sum" }, h("span", { class: "spin" }), " " + t("processing")));
+  if (d.status === "processing") {
+    const p = d.progress;
+    const pct = p && p.total ? Math.round((100 * p.done) / p.total) : 0;
+    const msg = !p ? t("processing") : p.stage === "map" ? t("prog_map") : p.stage === "ai" ? t("prog_ai")
+      : t(p.stage === "ocr" ? "prog_ocr" : "prog_read", { i: Math.min(p.done + 1, p.total), n: p.total });
+    card.append(h("div", { class: "sum" }, h("span", { class: "spin" }), " " + msg),
+      p ? h("div", { class: "bar upbar", title: msg }, h("i", { style: { width: (p.stage === "map" || p.stage === "ai" ? 100 : pct) + "%", background: "var(--gold)" } })) : null);
+  }
   else if (d.status === "error") card.append(h("div", { class: "sum", style: { color: "var(--bad)" } }, d.error || t("failed")));
   else card.append(h("div", { class: "sum" }, d.summary || ""));
   card.append(h("div", { class: "foot" }, h("button", { class: "btn sm", disabled: !ready, onclick: (e) => { e.stopPropagation(); openDoc(d.id); } }, t("open")),
+    ready ? h("button", { class: "linkbtn", onclick: async (e) => { e.stopPropagation(); const n = prompt(t("rename_q"), d.title); if (n && n.trim() && n !== d.title) { try { await api.rename(d.id, n); renderLibrary(); } catch (x) { toast(x.message, true); } } } }, t("rename")) : null,
     h("button", { class: "linkbtn", onclick: async (e) => { e.stopPropagation(); if (confirm(t("confirm_delete"))) { await api.del(d.id).catch((x) => toast(x.message, true)); if (S.doc?.id === d.id) { S.doc = null; shellKeepNav(); } renderLibrary(); } } }, t("delete"))));
   return card;
 }

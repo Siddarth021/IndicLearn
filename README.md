@@ -40,12 +40,19 @@ questions skip the extra "understand" call, which halves the free-tier usage.
 * **Quizzes** - understanding-level MCQs written in the background right after upload (instant to open);
   every answer key is double-checked by a second blind pass, wrong-keyed questions are dropped.
 * **Mind map** - AI concept map (or rules + M1/M2/M3 offline), labels never clipped, progress colours.
+* **OS course** - 38 lessons (one per syllabus topic) in English, Telugu on request (translated once and cached):
+  explanation, key terms, exam tips, common mistakes, a live exactly-solved example for numerical topics
+  ("New example"), the solver's exact rules, a quick check, listen-aloud, "mark as learned" and a jump to a paper.
 * **Exam papers (Operating Systems)** - the student sets the skeleton (total marks, time, units, rows such as
   "5 x 1 mark MCQ" or "2 x 4 marks numerical"; Mid-sem / End-sem / Unit-test presets) and gets a printable question
   paper. Answers stay hidden until asked for (per question, all at once, or as a separate answer-key PDF).
   Topics = the ticked syllabus units that the student's uploaded OS notes also cover. Numericals (CPU scheduling,
   page replacement, Banker's, disk scheduling, fits, paging, EAT) are computed exactly; theory comes from a
   500-question bank checked by a second model, plus fresh questions written from the student's own notes.
+  **GATE-style** papers too (MCQ with -1/3 negative marks, MSQ, NAT - numerical MCQs/MSQs/NATs are computed exactly),
+  and **"Match my college paper"**: upload a past paper (PDF, Word or a phone photo) and its marks pattern, time and
+  units are copied into the builder.
+* **Quiz review** - every answer reviewed at the end, "Retry the ones I got wrong" (options reshuffled); maths rendered with KaTeX.
 * Works on phones (tutor opens as a closable full-screen sheet).
 
 ## Models

@@ -32,6 +32,7 @@ def main() -> None:
     ap.add_argument("--topics", nargs="*")
     ap.add_argument("--per", type=int, default=3, help="questions per type per topic (short gets +1, long -1)")
     ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--only", help="add just one question type to every topic, e.g. --only msq=2 (GATE multiple-select)")
     a = ap.parse_args()
     load_dotenv(str(ROOT / ".env"))
     import os
@@ -48,14 +49,16 @@ def main() -> None:
             if line.strip():
                 q = json.loads(line)
                 have[q["id"]] = q
-    done_topics = {q["topic"] for q in have.values()}
+    only = dict([a.only.split("=")]) if a.only else None
+    want_only = {only_k: int(v) for only_k, v in only.items()} if only else None
+    done_topics = {q["topic"] for q in have.values() if not want_only or q["qtype"] in want_only}
     jobs = [(u, t) for u in syl["units"] for t in u["topics"] if (not a.topics or t["id"] in a.topics) and (a.topics or t["id"] not in done_topics)]
     print(f"{len(jobs)} topics to generate; {len(have)} questions already in the bank", flush=True)
 
     def work(job: tuple[dict, dict]) -> list[dict]:
         u, t = job
-        qs = gen_topic(gen_brain, u, t, a.per)
-        kept = check(check_brain, qs) if qs else []
+        qs = gen_topic(gen_brain, u, t, a.per, want=want_only)
+        kept = check(check_brain, qs, second=gen_brain) if qs else []
         print(f"  {t['id']:<24} generated {len(qs):>2}  kept {len(kept):>2}", flush=True)
         return kept
 

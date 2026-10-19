@@ -13,6 +13,7 @@ from __future__ import annotations
 import logging
 import os
 import re
+import threading
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -111,7 +112,37 @@ def _plausible_heading_text(t: str) -> bool:
         return False
     if _CAPTION.match(t):
         return False
+    # chart axes, years, table cells and citations that OCR/slide text turns into fake titles
+    # ("40 60 80", "2009 2010 2011", "From Gelfand et al. (2010, pg.5)", "100% x p 3.00")
+    chars = re.sub(r"\s", "", t)
+    letters = len(re.findall(r"[^\W\d_]", chars))
+    if (letters < 4 and not chars.isupper()) or letters / max(1, len(chars)) < 0.55 or len(re.findall(r"\d", chars)) / max(1, len(chars)) > 0.25:
+        return False
+    if _CITATION.search(t) or re.search(r"[%×$≈±]", t):
+        return False
+    words = re.findall(r"[^\W\d_]+", t)
+    if words and sum(len(w) == 1 for w in words) / len(words) > 0.5:
+        return False
+    if _FIGURE.match(t):  # "Figure4O: ...", "FIGURE 1.1" (OCR garbles the number, so _CAPTION misses it)
+        return False
+    low = [w.lower() for w in words]
+    if len(low) >= 3 and len(set(low)) / len(low) < 0.6:  # "Latitude Latitude Latitude"
+        return False
+    toks = t.split()
+    nums = [i for i, w in enumerate(toks) if re.fullmatch(r"\d{1,4}", w)]
+    if any(0 < i < len(toks) - 1 and toks[i - 1].lower().strip(":") not in _NUMBER_WORDS for i in nums):  # "Ashok Vihar 22 Narela": map/chart labels
+        return False
+    if nums and nums[0] == 0 and len(toks) <= 3 and not re.match(r"^\d{1,2}[.)]", t):  # "400 Elevation"
+        return False
     return True
+
+
+_NUMBER_WORDS = {"chapter", "unit", "part", "section", "lecture", "module", "week", "raid", "level", "phase", "step", "type", "class",
+             "round", "version", "ipv", "rule", "case", "example", "problem", "question", "lab", "experiment", "day"}
+_FIGURE = re.compile(r"^(fig(ure)?|table)\s*[\dlIO]", re.IGNORECASE)
+
+
+_CITATION = re.compile(r"\bet\s*al\b|\bpg\.\s*\d|\(\s*(?:19|20)\d\d\b|^(?:from|source|adapted from)\b\s*[A-Z]", re.IGNORECASE)
 
 
 def _looks_like_math(line: str) -> bool:
@@ -337,7 +368,7 @@ def _ocr_blocks(lines: list[Any], page: int) -> list[Block]:
         t = normalize(ln.text)
         if not t:
             continue
-        big = ln.height >= 1.35 * body_h and len(t) <= 90 and i < 3
+        big = ln.height >= 1.35 * body_h and len(t) <= 90 and i < 3 and _plausible_heading_text(t)
         out.append(Block("heading" if big else ("bullet" if len(t) < 140 else "para"), t, page,
                          level=1 if big else 0, meta={"ocr": True}))
     return out
@@ -358,7 +389,9 @@ def _parse_pptx(path: Path) -> ParsedDoc:
     warnings: list[str] = []
     pics_seen = pics_read = 0
     max_imgs = int(os.environ.get("INDICLEARN_OCR_MAX_IMAGES", "150"))
+    n_slides = len(prs.slides)
     for idx, slide in enumerate(prs.slides, start=1):
+        _report(idx - 1, n_slides, "reading")
         title_shape = slide.shapes.title if slide.shapes.title is not None else None
         title_text = normalize(title_shape.text_frame.text) if title_shape is not None and title_shape.has_text_frame else ""
         slide_blocks: list[Block] = []
@@ -689,6 +722,7 @@ def _parse_pdf(path: Path) -> ParsedDoc:
     max_ocr = int(os.environ.get("INDICLEARN_OCR_MAX_PAGES", "80"))
     renderer = _PageRenderer(path, reader)
     for pno, page in enumerate(reader.pages):
+        _report(pno, n_pages, "reading")
         try:
             plain = page.extract_text() or ""
         except Exception:
@@ -698,6 +732,7 @@ def _parse_pdf(path: Path) -> ParsedDoc:
             # (nearly) no selectable text: a scan, a slide exported as a picture, or a page of screenshots
             img = renderer.image(pno) if ocr_done < max_ocr else None
             if img is not None and ocr.get_engine() is not None:
+                _report(pno, n_pages, "ocr")
                 lines = ocr.ocr_image(img)
                 ocr_done += 1
                 if lines:
@@ -862,8 +897,29 @@ def _parse_pdf(path: Path) -> ParsedDoc:
 
 
 # ---------------------------------------------------------------------------
-def parse_file(path: str | Path, filename: str | None = None) -> ParsedDoc:
-    """Parse *path* into a :class:`ParsedDoc` or raise :class:`ParseError`."""
+_PROGRESS = threading.local()
+
+
+def _report(done: int, total: int, stage: str = "reading") -> None:
+    cb = getattr(_PROGRESS, "cb", None)
+    if cb is not None:
+        try:
+            cb(done, total, stage)
+        except Exception:  # pragma: no cover - progress is cosmetic
+            pass
+
+
+def parse_file(path: str | Path, filename: str | None = None, progress: Any = None) -> ParsedDoc:
+    """Parse *path* into a :class:`ParsedDoc` or raise :class:`ParseError`.
+    progress(done, total, stage) is called per page/slide so the UI can say "Reading page 12 of 41"."""
+    _PROGRESS.cb = progress
+    try:
+        return _parse_file(path, filename)
+    finally:
+        _PROGRESS.cb = None
+
+
+def _parse_file(path: str | Path, filename: str | None = None) -> ParsedDoc:
     path = Path(path)
     ext = Path(filename or path.name).suffix.lower()
     if ext in UNSUPPORTED_HINT:
@@ -882,10 +938,13 @@ def parse_file(path: str | Path, filename: str | None = None) -> ParsedDoc:
     doc.blocks = [b for b in doc.blocks if b.text and len(b.text.strip()) > 1]
     if sum(len(b.text) for b in doc.blocks) < 40:
         raise ParseError("The file has almost no readable text.")
-    display = Path(filename or path.name).stem.replace("_", " ").strip()
+    display = re.sub(r"(\.(pptx?|docx?|pdf|md|txt))+$", "", Path(filename or path.name).stem, flags=re.IGNORECASE)  # "Lecture2.pptx.pdf"
+    display = re.sub(r"\s+", " ", display.replace("_", " ")).strip()
     bad = not doc.title.strip() or doc.title.strip() == path.stem or bool(re.fullmatch(r"[0-9a-f]{12,}", doc.title.strip()))
     if bad:
         doc.title = display or path.stem
+    # titles copied from file metadata often end in the source file's extension ("Lecture2.pptx")
+    doc.title = re.sub(r"\s+", " ", re.sub(r"(\.(pptx?|docx?|pdf|key|odp))+$", "", doc.title, flags=re.IGNORECASE).replace("_", " ")).strip() or doc.title
     info = detect_document_language(doc.full_text)
     doc.language = info.base if info.code != "unknown" else "en"
     doc.script = info.script

@@ -71,6 +71,7 @@ class StudioService:
         self.db = Database(self.s.db_path)
         self.auth = AuthService(self.db, self.s.token_ttl_days)
         self.models = Models(self.s)
+        self._progress: dict[str, dict[str, Any]] = {}  # doc_id -> upload progress (page n of N, stage)
         from indiclearn.studio.courses.exams import ExamService
 
         self.exams = ExamService(self.db, self.models)
@@ -108,8 +109,22 @@ class StudioService:
                 "stats": jload(r["stats_json"], {}), "summary": r["summary"], "is_sample": bool(r["is_sample"])}
 
     # ------------------------------------------------------------------ ingest
+    def rename_doc(self, user_id: str, doc_id: str, title: str) -> dict[str, Any]:
+        title = re.sub(r"\s+", " ", (title or "")).strip()[:120]
+        if len(title) < 2:
+            raise _err("Please give the document a name.")
+        self._doc(user_id, doc_id)
+        self.db.run("UPDATE documents SET title=? WHERE id=? AND user_id=?", (title, doc_id, user_id))
+        return self._doc_public(self._doc(user_id, doc_id))
+
     def list_docs(self, user_id: str) -> list[dict[str, Any]]:
-        return [self._doc_public(r) for r in self.db.all("SELECT * FROM documents WHERE user_id=? ORDER BY created_at DESC", (user_id,))]
+        out = []
+        for r in self.db.all("SELECT * FROM documents WHERE user_id=? ORDER BY created_at DESC", (user_id,)):
+            d = self._doc_public(r)
+            if d["status"] == "processing" and r["id"] in self._progress:
+                d["progress"] = self._progress[r["id"]]
+            out.append(d)
+        return out
 
     def add_upload(self, user_id: str, filename: str, data: bytes, is_sample: bool = False) -> dict[str, Any]:
         ext = Path(filename).suffix.lower()
@@ -146,9 +161,13 @@ class StudioService:
             return []
         return [{"key": c, "title": t, "lang": c} for fn, t, c in SAMPLES if (self.samples_dir / fn).exists()]
 
+    def _set_progress(self, doc_id: str, done: int, total: int, stage: str) -> None:
+        self._progress[doc_id] = {"done": done, "total": total, "stage": stage}
+
     def _build(self, doc_id: str, path: Path, filename: str) -> None:
         try:
-            pd = parse_file(path, filename)
+            pd = parse_file(path, filename, progress=lambda d, t, st: self._set_progress(doc_id, d, t, st))
+            self._set_progress(doc_id, pd.n_pages, pd.n_pages, "map")
             brain = getattr(self.models, "brain", None)
             # A local LLM (Ollama on a laptop GPU) needs a minute or more for the map: open the document
             # straight away with the rule-based map and upgrade it in the background.
@@ -159,6 +178,8 @@ class StudioService:
             try:
                 from indiclearn.studio.kgraph_refine import refine
 
+                if hosted:
+                    self._set_progress(doc_id, pd.n_pages, pd.n_pages, "ai")
                 rep = refine(kg, None if defer else brain)
                 if hosted and not str(rep.get("graph_engine", "")).startswith("llm"):  # the LLM failed: use M1-M3 after all
                     kg = build_knowledge_graph(pd)
@@ -287,7 +308,12 @@ class StudioService:
             pages.setdefault(r["page"], []).append({"i": r["idx"], "kind": r["kind"], "level": r["level"], "text": r["text"], "meta": jload(r["meta_json"], {})})
         # concept surface forms the reader can highlight
         terms = [{"id": n["id"], "label": n["label"], "aliases": n.get("aliases") or [], "type": n["type"]} for n in nodes if n["type"] == "concept" or n.get("is_term")]
-        toc = [{"id": n["id"], "label": n["label"], "level": n["level"], "page": n["page"], "type": n["type"]} for n in nodes if n["type"] in ("chapter", "section", "topic") and not n.get("is_term") or n["type"] in ("chapter", "section")]
+        toc = []
+        for n in nodes:
+            if n["type"] in ("chapter", "section", "topic") and not n.get("is_term") or n["type"] in ("chapter", "section"):
+                if toc and re.sub(r"\W+", "", toc[-1]["label"].lower()) == re.sub(r"\W+", "", n["label"].lower()):
+                    continue  # one slide title repeated on 10 slides is one entry in the contents
+                toc.append({"id": n["id"], "label": n["label"], "level": n["level"], "page": n["page"], "type": n["type"]})
         return {"doc": self._doc_public(d), "pages": [{"page": p, "blocks": b} for p, b in sorted(pages.items())], "terms": terms, "toc": toc,
                 "has_original": d["ext"] == ".pdf"}
 
@@ -404,6 +430,28 @@ class StudioService:
         scope_label = next((x["label"] for x in nodes if x["id"] == scope), d["title"]) if scope else d["title"]
         self._start_quiz_bank(doc_id, ui_lang)  # fill the rest of the bank for this language in the background
         return {"quiz_id": qid, "scope": scope, "scope_label": scope_label, "questions": pub}
+
+    def quiz_retry(self, user_id: str, quiz_id: str) -> dict[str, Any]:
+        """A new quiz made of the questions the student got wrong (options reshuffled, so position is not memorised)."""
+        z = self.db.one("SELECT * FROM quizzes WHERE id=? AND user_id=?", (quiz_id, user_id))
+        if z is None:
+            raise _err("Quiz not found.", 404)
+        wrong = [jload(r["payload_json"], {}) for r in self.db.all("SELECT payload_json FROM quiz_questions WHERE quiz_id=? AND answered=1 AND correct=0 ORDER BY idx", (quiz_id,))]
+        if not wrong:
+            raise _err("No wrong answers to retry - well done!")
+        rng = random.Random()
+        qid = uuid.uuid4().hex[:12]
+        self.db.run("INSERT INTO quizzes(id,user_id,doc_id,created_at,scope_json) VALUES (?,?,?,?,?)", (qid, user_id, z["doc_id"], now(), z["scope_json"]))
+        pub = []
+        for i, q in enumerate(wrong):
+            if q.get("qtype") != "tf":
+                order = list(range(len(q["options"])))
+                rng.shuffle(order)
+                q["options"], q["answer"] = [q["options"][k] for k in order], order.index(q["answer"])
+            q["id"], q["idx"] = f"{qid}-{i}", i
+            self.db.run("INSERT INTO quiz_questions(id,quiz_id,idx,node_id,qtype,payload_json) VALUES (?,?,?,?,?,?)", (q["id"], qid, i, q["node_id"], q["qtype"], jdump(q)))
+            pub.append(quizmod.public(q))
+        return {"quiz_id": qid, "scope": None, "scope_label": "", "questions": pub, "retry": True}
 
     def quiz_answer(self, user_id: str, quiz_id: str, qid: str, choice: int, ui_lang: str = "en") -> dict[str, Any]:
         row = self.db.one("SELECT q.*, z.user_id, z.doc_id FROM quiz_questions q JOIN quizzes z ON z.id=q.quiz_id WHERE q.id=? AND q.quiz_id=?", (qid, quiz_id))

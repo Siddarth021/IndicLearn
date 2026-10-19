@@ -53,3 +53,52 @@ def test_paper_flow_hides_answers_until_asked(client, auth):
 def test_bad_blueprint_is_a_clear_400(client, auth):
     r = client.post("/api/papers", json={"blueprint": {**MID, "total": 30}}, headers=auth)
     assert r.status_code == 400 and "add up to 25" in r.json()["detail"]
+
+
+GATE = next(p for p in P.PRESETS if p["id"] == "gate")
+
+
+def test_gate_paper_has_mcq_msq_nat_with_exact_keys(client, auth):
+    p = client.post("/api/papers", json={"blueprint": {**GATE, "units": None}}, headers=auth).json()
+    kinds = [q["kind"] for q in p["questions"]]
+    assert p["total"] == 15 and {"mcq", "msq", "nat"} <= set(kinds)
+    assert all(q["negative"] == (round(q["marks"] / 3, 2) if q["kind"] == "mcq" else 0) for q in p["questions"])
+    full = client.get(f"/api/papers/{p['id']}?answers=true", headers=auth).json()
+    for q in full["questions"]:
+        if q["kind"] == "nat":
+            assert isinstance(q["value"], (int, float))
+        if q["kind"] == "msq":
+            assert 1 <= len(q["correct"]) <= 3
+    pdf = client.get(f"/api/papers/{p['id']}/pdf?answers=true", headers=auth)
+    assert pdf.status_code == 200 and pdf.content[:5] == b"%PDF-"
+
+
+def test_numeric_mcq_and_msq_keys_are_computed():
+    import random
+
+    from indiclearn.studio.courses import oscalc as C
+
+    for s in range(40):
+        m = C.gen_msq_numeric("pages", random.Random(s), 2, "medium", "page-replacement")
+        if m:
+            vals = {name: int(part.split(": ")[1].split()[0]) for part in m["answer"][0]["p"].split(". At most")[0].split("; ") for name in [part.split(": ")[0]]}
+            k = int(m["blocks"][0]["p"].split("at most ")[1].split()[0])
+            assert sorted(i for i, o in enumerate(m["options"]) if vals[o] <= k) == m["correct"]
+
+
+def test_pattern_from_a_real_midterm_photo(client, auth):
+    from pathlib import Path
+
+    photo = Path(__file__).resolve().parents[1] / "fixtures" / "iiits_os_midterm_photo.jpg"
+    r = client.post("/api/papers/pattern", files={"file": ("mid.jpg", photo.read_bytes(), "image/jpeg")}, headers=auth)
+    assert r.status_code == 200, r.text
+    bp = r.json()["blueprint"]
+    assert bp["total"] == 25 and bp["minutes"] == 90
+    assert sorted((x["count"], x["marks"], x["qtype"]) for x in bp["rows"]) == [(2, 4, "long"), (2, 4, "numerical"), (3, 3, "short")]
+    assert {"u1", "u2", "u3"} <= set(bp["units"])
+    assert client.post("/api/papers", json={"blueprint": bp}, headers=auth).status_code == 200
+
+
+def test_pattern_rejects_unreadable_files(client, auth):
+    r = client.post("/api/papers/pattern", files={"file": ("x.exe", b"MZ....", "application/octet-stream")}, headers=auth)
+    assert r.status_code == 400

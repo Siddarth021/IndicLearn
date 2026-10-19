@@ -106,7 +106,12 @@ def _header(paper: dict[str, Any], st: dict[str, ParagraphStyle], key: bool) -> 
     head = [Paragraph(_txt(f"{paper['course_title']} - {bp['name']}" + (" - ANSWER KEY" if key else "")), st["title"]), Spacer(1, 4),
             Paragraph(_txt(f"Max. Marks: {paper['total']}") + "&nbsp;" * 8 + _txt(f"Duration: {bp['minutes']} minutes"), st["sub"]),
             Spacer(1, 8)]
-    if not key:
+    if not key and bp.get("style") == "gate":
+        head += [Paragraph("<b>Instructions (GATE pattern):</b>", st["body"]),
+                 Paragraph(_txt("MCQ - exactly one correct option; a wrong answer costs 1/3 of the question's marks. "
+                                "MSQ - one or more options are correct; no negative marks and no partial marks. "
+                                "NAT - write the numerical value; no negative marks. A virtual calculator is allowed."), st["small"]), Spacer(1, 6)]
+    elif not key:
         head += [Paragraph("<b>Instructions:</b>", st["body"]),
                  Paragraph(_txt("1. Answer all the questions. 2. Marks for each question are shown on the right. "
                                 "3. Draw neat diagrams wherever necessary. 4. Calculators are allowed."), st["small"]), Spacer(1, 6)]
@@ -126,12 +131,16 @@ def render(paper: dict[str, Any], answers: bool = False) -> bytes:
     for q in paper["questions"]:
         first, rest = q["blocks"][0], q["blocks"][1:]
         lead = _blocks([first], st, qw)
-        head = Table([[Paragraph(f"<b>{q['n']}.</b>", st["body"]), lead[0] if len(lead) == 1 else lead, Paragraph(f"<b>[{q['marks']}]</b>", st["body"])]],
+        tag = {"mcq": "MCQ", "msq": "MSQ", "nat": "NAT"}.get(q["kind"], "") if paper["blueprint"].get("style") == "gate" else ""
+        head = Table([[Paragraph(f"<b>{q['n']}.</b>", st["body"]), lead[0] if len(lead) == 1 else lead,
+                       Paragraph(f"<b>[{q['marks']}]</b>" + (f"<br/><font size=8>{tag}</font>" if tag else ""), st["body"])]],
                      colWidths=[10 * mm, qw, 16 * mm])
         head.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0), ("ALIGN", (2, 0), (2, 0), "RIGHT")]))
         body: list[Any] = _blocks(rest, st, qw)
         if q.get("options"):
             body += [Paragraph(_txt(f"({'abcd'[i]}) {o}"), st["bullet"]) for i, o in enumerate(q["options"])]
+        if q["kind"] == "nat" and not answers:
+            body.append(Paragraph(_txt("Answer: ______________"), st["body"]))
         if answers:
             body.append(Spacer(1, 4))
             body += _answer(q, st, qw)
@@ -149,6 +158,13 @@ def render(paper: dict[str, Any], answers: bool = False) -> bytes:
 
 def _answer(q: dict[str, Any], st: dict[str, ParagraphStyle], width: float) -> list[Any]:
     out: list[Any] = [Paragraph("<b>Answer:</b>", st["body"])]
+    if q["kind"] == "msq" and q.get("correct") is not None:
+        out.append(Paragraph(_txt("Correct options: " + ", ".join(f"({'abcd'[i]})" for i in q["correct"])), st["bold"]))
+    if q.get("answer_blocks") and q["kind"] == "mcq" and q.get("correct") is not None:
+        out.append(Paragraph(_txt(f"({'abcd'[q['correct']]}) {q['options'][q['correct']]}"), st["bold"]))
+    if q.get("answer_blocks"):
+        out += _blocks(q["answer_blocks"], st, width)
+        return out
     if q["kind"] == "numerical":
         out += _blocks(q.get("answer_blocks") or [], st, width)
         return out

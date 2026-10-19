@@ -103,3 +103,37 @@ def test_voice_keyterms_are_cleaned_for_sarvam(monkeypatch):
     monkeypatch.setattr(speech, "_stt_call", lambda fields, *a: sent.append(dict(fields)) or {"text": "ok", "lang": "en"})
     speech.stt(b"x", "a.webm", "audio/webm", ["Encoding, Decoding", "Kriging", "Kriging", "ab"])
     assert sent[0]["keyterms"] == '["Encoding Decoding", "Kriging"]'
+
+
+def test_ocr_respacing_and_junk_headings():
+    from indiclearn.studio.ocr import respace
+    from indiclearn.studio.parse import _plausible_heading_text as ok
+
+    assert respace("OutcomerecordedatNknown,fixedcoordinates") == "Outcome recorded at N known, fixed coordinates"
+    assert respace("Multiprogramming") == "Multiprogramming" and respace("Kriging") == "Kriging"
+    for junk in ["40 60 80", "2009 2010 2011", "From Gelfand et al. (2010, pg.5)", "Latitude Latitude Latitude", "Ashok Vihar 22 Narela", "Figure4O: Flow"]:
+        assert not ok(junk), junk
+    for real in ["Unit 5", "Chapter 3 Processes", "Spatial Estimation: Kriging", "CPU", "RAID 5 Levels"]:
+        assert ok(real), real
+
+
+def test_quiz_retry_and_rename(client, auth, sample_md):
+    import time
+
+    d = client.post("/api/docs", files={"file": ("notes.md", sample_md.read_bytes(), "text/markdown")}, headers=auth).json()
+    for _ in range(60):
+        if client.get(f"/api/docs/{d['id']}", headers=auth).json()["status"] == "ready":
+            break
+        time.sleep(0.5)
+    q = client.post(f"/api/docs/{d['id']}/quiz", json={"n": 3, "lang": "en"}, headers=auth).json()
+    wrong = 0
+    for x in q["questions"]:
+        r = client.post(f"/api/quiz/{q['quiz_id']}/answer", json={"question_id": x["id"], "choice": 0, "lang": "en"}, headers=auth).json()
+        wrong += not r["correct"]
+    rr = client.post(f"/api/quiz/{q['quiz_id']}/retry", headers=auth)
+    if wrong:
+        assert rr.status_code == 200 and len(rr.json()["questions"]) == wrong and rr.json()["quiz_id"] != q["quiz_id"]
+    else:
+        assert rr.status_code == 400  # nothing to retry
+    assert client.put(f"/api/docs/{d['id']}", json={"title": "  OS Unit 3  "}, headers=auth).json()["title"] == "OS Unit 3"
+    assert client.put(f"/api/docs/{d['id']}", json={"title": " "}, headers=auth).status_code == 400

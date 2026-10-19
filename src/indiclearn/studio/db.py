@@ -77,6 +77,14 @@ CREATE TABLE IF NOT EXISTS papers (
   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS idx_papers_user ON papers(user_id, created_at);
+CREATE TABLE IF NOT EXISTS lesson_i18n (
+  subject TEXT NOT NULL, topic TEXT NOT NULL, lang TEXT NOT NULL, payload_json TEXT, created_at REAL,
+  PRIMARY KEY(subject, topic, lang)
+);
+CREATE TABLE IF NOT EXISTS lesson_progress (
+  user_id TEXT NOT NULL, subject TEXT NOT NULL, topic TEXT NOT NULL, status TEXT, updated_at REAL,
+  PRIMARY KEY(user_id, subject, topic), FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 """
 
 

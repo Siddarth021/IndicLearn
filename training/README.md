@@ -55,3 +55,11 @@ training/
 mark schemes; Gemini (a different model) then solves every MCQ blind and reviews every answer - only questions it agrees
 with are kept. Resumable; report in `reports/os_bank.json` (500 questions on 2026-10-19). Numericals are not in the bank:
 `courses/oscalc.py` generates them with computed answers (checked against textbook examples in `tests/studio/test_oscalc.py`).
+
+## Operating Systems lessons
+
+`python training/make_os_lessons.py` writes `src/indiclearn/studio/courses/os_lessons.jsonl`: one lesson per topic,
+written by Sarvam (or Gemini: `WRITER=gemini`), reviewed and corrected by Gemini, then translated to Telugu (Telugu
+sentences, English technical terms). `--te-only` finishes missing Telugu; the app also translates a lesson the first time
+a student opens it in Telugu and caches it. For numerical topics the app replaces any model-written "conventions" with the
+exact rules the solver uses (`courses/lessons.py: RULES`), so a lesson can never contradict its worked example.
