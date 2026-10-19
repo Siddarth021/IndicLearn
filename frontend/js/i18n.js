@@ -6,7 +6,7 @@ const S = {
   en: {
     part: "part",
     pages_n: "{n} pages", slides_n: "{n} slides", parts_n: "{n} parts",
-    tagline: "Study studio", nav_library: "Library", nav_study: "Study", nav_map: "Mind map", nav_quiz: "Quiz", nav_progress: "Progress",
+    tagline: "Study studio", nav_library: "Library", nav_study: "Study", nav_map: "Mind map", nav_quiz: "Quiz", nav_progress: "Progress", nav_papers: "Exam papers",
     hero_a: "Learn from your own", hero_b: "notes", hero_p: "Upload a chapter, slides or a paper. IndicLearn turns it into a mind map, answers your doubts in English, తెలుగు, हिन्दी or संस्कृतम्, quizzes you — and the map grows with what you learn.",
     drop_t: "Drop your notes here", drop_p: "PDF, PowerPoint, Word, Markdown or text — up to {mb} MB", choose: "Choose file", or_sample: "or try a sample", your_library: "Your library", no_docs: "Nothing here yet — upload your first notes above.",
     processing: "Reading your notes…", failed: "Could not process", open: "Open", delete: "Delete", confirm_delete: "Delete this document and all your progress on it?", concepts: "concepts", sections: "sections",
@@ -31,7 +31,7 @@ const S = {
   te: {
     part: "భాగం",
     pages_n: "{n} పేజీలు", slides_n: "{n} స్లైడ్లు", parts_n: "{n} భాగాలు",
-    tagline: "స్టడీ స్టూడియో", nav_library: "లైబ్రరీ", nav_study: "చదువు", nav_map: "మైండ్ మ్యాప్", nav_quiz: "క్విజ్", nav_progress: "పురోగతి",
+    tagline: "స్టడీ స్టూడియో", nav_library: "లైబ్రరీ", nav_study: "చదువు", nav_map: "మైండ్ మ్యాప్", nav_quiz: "క్విజ్", nav_progress: "పురోగతి", nav_papers: "పరీక్ష పేపర్లు",
     hero_a: "మీ సొంత", hero_b: "నోట్స్‌తో", hero_p: "అధ్యాయం, స్లైడ్లు లేదా పేపర్ అప్‌లోడ్ చేయండి. IndicLearn దాన్ని మైండ్ మ్యాప్‌గా మారుస్తుంది, మీ సందేహాలకు English, తెలుగు, हिन्दी, संस्कृतम्‌లో జవాబిస్తుంది, క్విజ్ పెడుతుంది — మీరు నేర్చుకునే కొద్దీ మ్యాప్ పెరుగుతుంది.",
     drop_t: "మీ నోట్స్‌ను ఇక్కడ వదలండి", drop_p: "PDF, PowerPoint, Word, Markdown లేదా టెక్స్ట్ — {mb} MB వరకు", choose: "ఫైల్ ఎంచుకోండి", or_sample: "లేదా నమూనా ప్రయత్నించండి", your_library: "మీ లైబ్రరీ", no_docs: "ఇంకా ఏమీ లేదు — పైన మీ మొదటి నోట్స్ అప్‌లోడ్ చేయండి.",
     processing: "మీ నోట్స్ చదువుతున్నాను…", failed: "ప్రాసెస్ చేయలేకపోయాను", open: "తెరవండి", delete: "తొలగించు", confirm_delete: "ఈ డాక్యుమెంట్‌ను, దానిపై మీ పురోగతిని తొలగించాలా?", concepts: "భావనలు", sections: "విభాగాలు",
@@ -56,7 +56,7 @@ const S = {
   hi: {
     part: "भाग",
     pages_n: "{n} पृष्ठ", slides_n: "{n} स्लाइड", parts_n: "{n} भाग",
-    tagline: "स्टडी स्टूडियो", nav_library: "लाइब्रेरी", nav_study: "पढ़ाई", nav_map: "माइंड मैप", nav_quiz: "क्विज़", nav_progress: "प्रगति",
+    tagline: "स्टडी स्टूडियो", nav_library: "लाइब्रेरी", nav_study: "पढ़ाई", nav_map: "माइंड मैप", nav_quiz: "क्विज़", nav_progress: "प्रगति", nav_papers: "परीक्षा पेपर",
     hero_a: "अपने ही", hero_b: "नोट्स से सीखें", hero_p: "कोई अध्याय, स्लाइड या पेपर अपलोड करें। IndicLearn उसे माइंड मैप में बदलता है, आपकी शंकाओं का उत्तर English, తెలుగు, हिन्दी या संस्कृतम् में देता है, क्विज़ लेता है — और जैसे-जैसे आप सीखते हैं, मैप बढ़ता है।",
     drop_t: "अपने नोट्स यहाँ छोड़ें", drop_p: "PDF, PowerPoint, Word, Markdown या टेक्स्ट — {mb} MB तक", choose: "फ़ाइल चुनें", or_sample: "या नमूना आज़माएँ", your_library: "आपकी लाइब्रेरी", no_docs: "अभी कुछ नहीं — ऊपर अपने पहले नोट्स अपलोड करें।",
     processing: "आपके नोट्स पढ़ रहा हूँ…", failed: "प्रोसेस नहीं हो सका", open: "खोलें", delete: "हटाएँ", confirm_delete: "यह दस्तावेज़ और इस पर आपकी प्रगति हटा दें?", concepts: "अवधारणाएँ", sections: "खंड",
@@ -81,7 +81,7 @@ const S = {
   sa: {
     part: "भागः",
     pages_n: "{n} पृष्ठानि", slides_n: "{n} पटलानि", parts_n: "{n} भागाः",
-    tagline: "अध्ययनशाला", nav_library: "ग्रन्थालयः", nav_study: "अध्ययनम्", nav_map: "मनश्चित्रम्", nav_quiz: "प्रश्नोत्तरी", nav_progress: "प्रगतिः",
+    tagline: "अध्ययनशाला", nav_library: "ग्रन्थालयः", nav_study: "अध्ययनम्", nav_map: "मनश्चित्रम्", nav_quiz: "प्रश्नोत्तरी", nav_progress: "प्रगतिः", nav_papers: "परीक्षापत्राणि",
     hero_a: "स्वकीयाभिः", hero_b: "टिप्पणीभिः पठत", hero_p: "अध्यायं, पटलानि वा पत्रं वा उपारोपयत। IndicLearn तत् मनश्चित्रं करोति, संशयान् संस्कृते हिन्दीभाषायां तेलुगुभाषायाम् आङ्ग्लभाषायां च समाधत्ते, प्रश्नोत्तरीं करोति — भवतः ज्ञानेन सह चित्रं वर्धते।",
     drop_t: "टिप्पणीः अत्र क्षिपत", drop_p: "PDF, PowerPoint, Word, Markdown अथवा पाठ्यम् — {mb} MB पर्यन्तम्", choose: "सञ्चिकां चिनुत", or_sample: "अथवा उदाहरणं प्रयतत", your_library: "भवतः ग्रन्थालयः", no_docs: "अद्यापि किमपि नास्ति — उपरि प्रथमां टिप्पणीम् उपारोपयत।",
     processing: "टिप्पणीः पठामि…", failed: "संसाधनं न जातम्", open: "उद्घाटय", delete: "लोपय", confirm_delete: "इमं लेखं तस्मिन् भवतः प्रगतिं च लोपयामि वा?", concepts: "संकल्पनाः", sections: "विभागाः",

@@ -46,3 +46,12 @@ training/
   textbooks were never used.
 * Every model is compared with the rule it replaces (`reports/m*.json`): M1 vs "keep every candidate",
   M3 vs "every co-occurring pair is related", M2 vs "copy the sentence", M4 vs well-formedness.
+
+
+## Operating Systems question bank (exam papers)
+
+`python training/make_os_bank.py` writes `src/indiclearn/studio/courses/os_bank.jsonl`: for each of the 38 topics in
+`courses/os_syllabus.json`, Sarvam writes fill-in-the-blank, MCQ, short, medium and long questions with model answers and
+mark schemes; Gemini (a different model) then solves every MCQ blind and reviews every answer - only questions it agrees
+with are kept. Resumable; report in `reports/os_bank.json` (500 questions on 2026-10-19). Numericals are not in the bank:
+`courses/oscalc.py` generates them with computed answers (checked against textbook examples in `tests/studio/test_oscalc.py`).

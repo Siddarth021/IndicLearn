@@ -72,6 +72,11 @@ CREATE TABLE IF NOT EXISTS quiz_bank (
   FOREIGN KEY(doc_id) REFERENCES documents(id) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS idx_bank_doc ON quiz_bank(doc_id, lang, node_id);
+CREATE TABLE IF NOT EXISTS papers (
+  id TEXT PRIMARY KEY, user_id TEXT NOT NULL, subject TEXT, name TEXT, created_at REAL, payload_json TEXT,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_papers_user ON papers(user_id, created_at);
 """
 
 

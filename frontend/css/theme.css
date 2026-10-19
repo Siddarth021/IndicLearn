@@ -282,3 +282,45 @@ html[lang="te"] .nav button,html[lang="hi"] .nav button,html[lang="sa"] .nav but
   .view.flush{min-width:0}
 }
 .msg.streaming .caret{display:inline-block;width:7px;height:15px;margin-left:2px;vertical-align:-2px;background:var(--gold-2);animation:bl 1s infinite}
+
+/* ---- exam papers ---- */
+.pbuild{margin-bottom:20px}
+.pseg{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.segbtn{border:1px solid var(--line-2);background:#fff;color:var(--ink-2);border-radius:999px;padding:9px 14px;font:inherit;font-size:13px;font-weight:600;min-height:40px;cursor:pointer}
+.segbtn small{font-weight:500;color:var(--muted)}
+.segbtn.on{background:var(--gold-soft);border-color:var(--gold);color:var(--ink)}
+.prow{display:grid;grid-template-columns:140px 140px 1fr;gap:14px;margin-top:14px;align-items:end}
+.prow label{display:flex;flex-direction:column;gap:4px}
+.units{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chipbtn{border:1px solid var(--line-2);background:#fff;color:var(--ink-2);border-radius:10px;padding:8px 12px;font:inherit;font-size:13px;min-height:40px;cursor:pointer;text-align:left}
+.chipbtn.on{background:var(--gold-wash);border-color:var(--gold);color:var(--ink)}
+.prows{display:flex;flex-direction:column;gap:8px;margin:8px 0}
+.prow2{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-2)}
+.prow2 .field.n{width:70px}
+.prow2 select.field{width:auto;min-width:170px}
+.prow2 .x{font-size:16px;text-decoration:none;min-width:40px;min-height:40px}
+.pgo{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.psum{font-size:13.5px;font-weight:600}
+.psum.ok{color:var(--good)}.psum.bad{color:var(--bad)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.pbar{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 10px}
+.pbar a.btn{text-decoration:none}
+.pinfo{font-size:13px;color:var(--ink-2);margin-bottom:12px}.pinfo p{margin:2px 0}
+.sheet{font-family:"Playfair Display",Georgia,serif;padding:28px 30px}
+.sheet header{text-align:center;border-bottom:1.5px solid var(--ink);padding-bottom:10px;margin-bottom:6px}
+.sheet header h2{margin:0 0 4px;font-size:21px}
+.sheet .meta{display:flex;justify-content:center;gap:28px;font-family:Inter,system-ui,sans-serif;font-size:13px;color:var(--ink-2)}
+.pq{display:grid;grid-template-columns:30px 1fr 44px;gap:8px;padding:14px 0;border-bottom:1px solid var(--line);font-family:Inter,system-ui,sans-serif;font-size:14.5px;line-height:1.55}
+.pqn{font-weight:700}.pqm{text-align:right;font-weight:700;white-space:nowrap}
+.pqb{min-width:0}.pqb .chip{white-space:normal}
+.pqb p{margin:0 0 6px}
+.opts{margin:4px 0 6px;padding-left:22px}
+.pqfoot{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:6px}
+.qans{margin-top:10px;padding:12px 14px;background:var(--good-soft);border-radius:10px;font-size:14px}
+.qans ul{margin:4px 0 0;padding-left:18px}
+.tblwrap{overflow-x:auto;margin:6px 0}
+.ptable{border-collapse:collapse;font-size:13px}
+.ptable th,.ptable td{border:1px solid var(--line-2);padding:4px 9px;text-align:center}
+.ptable th{background:var(--surface-2)}
+@media (max-width:640px){.prow{grid-template-columns:1fr 1fr}.pdiff{grid-column:1/-1}.sheet{padding:18px 14px}.pq{grid-template-columns:24px 1fr 36px;font-size:14px}}
+.segbtn.on small{color:inherit;opacity:.85}

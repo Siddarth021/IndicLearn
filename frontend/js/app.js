@@ -7,13 +7,16 @@ import { createReader } from "./reader.js";
 import { createMapView } from "./mapview.js";
 import { renderQuiz } from "./quizcard.js";
 import { createHud } from "./hud.js";
+import { renderPapers } from "./papers.js";
 
 const $app = document.getElementById("app-root");
+const DOCLESS = new Set(["library", "papers"]); // views that work without an open document
 let views = {}, tutor = null, reader = null, mapView = null, pollTimer = null;
 const ICON = {
   library: '<path d="M4 5h4v14H4zM10 5h4v14h-4zM16.5 6.5l3.2-.8 3 11.7-3.2.8z"/>', study: '<path d="M4 5h7a3 3 0 0 1 3 3v11a3 3 0 0 0-3-3H4zM20 5h-7a3 3 0 0 0-3 3v11a3 3 0 0 1 3-3h7z"/>',
   map: '<circle cx="12" cy="12" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M10 11 6.5 7.5M14 11l3.5-3.5M10 13l-3.5 3.5M14 13l3.5 3.5"/>',
   quiz: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17v.01"/>', progress: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  papers: '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
 };
 const svgIcon = (k) => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.innerHTML = ICON[k]; return s; };
 
@@ -66,9 +69,9 @@ function shell(keepView = false) {
   const side = h("aside", { class: "side" });
   side.append(h("div", { class: "brand" }, h("b", {}, "Indic", h("i", {}, "Learn")), h("span", { class: "small-caps" }, t("tagline"))));
   const nav = h("nav", { class: "nav", "aria-label": "Main" });
-  const items = [["library", "nav_library"], ["study", "nav_study"], ["map", "nav_map"], ["quiz", "nav_quiz"], ["progress", "nav_progress"]];
+  const items = [["library", "nav_library"], ["study", "nav_study"], ["map", "nav_map"], ["quiz", "nav_quiz"], ["progress", "nav_progress"], ["papers", "nav_papers"]];
   for (const [k, label] of items) {
-    const b = h("button", { "data-v": k, class: S.view === k ? "on" : "", onclick: () => go(k), disabled: k !== "library" && !S.doc }, svgIcon(k), h("span", {}, t(label)));
+    const b = h("button", { "data-v": k, class: S.view === k ? "on" : "", onclick: () => go(k), disabled: !DOCLESS.has(k) && !S.doc }, svgIcon(k), h("span", {}, t(label)));
     nav.append(b);
   }
   side.append(nav);
@@ -78,7 +81,7 @@ function shell(keepView = false) {
   const main = h("main", {});
   const tutorEl = h("aside", { class: "tutor", id: "tutor" });
   views = {};
-  for (const k of ["library", "study", "map", "quiz", "progress"]) { views[k] = h("div", { class: "view" + (k === "study" || k === "map" ? " flush" : ""), hidden: true }); main.append(views[k]); }
+  for (const k of ["library", "study", "map", "quiz", "progress", "papers"]) { views[k] = h("div", { class: "view" + (k === "study" || k === "map" ? " flush" : ""), hidden: true }); main.append(views[k]); }
   app.append(side, main, tutorEl); $app.append(app);
   tutor = createTutor(tutorEl); reader = createReader(views.study); mapView = createMapView(views.map);
   if (S.doc) { reader.load(); }
@@ -87,7 +90,7 @@ function shell(keepView = false) {
 }
 
 function go(view, opts = {}) {
-  if (view !== "library" && !S.doc) view = "library";
+  if (!DOCLESS.has(view) && !S.doc) view = "library";
   S.view = view;
   for (const k in views) views[k].hidden = k !== view;
   document.querySelectorAll(".nav button").forEach((b) => b.classList.toggle("on", b.dataset.v === view));
@@ -100,6 +103,7 @@ function go(view, opts = {}) {
   else if (view === "map") mapView.show(opts.select);
   else if (view === "quiz") renderQuizPage();
   else if (view === "progress") renderProgress();
+  else if (view === "papers") renderPapers(views.papers);
   opts.then?.();
 }
 on("nav", ({ view, select, then }) => { go(view, { select }); if (then) setTimeout(then, 350); });
@@ -138,7 +142,7 @@ function watchMapUpgrade(id, tries = 0) {
   }, 8000);
 }
 function shellKeepNav() {
-  document.querySelectorAll(".nav button").forEach((b) => (b.disabled = b.dataset.v !== "library" && !S.doc));
+  document.querySelectorAll(".nav button").forEach((b) => (b.disabled = !DOCLESS.has(b.dataset.v) && !S.doc));
   const pill = document.querySelector(".docpill"); pill?.remove();
   if (S.doc) document.querySelector(".nav").after(h("div", { class: "docpill" }, h("span", { class: "small-caps" }, S.doc.lang?.toUpperCase() + " · " + (S.doc.stats?.concepts ?? "") + " " + t("concepts")), h("span", { class: "t" }, S.doc.title)));
 }

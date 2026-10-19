@@ -71,6 +71,9 @@ class StudioService:
         self.db = Database(self.s.db_path)
         self.auth = AuthService(self.db, self.s.token_ttl_days)
         self.models = Models(self.s)
+        from indiclearn.studio.courses.exams import ExamService
+
+        self.exams = ExamService(self.db, self.models)
         self.pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="ingest")
         self._cache: OrderedDict[str, tuple[DocIndex, list[dict[str, Any]], list[dict[str, Any]]]] = OrderedDict()
         self._lock = threading.Lock()

@@ -1,0 +1,522 @@
+{
+ "subject": "os",
+ "title": "Operating Systems",
+ "sources": "Typical B.Tech CSE OS syllabus (Silberschatz-Galvin order) cross-checked with the GATE 2027 CSE syllabus",
+ "units": [
+  {
+   "id": "u1",
+   "title": "Introduction and OS structures",
+   "topics": [
+    {
+     "id": "os-functions",
+     "label": "Functions and services of an OS",
+     "keywords": [
+      "operating system",
+      "os services",
+      "resource manager",
+      "functions of os"
+     ],
+     "gate": false
+    },
+    {
+     "id": "os-types",
+     "label": "Types of OS (batch, multiprogramming, time-sharing, real-time, distributed)",
+     "keywords": [
+      "batch",
+      "multiprogramming",
+      "time sharing",
+      "time-sharing",
+      "real time",
+      "real-time",
+      "rtos",
+      "distributed os",
+      "multiprocessing"
+     ],
+     "gate": false
+    },
+    {
+     "id": "syscalls",
+     "label": "System calls, API and the OS",
+     "keywords": [
+      "system call",
+      "syscall",
+      "fork",
+      "exec"
+     ],
+     "gate": true
+    },
+    {
+     "id": "os-structure",
+     "label": "OS structures (monolithic, layered, microkernel, modules)",
+     "keywords": [
+      "monolithic",
+      "layered",
+      "microkernel",
+      "kernel module",
+      "hybrid kernel"
+     ],
+     "gate": false
+    },
+    {
+     "id": "dual-mode",
+     "label": "Dual mode, interrupts and protection",
+     "keywords": [
+      "user mode",
+      "kernel mode",
+      "dual mode",
+      "interrupt",
+      "privileged instruction",
+      "mode bit"
+     ],
+     "gate": true
+    }
+   ]
+  },
+  {
+   "id": "u2",
+   "title": "Processes and threads",
+   "topics": [
+    {
+     "id": "process",
+     "label": "Process concept and PCB",
+     "keywords": [
+      "pcb",
+      "process control block",
+      "address space"
+     ],
+     "gate": true
+    },
+    {
+     "id": "process-states",
+     "label": "Process states and transitions",
+     "keywords": [
+      "process state",
+      "state transition"
+     ],
+     "gate": true
+    },
+    {
+     "id": "context-switch",
+     "label": "Context switch",
+     "keywords": [
+      "context switch",
+      "dispatcher",
+      "dispatch latency"
+     ],
+     "gate": true
+    },
+    {
+     "id": "process-ops",
+     "label": "Process creation and termination (fork, exec, wait)",
+     "keywords": [
+      "fork",
+      "exec",
+      "zombie",
+      "orphan",
+      "child process"
+     ],
+     "gate": true
+    },
+    {
+     "id": "ipc",
+     "label": "Inter-process communication (shared memory, message passing, pipes)",
+     "keywords": [
+      "ipc",
+      "inter-process",
+      "shared memory",
+      "message passing",
+      "pipe"
+     ],
+     "gate": true
+    },
+    {
+     "id": "threads",
+     "label": "Threads, multithreading models and benefits",
+     "keywords": [
+      "thread",
+      "multithreading",
+      "user-level thread",
+      "kernel-level thread",
+      "many-to-one",
+      "one-to-one",
+      "many-to-many",
+      "pthread"
+     ],
+     "gate": true
+    }
+   ]
+  },
+  {
+   "id": "u3",
+   "title": "CPU scheduling",
+   "topics": [
+    {
+     "id": "sched-criteria",
+     "label": "Scheduling criteria and schedulers",
+     "keywords": [
+      "turnaround",
+      "waiting time",
+      "response time",
+      "throughput",
+      "cpu utilization",
+      "long-term scheduler",
+      "short-term scheduler",
+      "medium-term"
+     ],
+     "gate": true
+    },
+    {
+     "id": "fcfs-sjf",
+     "label": "FCFS, SJF and SRTF scheduling",
+     "keywords": [
+      "fcfs",
+      "first come",
+      "sjf",
+      "shortest job",
+      "srtf",
+      "shortest remaining",
+      "convoy effect"
+     ],
+     "gate": true,
+     "numerical": "cpu"
+    },
+    {
+     "id": "priority-sched",
+     "label": "Priority scheduling, starvation and aging",
+     "keywords": [
+      "priority scheduling",
+      "starvation",
+      "aging",
+      "preemptive priority"
+     ],
+     "gate": true,
+     "numerical": "cpu"
+    },
+    {
+     "id": "round-robin",
+     "label": "Round Robin scheduling and time quantum",
+     "keywords": [
+      "round robin",
+      "time quantum",
+      "time slice"
+     ],
+     "gate": true,
+     "numerical": "cpu"
+    },
+    {
+     "id": "mlq",
+     "label": "Multilevel queue and multilevel feedback queue",
+     "keywords": [
+      "multilevel queue",
+      "multilevel feedback",
+      "mlfq"
+     ],
+     "gate": true
+    },
+    {
+     "id": "rt-sched",
+     "label": "Real-time and multiprocessor scheduling",
+     "keywords": [
+      "rate monotonic",
+      "earliest deadline",
+      "edf",
+      "multiprocessor scheduling",
+      "processor affinity",
+      "load balancing"
+     ],
+     "gate": false
+    }
+   ]
+  },
+  {
+   "id": "u4",
+   "title": "Process synchronization",
+   "topics": [
+    {
+     "id": "critical-section",
+     "label": "Race condition and the critical-section problem",
+     "keywords": [
+      "race condition",
+      "critical section",
+      "mutual exclusion",
+      "progress",
+      "bounded waiting"
+     ],
+     "gate": true
+    },
+    {
+     "id": "peterson-hw",
+     "label": "Peterson's solution and hardware support (test-and-set, compare-and-swap)",
+     "keywords": [
+      "peterson",
+      "test and set",
+      "test-and-set",
+      "compare and swap",
+      "atomic",
+      "spinlock"
+     ],
+     "gate": true
+    },
+    {
+     "id": "semaphores",
+     "label": "Mutex locks and semaphores",
+     "keywords": [
+      "semaphore",
+      "mutex",
+      "wait()",
+      "signal()",
+      "counting semaphore",
+      "binary semaphore",
+      "p()",
+      "v()"
+     ],
+     "gate": true
+    },
+    {
+     "id": "monitors",
+     "label": "Monitors and condition variables",
+     "keywords": [
+      "condition variable"
+     ],
+     "gate": false
+    },
+    {
+     "id": "classic-sync",
+     "label": "Classical problems: producer-consumer, readers-writers, dining philosophers",
+     "keywords": [
+      "producer consumer",
+      "producer-consumer",
+      "bounded buffer",
+      "readers writers",
+      "readers-writers",
+      "dining philosophers"
+     ],
+     "gate": true
+    }
+   ]
+  },
+  {
+   "id": "u5",
+   "title": "Deadlocks",
+   "topics": [
+    {
+     "id": "deadlock-conditions",
+     "label": "Deadlock conditions and resource-allocation graph",
+     "keywords": [
+      "deadlock",
+      "mutual exclusion",
+      "hold and wait",
+      "no preemption",
+      "circular wait",
+      "resource allocation graph"
+     ],
+     "gate": true
+    },
+    {
+     "id": "deadlock-prevention",
+     "label": "Deadlock prevention",
+     "keywords": [
+      "deadlock prevention",
+      "resource ordering"
+     ],
+     "gate": true
+    },
+    {
+     "id": "bankers",
+     "label": "Deadlock avoidance: safe state and Banker's algorithm",
+     "keywords": [
+      "banker",
+      "safe state",
+      "safe sequence",
+      "unsafe state",
+      "need matrix",
+      "avoidance"
+     ],
+     "gate": true,
+     "numerical": "bankers"
+    },
+    {
+     "id": "deadlock-detection",
+     "label": "Deadlock detection and recovery",
+     "keywords": [
+      "deadlock detection",
+      "wait-for graph",
+      "recovery",
+      "rollback",
+      "victim"
+     ],
+     "gate": true
+    }
+   ]
+  },
+  {
+   "id": "u6",
+   "title": "Memory management",
+   "topics": [
+    {
+     "id": "contiguous",
+     "label": "Contiguous allocation, fragmentation, first/best/worst fit",
+     "keywords": [
+      "contiguous allocation",
+      "fragmentation",
+      "internal fragmentation",
+      "external fragmentation",
+      "first fit",
+      "best fit",
+      "worst fit",
+      "compaction"
+     ],
+     "gate": true,
+     "numerical": "fit"
+    },
+    {
+     "id": "paging",
+     "label": "Paging and address translation",
+     "keywords": [
+      "paging",
+      "page table",
+      "logical address",
+      "physical address",
+      "page number",
+      "offset"
+     ],
+     "gate": true,
+     "numerical": "paging"
+    },
+    {
+     "id": "tlb",
+     "label": "TLB and effective access time",
+     "keywords": [
+      "tlb",
+      "translation lookaside",
+      "effective access time",
+      "hit ratio"
+     ],
+     "gate": true,
+     "numerical": "eat"
+    },
+    {
+     "id": "page-table-structures",
+     "label": "Hierarchical, hashed and inverted page tables",
+     "keywords": [
+      "multilevel paging",
+      "hierarchical page table",
+      "hashed page table",
+      "inverted page table",
+      "two-level"
+     ],
+     "gate": true
+    },
+    {
+     "id": "segmentation",
+     "label": "Segmentation",
+     "keywords": [
+      "segmentation",
+      "segment table"
+     ],
+     "gate": true
+    }
+   ]
+  },
+  {
+   "id": "u7",
+   "title": "Virtual memory",
+   "topics": [
+    {
+     "id": "demand-paging",
+     "label": "Demand paging and page faults",
+     "keywords": [
+      "virtual memory",
+      "demand paging",
+      "page fault",
+      "valid-invalid bit",
+      "copy-on-write"
+     ],
+     "gate": true
+    },
+    {
+     "id": "page-replacement",
+     "label": "Page replacement: FIFO, LRU, Optimal, Belady's anomaly",
+     "keywords": [
+      "page replacement",
+      "lru",
+      "belady",
+      "reference string"
+     ],
+     "gate": true,
+     "numerical": "pages"
+    },
+    {
+     "id": "thrashing",
+     "label": "Frame allocation, thrashing and working set",
+     "keywords": [
+      "thrashing",
+      "working set",
+      "frame allocation",
+      "page fault frequency"
+     ],
+     "gate": true
+    }
+   ]
+  },
+  {
+   "id": "u8",
+   "title": "Storage and file systems",
+   "topics": [
+    {
+     "id": "disk-sched",
+     "label": "Disk structure and disk scheduling (FCFS, SSTF, SCAN, C-SCAN, LOOK, C-LOOK)",
+     "keywords": [
+      "disk scheduling",
+      "seek time",
+      "sstf",
+      "c-scan",
+      "c-look",
+      "elevator",
+      "rotational latency"
+     ],
+     "gate": true,
+     "numerical": "disk"
+    },
+    {
+     "id": "raid",
+     "label": "RAID levels",
+     "keywords": [
+      "raid",
+      "mirroring",
+      "striping",
+      "parity"
+     ],
+     "gate": false
+    },
+    {
+     "id": "file-concepts",
+     "label": "File concepts, access methods and directory structures",
+     "keywords": [
+      "file system",
+      "file attributes",
+      "sequential access",
+      "direct access",
+      "directory structure",
+      "tree-structured",
+      "acyclic graph"
+     ],
+     "gate": true
+    },
+    {
+     "id": "file-allocation",
+     "label": "File allocation methods and free-space management",
+     "keywords": [
+      "contiguous allocation",
+      "linked allocation",
+      "indexed allocation",
+      "inode",
+      "free space",
+      "bit vector"
+     ],
+     "gate": true
+    }
+   ]
+  }
+ ]
+}

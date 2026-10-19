@@ -40,6 +40,12 @@ questions skip the extra "understand" call, which halves the free-tier usage.
 * **Quizzes** - understanding-level MCQs written in the background right after upload (instant to open);
   every answer key is double-checked by a second blind pass, wrong-keyed questions are dropped.
 * **Mind map** - AI concept map (or rules + M1/M2/M3 offline), labels never clipped, progress colours.
+* **Exam papers (Operating Systems)** - the student sets the skeleton (total marks, time, units, rows such as
+  "5 x 1 mark MCQ" or "2 x 4 marks numerical"; Mid-sem / End-sem / Unit-test presets) and gets a printable question
+  paper. Answers stay hidden until asked for (per question, all at once, or as a separate answer-key PDF).
+  Topics = the ticked syllabus units that the student's uploaded OS notes also cover. Numericals (CPU scheduling,
+  page replacement, Banker's, disk scheduling, fits, paging, EAT) are computed exactly; theory comes from a
+  500-question bank checked by a second model, plus fresh questions written from the student's own notes.
 * Works on phones (tutor opens as a closable full-screen sheet).
 
 ## Models
@@ -61,6 +67,8 @@ How they were built and how well they do: **`training/README.md`** and `training
 
 ```
 src/indiclearn/studio/   the app (FastAPI): brain.py (engines), tutor.py, quizbank.py, speech.py, kgraph*.py, neural.py
+  courses/               subject courses: os_syllabus.json, os_bank.jsonl (question bank), oscalc.py (exact numericals),
+                         papers.py (blueprint -> paper), exams.py (service), pdf.py (printable papers), qgen.py
 frontend/                the web UI (plain ES modules + d3)
 training/                corpus -> teacher labels -> datasets -> Kaggle training -> reports
 scripts/                 download_models.py, install_models.py, setup_offline.py, check_ai.py

@@ -21,6 +21,11 @@ async function req(method, url, body, isForm) {
 }
 export const api = {
   info: () => req("GET", "/info"),
+  courses: () => req("GET", "/courses"),
+  papers: () => req("GET", "/papers"),
+  paperNew: (blueprint, doc_ids = null) => req("POST", "/papers", { blueprint, doc_ids }),
+  paper: (id, answers = false) => req("GET", `/papers/${id}?answers=${answers}`),
+  paperDel: (id) => req("DELETE", `/papers/${id}`),
   guest: (lang) => req("POST", "/auth/guest", { lang }),
   login: (username, password) => req("POST", "/auth/login", { username, password }),
   register: (username, password, display_name, lang) => req("POST", "/auth/register", { username, password, display_name, lang }),

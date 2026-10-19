@@ -12,6 +12,7 @@ from fastapi.responses import FileResponse, Response, StreamingResponse
 from pydantic import BaseModel, Field
 
 from indiclearn.studio.auth import AuthError
+from indiclearn.studio.courses.papers import PaperError
 from indiclearn.studio.service import StudioService
 
 
@@ -50,6 +51,11 @@ class MarkIn(BaseModel):
     kind: str
 
 
+class PaperIn(BaseModel):
+    blueprint: dict[str, Any]
+    doc_ids: list[str] | None = None
+
+
 class LangIn(BaseModel):
     lang: str
 
@@ -77,6 +83,8 @@ def build_router(svc: StudioService) -> APIRouter:
             return fn(*a, **k)
         except AuthError as e:
             raise HTTPException(e.status, str(e)) from e
+        except PaperError as e:
+            raise HTTPException(404 if "not found" in str(e) else 400, str(e)) from e
 
     def current(authorization: str | None = Header(default=None), token: str | None = Query(default=None)) -> dict[str, Any]:
         tok = None
@@ -176,6 +184,35 @@ def build_router(svc: StudioService) -> APIRouter:
     @r.post("/tts")
     def tts(b: SpeakIn, u: dict = Depends(current)) -> Response:
         return Response(wrap(svc.speak, b.text, b.lang), media_type="audio/wav")
+
+    # ---- exam papers (printable practice papers per subject course)
+    @r.get("/courses")
+    def courses_list() -> list[dict[str, Any]]:
+        from indiclearn.studio.courses.papers import courses
+
+        return courses()
+
+    @r.get("/papers")
+    def papers_list(u: dict = Depends(current)) -> list[dict[str, Any]]:
+        return svc.exams.list(u["id"])
+
+    @r.post("/papers")
+    def paper_new(b: PaperIn, u: dict = Depends(current)) -> dict[str, Any]:
+        return wrap(svc.exams.new, u["id"], b.blueprint, b.doc_ids)
+
+    @r.get("/papers/{pid}")
+    def paper_get(pid: str, answers: bool = False, u: dict = Depends(current)) -> dict[str, Any]:
+        return wrap(svc.exams.get, u["id"], pid, answers)
+
+    @r.get("/papers/{pid}/pdf")
+    def paper_pdf(pid: str, answers: bool = False, u: dict = Depends(current)) -> Response:
+        data, name = wrap(svc.exams.pdf, u["id"], pid, answers)
+        return Response(data, media_type="application/pdf", headers={"Content-Disposition": f'inline; filename="{name}"'})
+
+    @r.delete("/papers/{pid}")
+    def paper_delete(pid: str, u: dict = Depends(current)) -> dict[str, bool]:
+        svc.exams.delete(u["id"], pid)
+        return {"ok": True}
 
     @r.post("/docs/sample/{key}")
     def sample(key: str, u: dict = Depends(current)) -> dict[str, Any]:
