@@ -167,3 +167,9 @@ def test_answer_cache_and_daily_limit(client, auth, sample_md, monkeypatch):
     monkeypatch.setattr(tutor, "answer", lambda *a, **k: seen.append(a[10]) or tutor.TutorReply("notes only", "explain", "en"))
     client.post(f"/api/docs/{d['id']}/chat", json={"message": "what is the z transform used for", "lang": "en"}, headers=auth)
     assert seen and getattr(seen[0], "brain", "x") is None  # over the limit: answered from the notes, no AI
+
+
+def test_frontend_files_are_always_revalidated(client):
+    for path in ("/", "/static/js/util.js"):
+        r = client.get(path)
+        assert r.status_code == 200 and r.headers["cache-control"] == "no-cache"

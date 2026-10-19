@@ -23,6 +23,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.add_middleware(CORSMiddleware, allow_origins=s.cors_origins, allow_methods=["*"], allow_headers=["*"])
     app.state.service = svc
     app.include_router(build_router(svc))
+
+    @app.middleware("http")
+    async def revalidate_frontend(request, call_next):  # after an update the browser must never mix old and new JS files
+        resp = await call_next(request)
+        if not request.url.path.startswith("/api") and "cache-control" not in resp.headers:
+            resp.headers["Cache-Control"] = "no-cache"  # still cheap: unchanged files come back as 304 via ETag
+        return resp
+
     fe = s.frontend_dir or Path(__file__).resolve().parents[3] / "frontend"
     if fe.is_dir():
         app.mount("/static", StaticFiles(directory=fe), name="static")
