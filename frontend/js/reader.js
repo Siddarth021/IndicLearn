@@ -75,7 +75,7 @@ export function createReader(root) {
     root.innerHTML = "";
     const bar = h("div", { class: "toolbar" }, h("h2", {}, S.doc.title), h("span", { class: "chip" }, t(S.doc.unit_label === "Slide" ? "slides_n" : S.doc.unit_label === "Part" ? "parts_n" : "pages_n", { n: S.doc.n_pages })), h("span", { class: "grow" }));
     if (data.has_original) bar.append(h("button", { class: "btn sm ghost", onclick: togglePdf }, showPdf ? t("text_view") : t("original")));
-    bar.append(h("button", { class: "btn sm", onclick: () => { S.tutorOpen = !S.tutorOpen; emit("layout"); } }, S.tutorOpen ? t("hide_tutor") : "✦ " + t("ask_tutor")));
+    bar.append(h("button", { "data-tutor-toggle": "1", class: "btn sm", onclick: () => { S.tutorOpen = !S.tutorOpen; emit("layout"); } }, S.tutorOpen ? t("hide_tutor") : "✦ " + t("ask_tutor")));
     tocEl = h("nav", { class: "toc" }, h("div", { class: "small-caps", style: { padding: "0 8px 8px" } }, t("contents")));
     for (const e of data.toc) tocEl.append(h("button", { class: e.level > 1 ? "l2" : "", onclick: () => scrollTo(e.page, e.label) }, e.label));
     readerEl = h("div", { class: "reader", "data-lang": S.doc.lang });

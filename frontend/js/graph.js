@@ -31,7 +31,8 @@ export class MindMap {
     this.gLinks = this.root.append("g").attr("class", "links");
     this.gOver = this.root.append("g").attr("class", "overlay");
     this.gNodes = this.root.append("g").attr("class", "nodes");
-    this.zoom = d3.zoom().scaleExtent([0.15, 3]).on("zoom", (e) => this.root.attr("transform", e.transform));
+    this.k = 1;
+    this.zoom = d3.zoom().scaleExtent([0.15, 3]).on("zoom", (e) => { this.root.attr("transform", e.transform); this.k = e.transform.k; this.scaleLabels(); });
     this.svg.call(this.zoom).on("dblclick.zoom", null);
     this.size = { w: 800, h: 600 };
     new ResizeObserver(() => { const r = svgEl.getBoundingClientRect(); this.size = { w: r.width, h: r.height }; }).observe(svgEl);
@@ -61,17 +62,19 @@ export class MindMap {
   autoCollapse() {
     // expand level by level until ~60 nodes are visible
     this.collapsed = new Set();
+    // a first view of ~30 nodes stays readable; concepts open when their topic is clicked
     const total = this.nodes.length;
-    if (total <= 60) return;
+    if (total <= 32) return;
     const open = new Set(["root"]);
     let frontier = ["root"]; let visible = 1;
     while (frontier.length) {
       const next = [];
       for (const id of frontier) for (const c of this.children.get(id) || []) next.push(c);
-      if (visible + next.length > 62) break;
+      if (visible + next.length > 32) break;
       visible += next.length; next.forEach((c) => open.add(c)); frontier = next;
     }
-    for (const n of this.nodes) if ((this.children.get(n.id) || []).length && !open.has(n.id)) this.collapsed.add(n.id);
+    // fold every node whose children are not all inside the budget (the frontier included)
+    for (const n of this.nodes) { const kids = this.children.get(n.id) || []; if (kids.length && !kids.every((c) => open.has(c))) this.collapsed.add(n.id); }
   }
 
   visibleIds() {
@@ -180,6 +183,20 @@ export class MindMap {
     this.styleNodes(all);
     this.svg.on("click", () => { this.opts.onBackground?.(); });
     this.renderOverlay();
+    this.scaleLabels();
+  }
+
+  // Keep labels readable when zoomed out: grow them a little, and hide concept labels when tiny.
+  labelScale() { return Math.min(1.9, Math.max(1, 0.9 / (this.k || 1))); }
+  scaleLabels() {
+    const s = this.labelScale(); const hideConcepts = this.k < 0.42;
+    const self = this;
+    this.gNodes.selectAll("text.lbl").each(function (d) {
+      const el = d3.select(this);
+      el.attr("font-size", (+el.attr("data-base") || 13) * s);
+      const keep = !hideConcepts || el.attr("data-type") !== "concept" || self.selected === d?.id || self.highlight.has(d?.id);
+      el.attr("opacity", keep ? 1 : 0);
+    });
   }
 
   styleNodes(all) {
@@ -204,14 +221,18 @@ export class MindMap {
           .attr("stroke-dasharray", `${c * (n.mastery.progress || 0)} ${c}`).attr("transform", "rotate(-90)").attr("opacity", n.mastery.progress > 0 ? 1 : 0);
       } else ring.attr("opacity", 0);
       // label
-      const label = (n.label || "").length > 30 ? n.label.slice(0, 29) + "…" : n.label;
-      const txt = g.select("text.lbl").text(label).attr("font-size", n.type === "root" ? 17 : n.type === "chapter" ? 15 : n.type === "concept" ? 12.5 : 13.5)
+      const label = (n.label || "").length > 34 ? n.label.slice(0, 33) + "…" : n.label;
+      let tip = g.select("title"); if (tip.empty()) tip = g.append("title");
+      tip.text(n.full_label || n.label || "");
+      const base = n.type === "root" ? 17 : n.type === "chapter" ? 15 : n.type === "concept" ? 12.5 : 13.5;
+      const txt = g.select("text.lbl").text(label).attr("data-base", base).attr("font-size", base * self.labelScale())
         .attr("font-weight", n.type === "chapter" || n.type === "root" ? 600 : 500).attr("fill", n.type === "concept" ? "#4A4336" : "#1F1B14");
       if (n.type === "root") { txt.attr("text-anchor", "middle").attr("dy", r + 16).attr("x", 0); }
       else if (self.layout === "radial") {
         const right = Math.sin(d.p.angle) >= 0;
         txt.attr("text-anchor", right ? "start" : "end").attr("x", right ? r + 8 : -(r + 8)).attr("dy", "0.32em");
       } else { txt.attr("text-anchor", "start").attr("x", r + 8).attr("dy", "0.32em"); }
+      txt.attr("data-type", n.type);
       const collapsed = self.collapsed.has(n.id) && hasKids;
       g.select("text.badge").text(collapsed ? "+" + countDesc(self, n.id) : "").attr("font-size", 10).attr("font-weight", 700).attr("fill", "#7a5a14");
       g.classed("sel", self.selected === n.id);
@@ -234,7 +255,7 @@ export class MindMap {
         const a = this.ancestorVisible(e.source, vis); const b = this.ancestorVisible(e.target, vis);
         if (!a || !b || a === b || a === "root" || b === "root") continue;
         const key = a + ">" + b + e.type; if (seen.has(key)) continue; seen.add(key);
-        items.push({ a, b, type: e.type });
+        items.push({ a, b, type: e.type, why: e.why || "", src: e.source, dst: e.target });
       }
     }
     const curve = (d) => {
@@ -247,8 +268,13 @@ export class MindMap {
       .attr("stroke", (d) => (d.type === "prereq" ? "#B8892B" : d.type === "next" ? "#B9AE92" : "#8FA7BF")).attr("stroke-width", (d) => (d.type === "prereq" ? 1.8 : 1.2))
       .attr("stroke-dasharray", (d) => (d.type === "related" ? "2 4" : d.type === "next" ? "1 0" : "6 4"))
       .attr("marker-end", (d) => (d.type === "prereq" ? "url(#arrow-prereq)" : d.type === "next" ? "url(#arrow-next)" : null))
-      .attr("d", curve).attr("opacity", 0.6);
+      .attr("d", curve)
+      // Focus mode: links of the selected node stand out, the rest fade into the background
+      .attr("opacity", (d) => (!this.selected ? 0.4 : this.touches(d, this.selected) ? 0.95 : 0.1))
+      .attr("stroke-width", (d) => (this.selected && this.touches(d, this.selected) ? 2.6 : d.type === "prereq" ? 1.6 : 1.2))
+      .each(function (d) { d3.select(this).selectAll("title").remove(); if (d.why) d3.select(this).append("title").text(d.why); });
   }
+  touches(d, id) { return d.a === id || d.b === id || d.src === id || d.dst === id; }
 
   // ------------------------------------------------------------ interaction
   hover(id, on) {
@@ -272,7 +298,7 @@ export class MindMap {
     this.collapsed.has(id) ? this.collapsed.delete(id) : this.collapsed.add(id);
     this.render(true);
   }
-  select(id) { this.selected = id; this.styleNodes(this.gNodes.selectAll("g.node")); }
+  select(id) { this.selected = id; this.styleNodes(this.gNodes.selectAll("g.node")); this.renderOverlay(); this.scaleLabels(); }
   expandAll() { this.collapsed.clear(); this.render(true); setTimeout(() => this.fit(), 80); }
   collapseAll() { this.collapsed = new Set(this.nodes.filter((n) => n.id !== "root" && (this.children.get(n.id) || []).length && n.type !== "chapter" ? true : false).map((n) => n.id)); this.render(true); setTimeout(() => this.fit(), 80); }
 
@@ -288,10 +314,30 @@ export class MindMap {
   visible() { const n = this.svg.node(); return !!(n && n.getBoundingClientRect().width > 0); }
   fit() {
     if (!this.pos || !this.visible()) return;
-    const xs = []; const ys = []; for (const id of this.vis) { const p = this.pos.get(id); if (p) { xs.push(p.x); ys.push(p.y); } }
-    if (!xs.length) return;
-    const pad = 150; const x0 = Math.min(...xs) - pad; const x1 = Math.max(...xs) + pad; const y0 = Math.min(...ys) - 60; const y1 = Math.max(...ys) + 60;
-    const { w, h } = this.size; const k = Math.min(w / (x1 - x0), h / (y1 - y0), 1.4);
+    // Labels keep a readable size when zoomed out (labelScale), so their footprint depends on the zoom itself:
+    // try zoom levels from close to far and take the first one where every node AND its full label fits.
+    const items = [];
+    this.gNodes.selectAll("g.node").each(function (d) {
+      const t = this.querySelector("text.lbl"); const p = d && d.p; if (!t || !p) return;
+      const fs = +t.getAttribute("font-size") || 13, base = +t.getAttribute("data-base") || 13;
+      let len = 0; try { len = t.getComputedTextLength(); } catch (e) { /* hidden */ }
+      items.push({ x: p.x, y: p.y, per: len / fs, base, anchor: t.getAttribute("text-anchor") || "start", off: Math.abs(+t.getAttribute("x") || 0), dy: t.getAttribute("dy") });
+    });
+    if (!items.length) return;
+    const { w, h } = this.size; const W = w - 48, H = h - 48;
+    const scaleFor = (k) => Math.min(1.9, Math.max(1, 0.9 / k));
+    let best = null;
+    for (let k = 1.4; k > 0.08; k *= 0.93) {
+      let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+      for (const it of items) {
+        const fs = it.base * scaleFor(k), L = it.per * fs;
+        const [a, b] = it.anchor === "middle" ? [it.x - L / 2, it.x + L / 2] : it.anchor === "end" ? [it.x - it.off - L, it.x + 12] : [it.x - 12, it.x + it.off + L];
+        x0 = Math.min(x0, a); x1 = Math.max(x1, b); y0 = Math.min(y0, it.y - fs - 12); y1 = Math.max(y1, it.y + fs + (it.dy && it.dy !== "0.32em" ? 30 : 12));
+      }
+      best = { k, x0, x1, y0, y1 };
+      if ((x1 - x0) * k <= W && (y1 - y0) * k <= H) break;
+    }
+    const { k, x0, x1, y0, y1 } = best;
     this.svg.transition().duration(600).call(this.zoom.transform, d3.zoomIdentity.translate(w / 2 - ((x0 + x1) / 2) * k, h / 2 - ((y0 + y1) / 2) * k).scale(k));
   }
   search(q) {

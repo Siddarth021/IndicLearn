@@ -25,11 +25,11 @@ class Settings:
     cors_origins: list[str] = field(default_factory=lambda: [o.strip() for o in os.environ.get("INDICLEARN_CORS_ORIGINS", "").split(",") if o.strip()])
     # --- local model backends (all optional; the app works with none of them) ---
     llm_backend: str = field(default_factory=lambda: os.environ.get("INDICLEARN_LLM_BACKEND", "extractive").lower())  # extractive | ollama | transformers
-    llm_model: str = field(default_factory=lambda: os.environ.get("INDICLEARN_LLM_MODEL", "gemma3:4b"))
+    llm_model: str = field(default_factory=lambda: os.environ.get("INDICLEARN_LLM_MODEL", "gemma4:e2b"))
     ollama_url: str = field(default_factory=lambda: os.environ.get("INDICLEARN_OLLAMA_URL", "http://127.0.0.1:11434"))
-    embedding_backend: str = field(default_factory=lambda: os.environ.get("INDICLEARN_EMBEDDING_BACKEND", "none").lower())  # none | sentence_transformers
+    embedding_backend: str = field(default_factory=lambda: os.environ.get("INDICLEARN_EMBEDDING_BACKEND", "auto").lower())  # auto | none | sentence_transformers
     embedding_model: str = field(default_factory=lambda: os.environ.get("INDICLEARN_EMBEDDING_MODEL", "intfloat/multilingual-e5-small"))
-    translator_backend: str = field(default_factory=lambda: os.environ.get("INDICLEARN_TRANSLATOR_BACKEND", "none").lower())  # none | nllb
+    translator_backend: str = field(default_factory=lambda: os.environ.get("INDICLEARN_TRANSLATOR_BACKEND", "auto").lower())  # auto | none | nllb
     translator_model: str = field(default_factory=lambda: os.environ.get("INDICLEARN_TRANSLATOR_MODEL", "facebook/nllb-200-distilled-600M"))
     local_files_only: bool = field(default_factory=lambda: _bool("INDICLEARN_LOCAL_FILES_ONLY", False))
     frontend_dir: Path | None = field(default_factory=lambda: Path(os.environ["INDICLEARN_FRONTEND_DIR"]) if os.environ.get("INDICLEARN_FRONTEND_DIR") else None)

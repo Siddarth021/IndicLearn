@@ -831,6 +831,11 @@ def extract_concepts(
         deg[x] += 1
         deg[y] += 1
     _ = section_title_keys
+    # PDF / formula debris such as "Rank rank rank" or "Kinetic energy energy due" is never a concept
+    stutter = {c.id for c in concepts if any(a == b for a, b in zip(c.label.lower().split(), c.label.lower().split()[1:]))}
+    if stutter:
+        concepts = [c for c in concepts if c.id not in stutter]
+        rel = [r for r in rel if r.source not in stutter and r.target not in stutter]
     return concepts, rel, sents
 
 
@@ -867,7 +872,20 @@ def _merge_acronym_variants(concepts: list[Concept], lang: str) -> list[Concept]
 # ---------------------------------------------------------------------------
 def summarize_sentences(texts: list[str], k: int = 2) -> list[str]:
     """TextRank-lite extractive summary (centrality over TF-IDF cosine); keeps document order."""
+    import re as _re
+
+    def _clean(t: str) -> str:
+        t = _re.sub(r"(?:\s*,){2,}", "", t)
+        t = _re.sub(r"\s+([,.;:])", r"\1", t)
+        return _re.sub(r"\s+", " ", t).strip()
+
+    texts = [_clean(t) for t in texts]
     texts = [t for t in texts if 25 <= len(t) <= 420]
+    # linking sentences ("Additionally, ...", "However, ...") and fragments are poor summary material
+    weak = _re.compile(r"^(additionally|moreover|furthermore|however|besides|also|in addition|finally|thus|hence|therefore|similarly)\b", _re.IGNORECASE)
+    good = [t for t in texts if not weak.match(t) and t[:1].isupper()]
+    if len(good) >= k:
+        texts = good
     if len(texts) <= k:
         return texts
     try:

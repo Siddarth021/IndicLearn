@@ -29,9 +29,9 @@ export function md(src) {
 let toastEl;
 export function toast(msg, err = false) {
   toastEl?.remove();
-  toastEl = h("div", { class: "toast" + (err ? " err" : "") }, msg);
-  document.body.append(toastEl);
-  setTimeout(() => toastEl?.remove(), 3200);
+  const el = (toastEl = h("div", { class: "toast" + (err ? " err" : ""), role: err ? "alert" : "status" }, msg));
+  document.body.append(el);
+  setTimeout(() => el.remove(), err ? 6000 : 3200); // remove only this toast (an older timer must not kill a newer error)
 }
 export const debounce = (fn, ms = 150) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 export const STATUS_COLORS = { new: "#B9AE92", doubt: "#E0A53A", revise: "#C4584A", learning: "#CFA444", mastered: "#5E8F5A" };

@@ -66,6 +66,12 @@ CREATE TABLE IF NOT EXISTS quiz_questions (
   answered INTEGER DEFAULT NULL, correct INTEGER DEFAULT NULL, answered_at REAL,
   FOREIGN KEY(quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE
 );
+CREATE TABLE IF NOT EXISTS quiz_bank (
+  id TEXT PRIMARY KEY, doc_id TEXT NOT NULL, node_id TEXT NOT NULL, lang TEXT NOT NULL, src_id TEXT,
+  payload_json TEXT, engine TEXT, created_at REAL,
+  FOREIGN KEY(doc_id) REFERENCES documents(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_bank_doc ON quiz_bank(doc_id, lang, node_id);
 """
 
 

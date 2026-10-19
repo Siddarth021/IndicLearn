@@ -8,6 +8,18 @@ export function createMapView(root) {
   clearOwner("map");
   let map, svg, wrap, tip, detail, tourBar, legend, mode = "default", layout = "radial", g = null, tourIdx = -1, tourList = [], loadedFor = null;
   const toolBtns = {};
+  let nextBtn = null, nextId = null;
+  async function refreshNext() {
+    // the single best thing to learn now - one tap away, so a student never wonders what to do next
+    if (!S.doc || !nextBtn) return;
+    try {
+      const p = await api.progress(S.doc.id);
+      const r = (p.recommendations || [])[0];
+      nextId = r?.node_id || null;
+      nextBtn.hidden = !nextId;
+      if (r) { nextBtn.textContent = "🎯 " + r.label; nextBtn.title = r.label; }
+    } catch (e) { nextBtn.hidden = true; }
+  }
 
   function build() {
     root.innerHTML = "";
@@ -24,8 +36,9 @@ export function createMapView(root) {
       seg("layout", [["radial", t("layout_radial")], ["tree", t("layout_tree")], ["flow", t("layout_flow")]], layout, (l) => { layout = l; map.setLayout(l); }),
       chk(t("show_prereq"), "prereq", true), chk(t("show_related"), "related", false), search,
       h("button", { class: "btn sm ghost", onclick: () => map.fit() }, t("fit")), h("button", { class: "btn sm ghost", onclick: () => map.expandAll() }, t("expand")), h("button", { class: "btn sm ghost", onclick: () => map.collapseAll() }, t("collapse")),
+      nextBtn = h("button", { class: "nextup", hidden: true, onclick: () => { if (nextId) { map.focus(nextId, 1.2); const n = S.nodes.get(nextId); if (n) openDetail(n); } } }),
       h("span", { style: { flex: 1 } }), h("button", { class: "btn sm", onclick: startTour }, "▶ " + t("tour")),
-      h("button", { class: "btn sm ghost", onclick: () => { S.tutorOpen = !S.tutorOpen; emit("layout"); } }, S.tutorOpen ? t("hide_tutor") : "✦ " + t("ask_tutor")));
+      h("button", { "data-tutor-toggle": "1", class: "btn sm ghost", onclick: () => { S.tutorOpen = !S.tutorOpen; emit("layout"); } }, S.tutorOpen ? t("hide_tutor") : "✦ " + t("ask_tutor")));
     svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("id", "mapsvg"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", t("nav_map"));
     tip = h("div", { class: "tip", hidden: true }); detail = h("aside", { class: "detail", hidden: true }); tourBar = h("div", { class: "tour", hidden: true }); legend = h("div", { class: "legend" });
     wrap = h("div", { class: "mapwrap" }, svg, legend, tip, detail, tourBar);
@@ -55,6 +68,7 @@ export function createMapView(root) {
       if (!keepView) setTimeout(() => map.fit(), 120);
       if (map.selected && S.nodes.has(map.selected)) openDetail(S.nodes.get(map.selected), true);
       emit("nodes");
+      refreshNext();
     } catch (e) { toast(e.message, true); }
   }
 

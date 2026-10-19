@@ -6,6 +6,7 @@ import { createTutor } from "./chat.js";
 import { createReader } from "./reader.js";
 import { createMapView } from "./mapview.js";
 import { renderQuiz } from "./quizcard.js";
+import { createHud } from "./hud.js";
 
 const $app = document.getElementById("app-root");
 let views = {}, tutor = null, reader = null, mapView = null, pollTimer = null;
@@ -20,7 +21,11 @@ const svgIcon = (k) => { const s = document.createElementNS("http://www.w3.org/2
 async function boot() {
   try { S.info = await api.info(); } catch (e) { S.info = { samples: [], max_upload_mb: 40, allow_guest: true, allow_registration: true }; }
   if (getToken()) { try { S.user = await api.me(); } catch (e) { setToken(null); } }
-  S.user ? shell() : authScreen();
+  if (!S.user) return authScreen();
+  shell();
+  // come back to the notes the student was studying (a reload or a new visit should not dump them in the library)
+  let last = null; try { last = localStorage.getItem("il_doc"); } catch (e) { /* ignore */ }
+  if (last) { try { const docs = await api.docs(); if (docs.some((d) => d.id === last && d.status === "ready")) openDoc(last); } catch (e) { /* stay in library */ } }
 }
 
 function langPicker() {
@@ -68,7 +73,7 @@ function shell(keepView = false) {
   }
   side.append(nav);
   if (S.doc) side.append(h("div", { class: "docpill" }, h("span", { class: "small-caps" }, S.doc.lang?.toUpperCase() + " · " + (S.doc.stats?.concepts ?? "") + " " + t("concepts")), h("span", { class: "t" }, S.doc.title)));
-  side.append(h("div", { class: "spacer" }), langPicker(),
+  side.append(h("div", { class: "spacer" }), createHud(), langPicker(),
     h("div", { class: "userbox" }, h("span", {}, S.user.display_name), h("button", { class: "linkbtn", onclick: async () => { try { await api.logout(); } catch (e) { /* ignore */ } setToken(null); S.user = null; S.doc = null; authScreen(); } }, t("sign_out"))));
   const main = h("main", {});
   const tutorEl = h("aside", { class: "tutor", id: "tutor" });
@@ -98,7 +103,10 @@ function go(view, opts = {}) {
   opts.then?.();
 }
 on("nav", ({ view, select, then }) => { go(view, { select }); if (then) setTimeout(then, 350); });
-on("layout", () => go(S.view, { keep: true }));
+on("layout", () => {
+  go(S.view, { keep: true });
+  document.querySelectorAll("[data-tutor-toggle]").forEach((b) => (b.textContent = S.tutorOpen ? t("hide_tutor") : "✦ " + t("ask_tutor")));
+});
 on("mark", ({ id, kind }) => { if (S.doc) api.mark(S.doc.id, id, kind).catch(() => {}); });
 
 async function openDoc(id, view = "study") {
@@ -107,7 +115,27 @@ async function openDoc(id, view = "study") {
     try { localStorage.setItem("il_doc", id); } catch (e) { /* ignore */ }
     const g = await api.graph(id, "default"); S.graph = g; S.nodes = new Map(g.nodes.map((n) => [n.id, n]));
     shellKeepNav(); emit("doc"); go(view);
+    watchMapUpgrade(id);
   } catch (e) { toast(e.message, true); }
+}
+// With a local (offline) LLM the first map is rule-based and the AI map arrives a minute or two later.
+let upgradeTimer = null;
+function watchMapUpgrade(id, tries = 0) {
+  clearTimeout(upgradeTimer);
+  if (!S.doc || S.doc.id !== id || !String(S.doc.stats?.graph_engine || "").startsWith("rules") || tries > 30) return;
+  if (!S.info?.ai?.offline_only) return;
+  upgradeTimer = setTimeout(async () => {
+    try {
+      const d = await api.doc(id);
+      if (S.doc?.id !== id) return;
+      if (String(d.stats?.graph_engine || "").startsWith("llm")) {
+        S.doc = d; const g = await api.graph(id, "default"); S.graph = g; S.nodes = new Map(g.nodes.map((n) => [n.id, n]));
+        shellKeepNav(); emit("doc"); mapView?.reload?.(); toast("✨ " + t("map_upgraded"));
+        return;
+      }
+    } catch (e) { /* try again */ }
+    watchMapUpgrade(id, tries + 1);
+  }, 8000);
 }
 function shellKeepNav() {
   document.querySelectorAll(".nav button").forEach((b) => (b.disabled = b.dataset.v !== "library" && !S.doc));

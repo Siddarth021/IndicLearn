@@ -72,7 +72,8 @@ def _distractors(target: dict[str, Any], pool: list[dict[str, Any]], k: int, rng
     return (same + rest)[:k]
 
 
-def generate(nodes: list[dict[str, Any]], scope: str | None, n: int, ui_lang: str, seed: int | None = None, priority: dict[str, float] | None = None) -> list[dict[str, Any]]:
+def generate(nodes: list[dict[str, Any]], scope: str | None, n: int, ui_lang: str, seed: int | None = None, priority: dict[str, float] | None = None,
+             use_model: bool = True) -> list[dict[str, Any]]:
     """Return question dicts (with answers - the service strips them before sending)."""
     rng = random.Random(seed)
     pool_all = candidates(nodes, None)
@@ -90,6 +91,11 @@ def generate(nodes: list[dict[str, Any]], scope: str | None, n: int, ui_lang: st
             break
         if node["id"] in used:
             continue
+        gq = _make_generated(node, ui_lang, _passage_for(node)) if use_model else None
+        if gq:
+            qs.append(gq)
+            used.add(node["id"])
+            continue
         for qt in [types[len(qs) % len(types)], "cloze", "which_def", "tf"]:
             q = _make(qt, node, pool_all, ui_lang, rng)
             if q:
@@ -97,6 +103,48 @@ def generate(nodes: list[dict[str, Any]], scope: str | None, n: int, ui_lang: st
                 used.add(node["id"])
                 break
     return qs
+
+
+# One line, because T5 tokenizers cannot produce newlines:  "Q: ... A) ... B) ... C) ... D) ... ANSWER: B"
+_GEN = re.compile(r"Q:\s*(?P<q>.+?)\s+A\)\s*(?P<a>.+?)\s+B\)\s*(?P<b>.+?)\s+C\)\s*(?P<c>.+?)\s+D\)\s*(?P<d>.+?)\s+ANSWER:\s*(?P<ans>[A-D])",
+                  re.DOTALL | re.IGNORECASE)
+
+
+def _parse_generated(text: str) -> tuple[str, list[str], int] | None:
+    """Parse the M4 model's output. Returns None if it is malformed - we then fall back."""
+    m = _GEN.search(text or "")
+    if not m:
+        return None
+    values = [" ".join(m.group(k).split()) for k in "abcd"]
+    question = " ".join(m.group("q").split())
+    if len(question) < 12 or any(not v for v in values) or len({v.lower() for v in values}) != 4:
+        return None  # repeated options give the answer away
+    return question, values, "ABCD".index(m.group("ans").upper())
+
+
+def _make_generated(node: dict[str, Any], ui_lang: str, passage: str) -> dict[str, Any] | None:
+    """Ask the trained M4 model for a question. Returns None when no model or bad output."""
+    from indiclearn.studio import neural
+
+    m = neural.load_quizzer()
+    if m is None or len(passage) < 80:
+        return None
+    parsed = _parse_generated(m.generate(f"question: {node['full_label']} | passage: {passage[:1200]}", 160))
+    if parsed is None:
+        return None
+    question, options, answer = parsed
+    return {"qtype": "generated", "node_id": node["id"], "prompt": question, "stem": "",
+            "options": options, "answer": answer,
+            "explain": {"definition": node.get("definition", ""), "label": node["full_label"],
+                        "page": node.get("page", 1)}}
+
+
+def _passage_for(node: dict[str, Any]) -> str:
+    """The text M4 writes a question from: the concept's own definition, examples and facts."""
+    parts = [node.get("definition") or "", node.get("summary") or ""]
+    parts += list(node.get("examples") or [])[:2]
+    parts += list(node.get("facts") or [])[:2]
+    return " ".join(p.strip() for p in parts if p and p.strip())
 
 
 def _make(qt: str, node: dict[str, Any], pool: list[dict[str, Any]], ui_lang: str, rng: random.Random) -> dict[str, Any] | None:

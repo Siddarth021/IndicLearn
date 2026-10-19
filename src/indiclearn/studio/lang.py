@@ -59,13 +59,25 @@ ALL_STOP = STOP_EN | STOP_TE | STOP_HI | STOP_SA
 # Romanized markers (Latin script typed Telugu / Hindi)
 # ---------------------------------------------------------------------------
 ROMAN_TE = set(
-    ["ante", "antey", "enti", "yenti", "emiti", "ela", "enduku", "cheppu", "ceppu", "cheyyi", "ceyyi", "chey", "ardham", "artham", "kaadu", "kadu", "avuthundi", "avutundi", "avtundi", "untundi", "yokka", "lo", "ki", "ni", "nundi", "kosam", "gurinchi", "chala", "malli", "mariyu", "kuda", "idi", "adi", "ivi", "avi", "cheppandi", "telusukovali", "nerchukovali", "eppudu", "akkada", "ikkada", "anaga", "anagane", "evaru", "enta", "ento", "chudu", "cheyandi", "cheppava", "undali", "undadu", "ledu", "kavali", "teliyadu", "kada", "baga", "baaga", "ivvandi", "ippudu", "taruvatha"]
+    ["ante", "antey", "enti", "yenti", "emiti", "ela", "enduku", "cheppu", "ceppu", "cheyyi", "ceyyi", "chey", "ardham", "artham", "kaadu", "kadu", "avuthundi", "avutundi", "avtundi", "untundi", "yokka", "lo", "ki", "ni", "nundi", "kosam", "gurinchi", "chala", "malli", "mariyu", "kuda", "idi", "adi", "ivi", "avi", "cheppandi", "telusukovali", "nerchukovali", "eppudu", "akkada", "ikkada", "anaga", "anagane", "evaru", "enta", "ento", "chudu", "cheyandi", "cheppava", "undali", "undadu", "ledu", "kavali", "teliyadu", "kada", "baga", "baaga", "ivvandi", "ippudu", "taruvatha",
+     # common spellings students actually type (variants of the same word are listed on purpose)
+     "endhuku", "endukani", "enduko", "ekkada", "emi", "emitee", "entee", "entiki", "naaku", "naku", "maaku", "meeku", "neeku",
+     "kaaledu", "kaledu", "ardhamkaledu", "ardam", "ardhamkaavatledu", "ardhamavvaledu", "konchem", "koncham", "kocham", "inka", "inkaa",
+     "ayithe", "aithe", "kani", "kaani", "vasthundi", "vastundi", "osthundi", "ostundi", "vachindi", "chesthe", "cheste", "chesi",
+     "cheyali", "cheyyali", "cheppara", "cheppandee", "cheppavaa", "cheppu", "chesthundi", "chestundi", "chestaru", "chesthunnaru",
+     "unte", "unnayi", "untayi", "untadi", "avtadi", "avthadi", "avuthayi", "avutayi", "ayyindi", "ayindi", "avvali", "kavalante",
+     "telugulo", "teluguloo", "englishlo", "simpleg", "easyga", "clearga", "detailga", "detailedga", "baagaa", "manchiga",
+     "endi", "enduke", "evi", "ela", "elaa", "elaga", "elagaa", "emaina", "edaina", "okati", "rendu", "mundu", "tarvata", "taruvata",
+     "ante", "antaru", "antaaru", "anukovachu", "anukondi", "chudandi", "choodandi", "nerchuko", "nerpinchu", "vivarinchu",
+     "vivarinchandi", "vivaranga", "udaharana", "udaharanam", "saramsam", "ledhu", "ledha", "kadha", "kadaa", "haa", "avunu"]
 )
 ROMAN_HI = set(
     ["kya", "hai", "hain", "kaise", "kyun", "kyu", "kab", "kahan", "kaun", "matlab", "samjhao", "samjhaiye", "batao", "bataiye", "mujhe", "mera", "meri", "nahi", "nahin", "aur", "ka", "ke", "ki", "mein", "se", "par", "ko", "hota", "hoti", "hote", "kaam", "karta", "karte", "karna", "hum", "aap", "tum", "yeh", "woh", "isme", "isse", "iska", "uska", "liye", "wala", "wali", "bhi", "toh", "lekin", "agar", "jab", "tab", "tak", "sirf", "bahut", "thoda", "zyada", "ho", "sakta"]
 )
 # Words that are fine in both: don't count "ki", "ka", "ke", "se", "ko", "lo", "ni" alone as evidence
-_ROMAN_AMBIGUOUS = {"ki", "ka", "ke", "se", "ko", "lo", "ni", "par", "ho", "hum", "tum", "kya", "ante"}
+_ROMAN_AMBIGUOUS = {"ki", "ka", "ke", "se", "ko", "lo", "ni", "par", "ho", "hum", "tum", "kya", "ante", "haa", "emi", "endi", "evi", "adi", "idi", "avi", "ivi", "mundu"}
+# Telugu particles glued to English words: "simple ga", "detail ga", "signal lo", "system ki"
+_TE_GLUE = re.compile(r"(?i)\b[a-z]{3,}\s+(ga|lo|ki|ni|tho|nu)\b")
 
 # ---------------------------------------------------------------------------
 # Hindi vs Sanskrit (both Devanagari)
@@ -95,11 +107,17 @@ class LangInfo:
         return {"te-Latn": "te", "hi-Latn": "hi"}.get(self.code, self.code if self.code in SUPPORTED_LANGS else "en")
 
 
+_LIG_MAP = {0xFB00: "ff", 0xFB01: "fi", 0xFB02: "fl", 0xFB03: "ffi", 0xFB04: "ffl", 0xFB05: "st", 0xFB06: "st"}
+_LIG_RE = re.compile(r"[\uFB00-\uFB06]")
+
+
 def normalize(text: str) -> str:
     """NFC-normalise and collapse whitespace (keeps ZWJ/ZWNJ, which are meaningful in Indic)."""
     text = unicodedata.normalize("NFC", text or "")
     text = text.replace(" ", " ").replace("­", "")
-    return _SPACE_RE.sub(" ", text).strip()
+    if _LIG_RE.search(text):
+        text = text.translate(_LIG_MAP)
+    return _SPACE_RE.sub(' ', text).strip()
 
 
 def match_key(text: str) -> str:
@@ -158,7 +176,11 @@ def detect_language(text: str) -> LangInfo:
     hi_hits_l = [t for t in toks if t in ROMAN_HI]
     te_strong = sum(1 for t in te_hits if t not in _ROMAN_AMBIGUOUS)
     hi_strong = sum(1 for t in hi_hits_l if t not in _ROMAN_AMBIGUOUS)
-    if (te_strong >= 1 and len(te_hits) >= 2) or te_strong >= 2:
+    glue = len(_TE_GLUE.findall(text))
+    if glue and te_strong >= 1:
+        te_hits = te_hits + ["_glue"] * glue
+    short_te = te_strong >= 1 and n <= 4 and not any(t in STOP_EN for t in toks)  # "stability enti", "DFT ante enti"
+    if (te_strong >= 1 and len(te_hits) >= 2) or te_strong >= 2 or short_te:
         if len(te_hits) >= hi_strong + 1:
             return LangInfo("te-Latn", "Latin", min(0.95, 0.5 + 0.15 * len(te_hits)), False, r)
     if (hi_strong >= 1 and len(hi_hits_l) >= 2) or hi_strong >= 2:

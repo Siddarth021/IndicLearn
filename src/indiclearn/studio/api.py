@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import json
+import queue
+import threading
 from typing import Any
 
-from fastapi import APIRouter, Depends, File, Header, HTTPException, Query, UploadFile
-from fastapi.responses import FileResponse
+from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, Query, UploadFile
+from fastapi.responses import FileResponse, Response, StreamingResponse
 from pydantic import BaseModel, Field
 
 from indiclearn.studio.auth import AuthError
@@ -51,6 +54,21 @@ class LangIn(BaseModel):
     lang: str
 
 
+class TranslateIn(BaseModel):
+    target: str
+    text: str = Field(max_length=8000)
+    reasoning: list[str] = Field(default_factory=list)
+    key_terms: list[dict[str, Any]] = Field(default_factory=list)
+    follow_ups: list[str] = Field(default_factory=list)
+    beyond_notes: str = ""
+    source: str = ""
+
+
+class SpeakIn(BaseModel):
+    text: str = Field(max_length=4000)
+    lang: str = "en"
+
+
 def build_router(svc: StudioService) -> APIRouter:
     r = APIRouter(prefix="/api")
 
@@ -74,6 +92,18 @@ def build_router(svc: StudioService) -> APIRouter:
     @r.get("/health")
     def health() -> dict[str, Any]:
         return {"ok": True}
+
+    @r.get("/ai/status")
+    def ai_status(test: int = 0) -> dict[str, Any]:
+        """Which AI engines are configured, why one failed, and (with ?test=1) a live check of each."""
+        from indiclearn.studio import neural, ocr
+
+        brain = getattr(svc.models, "brain", None)
+        out: dict[str, Any] = {"brain": brain.status() if brain else {"chain": ["off"]}, "ocr": ocr.status(),
+                               "models": neural.status()}
+        if test and brain is not None:
+            out["live_test"] = brain.diagnose()
+        return out
 
     @r.get("/info")
     def info() -> dict[str, Any]:
@@ -100,6 +130,10 @@ def build_router(svc: StudioService) -> APIRouter:
     def me(u: dict = Depends(current)) -> dict[str, Any]:
         return {k: v for k, v in u.items() if k != "_token"}
 
+    @r.get("/me/stats")
+    def me_stats(u: dict = Depends(current)) -> dict[str, Any]:
+        return svc.me_stats(u["id"])
+
     @r.post("/auth/logout")
     def logout(u: dict = Depends(current)) -> dict[str, bool]:
         svc.auth.logout(u["_token"])
@@ -120,6 +154,28 @@ def build_router(svc: StudioService) -> APIRouter:
         limit = svc.s.max_upload_mb * 1024 * 1024
         data = await file.read(limit + 1)
         return wrap(svc.add_upload, u["id"], file.filename or "upload", data)
+
+    @r.post("/asr")
+    async def asr(file: UploadFile = File(...), lang: str = Form(default=""), doc_id: str = Form(default=""), u: dict = Depends(current)) -> dict[str, Any]:
+        """Spoken doubt -> text. The browser then sends that text to /chat like a typed one.
+        ``lang`` is the language the student chose (picks a Telugu-tuned model for Telugu speech)."""
+        data = await file.read(25 * 1024 * 1024 + 1)
+        return wrap(svc.transcribe, file.filename or "clip.webm", data, lang, u["id"], doc_id or None)
+
+    @r.get("/languages")
+    def languages() -> list[dict[str, str]]:
+        """Every language a reply can be converted into (the per-reply dropdown)."""
+        from indiclearn.studio.brain import TARGET_LANGS
+
+        return [{"code": c, "name": en, "native": nat} for c, (en, nat) in TARGET_LANGS.items()]
+
+    @r.post("/translate")
+    def translate(b: TranslateIn, u: dict = Depends(current)) -> dict[str, Any]:
+        return wrap(svc.translate, b.model_dump(exclude={"target", "source"}), b.target, b.source)
+
+    @r.post("/tts")
+    def tts(b: SpeakIn, u: dict = Depends(current)) -> Response:
+        return Response(wrap(svc.speak, b.text, b.lang), media_type="audio/wav")
 
     @r.post("/docs/sample/{key}")
     def sample(key: str, u: dict = Depends(current)) -> dict[str, Any]:
@@ -174,6 +230,46 @@ def build_router(svc: StudioService) -> APIRouter:
     @r.post("/docs/{doc_id}/chat")
     def chat(doc_id: str, b: ChatIn, u: dict = Depends(current)) -> dict[str, Any]:
         return wrap(svc.chat, u["id"], doc_id, b.message, b.lang, b.focus_node, b.auto_lang)
+
+    @r.post("/docs/{doc_id}/chat/stream")
+    def chat_stream(doc_id: str, b: ChatIn, u: dict = Depends(current)) -> StreamingResponse:
+        """Same as /chat, but the answer arrives while it is being written (Server-Sent Events):
+        ``delta`` {"text": answer so far} ... ``reset`` (a retry started) ... ``done`` {full reply} | ``error`` {"detail"}."""
+        wrap(svc._doc, u["id"], doc_id)  # 404 / 401 before the stream starts
+        q: queue.Queue = queue.Queue()
+        last = {"t": ""}
+
+        def on_delta(text: str | None) -> None:
+            if text is None:
+                last["t"] = ""
+                q.put(("reset", {}))
+            elif len(text) - len(last["t"]) >= 12 or text.endswith((".", "\n", "।")):  # don't flood the browser
+                last["t"] = text
+                q.put(("delta", {"text": text}))
+
+        def work() -> None:
+            try:
+                q.put(("done", svc.chat(u["id"], doc_id, b.message, b.lang, b.focus_node, b.auto_lang, on_delta)))
+            except AuthError as e:
+                q.put(("error", {"detail": str(e), "status": e.status}))
+            except Exception:  # pragma: no cover
+                q.put(("error", {"detail": "Something went wrong while answering - please try again."}))
+
+        threading.Thread(target=work, daemon=True).start()
+
+        def events():
+            yield ": ok\n\n"
+            while True:
+                try:
+                    kind, data = q.get(timeout=15)
+                except queue.Empty:
+                    yield ": keep-alive\n\n"
+                    continue
+                yield f"event: {kind}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
+                if kind in ("done", "error"):
+                    return
+
+        return StreamingResponse(events(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
     # ---- quizzes
     @r.post("/docs/{doc_id}/quiz")

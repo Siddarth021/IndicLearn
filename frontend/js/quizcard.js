@@ -30,6 +30,7 @@ export function renderQuiz(quiz, { onDone } = {}) {
         const next = h("button", { class: "btn sm", style: { marginTop: "10px" }, onclick: () => { i++; show(); } }, i + 1 < qs.length ? t("next_q") : t("finish"));
         fb.append(next);
         emit("progress", { node: r.node_id, state: r.state });
+        emit("xp", { amount: r.correct ? 10 : 3 });
       } catch (e) { toast(e.message, true); locked = false; btns.forEach((b) => (b.disabled = false)); }
     } }, o));
     card.append(...btns, fb);

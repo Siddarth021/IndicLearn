@@ -7,6 +7,7 @@ later (see :mod:`indiclearn.studio.mastery`).
 
 from __future__ import annotations
 
+import logging
 import math
 import re
 from dataclasses import dataclass, field
@@ -31,6 +32,9 @@ from indiclearn.studio.structure import (
 )
 
 MAX_ROOT_CHILDREN = 14
+
+
+log = logging.getLogger(__name__)
 
 
 @dataclass
@@ -106,7 +110,8 @@ def _group_flat_children(sections: list[Section], concepts: list[Concept]) -> li
     return out
 
 
-def build_knowledge_graph(doc: ParsedDoc, max_concepts: int | None = None) -> KnowledgeGraph:
+def build_knowledge_graph(doc: ParsedDoc, max_concepts: int | None = None, use_models: bool = True) -> KnowledgeGraph:
+    """use_models=False skips M1/M2/M3 (pointless when a hosted LLM rebuilds the map right after)."""
     sections = auto_segment(build_sections(doc))
     concepts, relations, sents = extract_concepts(sections, doc.language, max_concepts=max_concepts)
     # synthetic topic titles from their strongest concept
@@ -192,6 +197,9 @@ def build_knowledge_graph(doc: ParsedDoc, max_concepts: int | None = None) -> Kn
         order_counter += 1
 
     _fix_anaphoric_definitions(nodes, sections)
+    if use_models:
+        nodes = _apply_concept_filter(nodes)
+        _fill_missing_definitions(nodes)
     node_ids = {n["id"] for n in nodes}
     eid = 0
     for n in nodes:
@@ -215,6 +223,9 @@ def build_knowledge_graph(doc: ParsedDoc, max_concepts: int | None = None) -> Kn
         seen_pairs.add(key)
         eid += 1
         edges.append({"id": f"e{eid}", "source": a, "target": b, "type": r.type, "weight": r.weight})
+
+    if use_models:
+        edges = _apply_relation_model(nodes, edges)
 
     # section-level prerequisite flow (aggregate concept prereqs that cross sections)
     node_sec = {n["id"]: (n["id"] if n["type"] not in ("concept",) else n["parent"]) for n in nodes}
@@ -258,6 +269,83 @@ def build_knowledge_graph(doc: ParsedDoc, max_concepts: int | None = None) -> Kn
 
 
 _ANAPHORA = re.compile(r"(?i)^\s*(this|these|that|those|it|they|such)\b")
+
+
+def _apply_concept_filter(nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Drop concept nodes the trained M1 filter rejects. No model loaded: keep everything."""
+    from indiclearn.studio import neural
+
+    clf = neural.load_concept_filter()
+    if clf is None:
+        return nodes
+    concepts = [n for n in nodes if n["type"] == "concept"]
+    if not concepts:
+        return nodes
+    scores = clf.scores([(n["full_label"], n.get("definition") or n.get("summary") or "") for n in concepts])
+    drop: set[str] = set()
+    for n, sc in zip(concepts, scores):
+        n["concept_score"] = round(float(sc), 3)
+        # never drop what the notes explicitly define, or a named term with its acronym - "Micro AUROC", "MLKD (...)"
+        protected = n.get("definition_quality") == "defined" or bool(re.search(r"\([A-Z][A-Za-z0-9\-]{1,9}\)\s*$", n["full_label"]))
+        if sc < clf.threshold and not protected:
+            drop.add(n["id"])
+    if drop:
+        log.info("M1 removed %d of %d concept nodes", len(drop), len(concepts))
+    return [n for n in nodes if n["id"] not in drop]
+
+
+def _apply_relation_model(nodes: list[dict[str, Any]], edges: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Let the trained M3 classifier judge every rule-made concept link (both directions).
+
+    prereq a->b if the model says so (and not more strongly the other way), related if either direction
+    says related, otherwise the co-occurrence link is dropped. No model: the rule links stay as they are."""
+    from indiclearn.studio import neural
+
+    m = neural.load_relations()
+    if m is None:
+        return edges
+    by_id = {n["id"]: n for n in nodes}
+    isc = lambda i: by_id.get(i, {}).get("type") == "concept"
+    cand = [e for e in edges if e["type"] in ("prereq", "related") and isc(e["source"]) and isc(e["target"])]
+    if not cand:
+        return edges
+    ctx = lambda n: (n.get("definition") or n.get("summary") or "")[:150]
+    pairs = []
+    for e in cand:
+        a, b = by_id[e["source"]], by_id[e["target"]]
+        both = f"{ctx(a)} {ctx(b)}".strip()
+        pairs += [(a["full_label"], b["full_label"], both), (b["full_label"], a["full_label"], both)]
+    preds = m.classify_batch(pairs)
+    keep_ids, out_new = {id(e) for e in cand}, []
+    for k, e in enumerate(cand):
+        (lab_ab, p_ab), (lab_ba, p_ba) = preds[2 * k], preds[2 * k + 1]
+        if lab_ab == "prereq" and p_ab >= 0.5 and not (lab_ba == "prereq" and p_ba > p_ab):
+            out_new.append({**e, "type": "prereq", "weight": round(p_ab, 3), "by": "m3"})
+        elif lab_ba == "prereq" and p_ba >= 0.5:
+            out_new.append({**e, "source": e["target"], "target": e["source"], "type": "prereq", "weight": round(p_ba, 3), "by": "m3"})
+        elif "related" in (lab_ab, lab_ba):
+            out_new.append({**e, "type": "related", "weight": round(max(p_ab, p_ba), 3), "by": "m3"})
+    log.info("M3 kept %d of %d concept links", len(out_new), len(cand))
+    return [e for e in edges if id(e) not in keep_ids] + out_new
+
+
+def _fill_missing_definitions(nodes: list[dict[str, Any]], lang: str = "en") -> None:
+    """Ask the trained M2 writer for a description where the document gave none."""
+    from indiclearn.studio import neural
+
+    if neural.load_describer() is None:
+        return
+    filled = 0
+    for n in nodes:
+        if n["type"] != "concept" or (n.get("definition") or "").strip():
+            continue
+        text = neural.describe(n["full_label"], lang, n.get("summary") or "")
+        if text:
+            n["definition"] = text
+            n["definition_quality"] = "generated"
+            filled += 1
+    if filled:
+        log.info("M2 wrote %d missing descriptions", filled)
 
 
 def _fix_anaphoric_definitions(nodes: list[dict[str, Any]], sections: list[Section]) -> None:

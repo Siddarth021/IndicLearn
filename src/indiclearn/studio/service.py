@@ -7,7 +7,14 @@ document ``status`` field - the same shape works unchanged if the pool is later 
 
 from __future__ import annotations
 
+import contextlib
+import hashlib
+import json
 import logging
+import os
+import random
+import re
+import tempfile
 import threading
 import uuid
 from collections import OrderedDict
@@ -19,7 +26,9 @@ import numpy as np
 
 from indiclearn.studio import mastery, tutor
 from indiclearn.studio import quiz as quizmod
+from indiclearn.studio import quizbank
 from indiclearn.studio.auth import AuthError, AuthService
+from indiclearn.studio.brain import TARGET_LANGS
 from indiclearn.studio.config import Settings
 from indiclearn.studio.db import Database, jdump, jload, now
 from indiclearn.studio.i18n import tr
@@ -30,6 +39,10 @@ from indiclearn.studio.parse import parse_file
 from indiclearn.studio.retrieval import DocIndex
 
 log = logging.getLogger("indiclearn.service")
+XP_FOR = {"asked": 5, "quiz_correct": 10, "quiz_incorrect": 3, "self_understood": 4, "self_confused": 2, "viewed": 1}
+TRANSLATABLE = ("text", "reasoning", "key_terms", "follow_ups", "beyond_notes")
+AUDIO_MIME = {".webm": "audio/webm", ".wav": "audio/wav", ".mp3": "audio/mp3", ".m4a": "audio/mp4", ".ogg": "audio/ogg", ".flac": "audio/flac"}
+EXTRA_KEYS = ("notice", "reasoning", "key_terms", "follow_ups", "check", "beyond_notes", "used_general_knowledge", "engine", "understood_as")
 ALLOWED_EXT = {".pdf", ".pptx", ".docx", ".md", ".txt", ".markdown"}
 SAMPLES = [
     ("signals_and_systems_notes.md", "Signals & Systems (English)", "en"),
@@ -43,6 +56,14 @@ def _err(msg: str, status: int = 400) -> AuthError:
     return AuthError(msg, status)
 
 
+def _neural_status() -> dict[str, Any]:
+    try:
+        from indiclearn.studio import neural
+        return neural.status()
+    except Exception:  # pragma: no cover - status must never break /api/info
+        return {}
+
+
 class StudioService:
     def __init__(self, settings: Settings | None = None) -> None:
         self.s = settings or Settings()
@@ -53,6 +74,7 @@ class StudioService:
         self.pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="ingest")
         self._cache: OrderedDict[str, tuple[DocIndex, list[dict[str, Any]], list[dict[str, Any]]]] = OrderedDict()
         self._lock = threading.Lock()
+        self._tcache: OrderedDict[str, dict[str, Any]] = OrderedDict()
         self.samples_dir = self._find_samples()
         # documents left "processing" by a crashed process can never finish
         self.db.run("UPDATE documents SET status='error', error='Interrupted by a restart - please upload again.' WHERE status='processing'")
@@ -124,7 +146,22 @@ class StudioService:
     def _build(self, doc_id: str, path: Path, filename: str) -> None:
         try:
             pd = parse_file(path, filename)
-            kg = build_knowledge_graph(pd)
+            brain = getattr(self.models, "brain", None)
+            # A local LLM (Ollama on a laptop GPU) needs a minute or more for the map: open the document
+            # straight away with the rule-based map and upgrade it in the background.
+            defer = bool(brain is not None and brain.available and brain.first_is_local())
+            hosted = bool(brain is not None and brain.available and not defer)
+            # with a hosted LLM about to rebuild the map, the offline models' work would be thrown away
+            kg = build_knowledge_graph(pd, use_models=not hosted)
+            try:
+                from indiclearn.studio.kgraph_refine import refine
+
+                rep = refine(kg, None if defer else brain)
+                if hosted and not str(rep.get("graph_engine", "")).startswith("llm"):  # the LLM failed: use M1-M3 after all
+                    kg = build_knowledge_graph(pd)
+                    refine(kg, None)
+            except Exception as e:  # pragma: no cover - refinement is an improvement, never a blocker
+                log.warning("graph refinement skipped: %s", e)
             vecs = None
             if self.models.embedder is not None and kg.chunks:
                 try:
@@ -145,6 +182,47 @@ class StudioService:
         except Exception as e:
             log.exception("ingest failed for %s", doc_id)
             self.db.run("UPDATE documents SET status='error', error=? WHERE id=?", (f"Could not read this file ({type(e).__name__}: {str(e)[:160]}).", doc_id))
+            return
+        if defer:
+            self.pool.submit(self._refine_later, doc_id, kg, brain)
+        else:
+            self._start_quiz_bank(doc_id)
+
+    def _refine_later(self, doc_id: str, kg: Any, brain: Any) -> None:
+        """Background LLM upgrade of a map that was first built by rules (local-model mode)."""
+        try:
+            from indiclearn.studio.kgraph_refine import refine
+
+            rep = refine(kg, brain)
+            if not str(rep.get("graph_engine", "")).startswith("llm"):
+                return
+            d = self.db.one("SELECT stats_json FROM documents WHERE id=?", (doc_id,))
+            if d is None:
+                return
+            stats = {**jload(d["stats_json"], {}), **kg.stats}
+            with self.db.conn() as c:
+                c.execute("UPDATE doc_graph SET nodes_json=?, edges_json=?, path_json=? WHERE doc_id=?", (jdump(kg.nodes), jdump(kg.edges), jdump(kg.path), doc_id))
+                c.execute("UPDATE documents SET stats_json=? WHERE id=?", (jdump(stats), doc_id))
+            with self._lock:
+                self._cache.pop(doc_id, None)
+            log.info("map for %s upgraded by %s", doc_id, rep.get("graph_engine"))
+        except Exception as e:  # pragma: no cover
+            log.warning("background map upgrade failed for %s: %s", doc_id, e)
+        self._start_quiz_bank(doc_id)
+
+    def _start_quiz_bank(self, doc_id: str, extra_lang: str | None = None) -> None:
+        """Write AI quiz questions in the background so "Start quiz" is instant (never blocks the upload)."""
+        try:
+            d = self.db.one("SELECT * FROM documents WHERE id=?", (doc_id,))
+            if d is None or d["status"] != "ready":
+                return
+            _d, ix, nodes, _e = self._load(d["user_id"], doc_id)
+            langs = [d["lang"] if d["lang"] in SUPPORTED_LANGS else "en"]
+            if extra_lang and extra_lang in SUPPORTED_LANGS and extra_lang not in langs:
+                langs.append(extra_lang)
+            quizbank.build_in_background(self.db, getattr(self.models, "brain", None), doc_id, nodes, ix, langs)
+        except Exception as e:  # pragma: no cover - the bank is an extra, never a failure
+            log.warning("quiz bank not started for %s: %s", doc_id, e)
 
     def delete_doc(self, user_id: str, doc_id: str) -> None:
         d = self._doc(user_id, doc_id)
@@ -248,19 +326,22 @@ class StudioService:
         self._doc(user_id, doc_id)
         self.db.run("DELETE FROM chat_messages WHERE user_id=? AND doc_id=?", (user_id, doc_id))
 
-    def chat(self, user_id: str, doc_id: str, message: str, ui_lang: str = "en", focus_node: str | None = None, auto_lang: bool = True) -> dict[str, Any]:
+    def chat(self, user_id: str, doc_id: str, message: str, ui_lang: str = "en", focus_node: str | None = None, auto_lang: bool = True,
+             on_delta: Any = None) -> dict[str, Any]:
         message = (message or "").strip()
         if not message:
             raise _err("Please type a question.")
         if len(message) > 1000:
             raise _err("Please keep questions under 1000 characters.")
-        if ui_lang not in SUPPORTED_LANGS:
+        if ui_lang not in SUPPORTED_LANGS and ui_lang not in TARGET_LANGS:
             ui_lang = "en"
         d, ix, nodes, edges = self._load(user_id, doc_id)
+        past = [{"role": m["role"], "content": m["content"]} for m in self.history(user_id, doc_id, 8)]
         self.db.run("INSERT INTO chat_messages(user_id,doc_id,role,content,meta_json,ts) VALUES (?,?,?,?,?,?)", (user_id, doc_id, "user", message, "{}", now()))
-        rep = tutor.answer(message, ui_lang, ix, nodes, edges, d["title"], d["lang"] or "en", d["unit_label"] or "Page", focus_node, auto_lang, self.models)
+        rep = tutor.answer(message, ui_lang, ix, nodes, edges, d["title"], d["lang"] or "en", d["unit_label"] or "Page", focus_node, auto_lang, self.models, past,
+                           on_delta)
         out: dict[str, Any] = {"lang": rep.lang, "intent": rep.intent, "grounded": rep.grounded, "relevance": rep.relevance, "citations": rep.citations, "linked": rep.linked,
-                               "focus_node": rep.focus_node, "related": rep.related}
+                               "focus_node": rep.focus_node, "related": rep.related, **rep.extra}
         text = rep.text
         quiz_payload = None
         if rep.action == "quiz":
@@ -287,7 +368,7 @@ class StudioService:
             new_doubt = {"id": f"d{did}", "label": rep.doubt["label"], "parent": rep.doubt["parent_node_id"] or "root"}
         out.update({"text": text, "quiz": quiz_payload, "touched": touched, "new_doubt": new_doubt})
         self.db.run("INSERT INTO chat_messages(user_id,doc_id,role,content,meta_json,ts) VALUES (?,?,?,?,?,?)",
-                    (user_id, doc_id, "assistant", text, jdump({k: out[k] for k in ("lang", "intent", "grounded", "citations", "linked", "related", "touched", "new_doubt")}), now()))
+                    (user_id, doc_id, "assistant", text, jdump({k: out[k] for k in ("lang", "intent", "grounded", "citations", "linked", "related", "touched", "new_doubt", *EXTRA_KEYS) if k in out}), now()))
         if touched or new_doubt:
             st = mastery.node_states(self.db, user_id, doc_id)
             out["states"] = {n: st[n] for n in touched if n in st}
@@ -295,13 +376,20 @@ class StudioService:
 
     # ------------------------------------------------------------------- quiz
     def quiz_new(self, user_id: str, doc_id: str, scope: str | None, n: int, ui_lang: str) -> dict[str, Any]:
-        d, _ix, nodes, _e = self._load(user_id, doc_id)
+        d, ix, nodes, _e = self._load(user_id, doc_id)
         n = max(1, min(int(n or 5), 10))
         if ui_lang not in SUPPORTED_LANGS:
             ui_lang = "en"
         states = mastery.node_states(self.db, user_id, doc_id)
         prio = {nid: (1.0 - s["score"]) * (1.5 if s["status"] in ("revise", "doubt") else 1.0) for nid, s in states.items() if s["status"] != "mastered"}
-        qs = quizmod.generate(nodes, scope, n, ui_lang, seed=int(now() * 1000) % 100000, priority=prio)
+        seed = int(now() * 1000) % 100000
+        brain = getattr(self.models, "brain", None)
+        qs = quizbank.pick(self.db, brain, user_id, doc_id, nodes, ix, scope, n, ui_lang, prio, random.Random(seed))
+        for q in qs:
+            q["prompt"] = tr(ui_lang, "q_mcq")
+        if len(qs) < n:  # no AI available (or a tiny scope): trained M4 / rule-based questions fill the rest
+            have = {q["node_id"] for q in qs}
+            qs += [q for q in quizmod.generate(nodes, scope, n, ui_lang, seed=seed, priority=prio, use_model=False) if q["node_id"] not in have][: n - len(qs)]
         qid = uuid.uuid4().hex[:12]
         self.db.run("INSERT INTO quizzes(id,user_id,doc_id,created_at,scope_json) VALUES (?,?,?,?,?)", (qid, user_id, doc_id, now(), jdump({"scope": scope, "lang": ui_lang})))
         pub = []
@@ -311,6 +399,7 @@ class StudioService:
             self.db.run("INSERT INTO quiz_questions(id,quiz_id,idx,node_id,qtype,payload_json) VALUES (?,?,?,?,?,?)", (qq, qid, i, q["node_id"], q["qtype"], jdump(q)))
             pub.append(quizmod.public(q))
         scope_label = next((x["label"] for x in nodes if x["id"] == scope), d["title"]) if scope else d["title"]
+        self._start_quiz_bank(doc_id, ui_lang)  # fill the rest of the bank for this language in the background
         return {"quiz_id": qid, "scope": scope, "scope_label": scope_label, "questions": pub}
 
     def quiz_answer(self, user_id: str, quiz_id: str, qid: str, choice: int, ui_lang: str = "en") -> dict[str, Any]:
@@ -349,6 +438,302 @@ class StudioService:
         for t in ("evidence", "doubts"):
             self.db.run(f"DELETE FROM {t} WHERE user_id=? AND doc_id=?", (user_id, doc_id))
 
+    # ------------------------------------------------------------- motivation
+    def me_stats(self, user_id: str) -> dict[str, Any]:
+        """XP, level and daily streak - computed from the evidence log, so it can never drift from it."""
+        import datetime as _dt
+
+        rows = self.db.all("SELECT kind, ts FROM evidence WHERE user_id=?", (user_id,))
+        xp = sum(XP_FOR.get(r["kind"], 0) for r in rows)
+        tz = _dt.datetime.now().astimezone().tzinfo  # the server's local day decides the streak
+        days = {_dt.datetime.fromtimestamp(r["ts"], tz).date() for r in rows if r["ts"]}
+        today = _dt.datetime.fromtimestamp(now(), tz).date()
+        streak, d = 0, today if today in days else today - _dt.timedelta(days=1)
+        while d in days:
+            streak += 1
+            d -= _dt.timedelta(days=1)
+        level = int((xp / 50) ** 0.5) + 1
+        lo, hi = 50 * (level - 1) ** 2, 50 * level ** 2
+        return {"xp": xp, "level": level, "level_floor": lo, "next_level_xp": hi, "streak": streak, "active_today": today in days,
+                "actions": len(rows)}
+
     def info(self) -> dict[str, Any]:
-        return {"languages": [{"code": c, "name": LANG_NAMES[c]} for c in SUPPORTED_LANGS], "models": self.models.status(), "max_upload_mb": self.s.max_upload_mb,
-                "allow_guest": self.s.allow_guest, "allow_registration": self.s.allow_registration, "samples": self.samples(), "extensions": sorted(ALLOWED_EXT)}
+        return {"languages": [{"code": c, "name": LANG_NAMES[c]} for c in SUPPORTED_LANGS], "models": self.models.status(), "trained": _neural_status(), "max_upload_mb": self.s.max_upload_mb,
+                "allow_guest": self.s.allow_guest, "allow_registration": self.s.allow_registration, "samples": self.samples(), "extensions": sorted(ALLOWED_EXT),
+                "speech": self._speech_status(), "ai": self._ai_status()}
+
+    def _ai_status(self) -> dict[str, Any]:
+        brain = getattr(self.models, "brain", None)
+        ok = bool(brain is not None and brain.available)
+        return {"available": ok, "offline_only": bool(ok and brain.first_is_local())}
+
+    def _speech_status(self) -> dict[str, Any]:
+        """What the browser should use for the mic / speaker buttons (server voices beat robotic device voices)."""
+        from indiclearn.studio import neural, speech
+
+        st = speech.status()
+        brain = getattr(self.models, "brain", None)
+        hosted_asr = st["asr"] or bool(brain and any(getattr(p, "audio", False) for p in brain.providers))
+        local_asr = neural.models_dir().joinpath("whisper_small", "config.json").exists() or neural.models_dir().joinpath("whisper_te_small", "config.json").exists()
+        return {"server_tts": bool(st["tts"]), "server_asr": bool(hosted_asr or local_asr), "hosted": st["provider"]}
+
+    def transcribe(self, filename: str, data: bytes, lang: str = "", user_id: str | None = None, doc_id: str | None = None) -> dict[str, Any]:
+        """Spoken question -> text + detected language.
+
+        Hosted speech (Gemini) first when configured - it is far better at Telugu than Whisper-small -
+        then the local Whisper model. 503 when neither is available.
+        """
+        from indiclearn.studio import neural
+
+        if len(data) > 25 * 1024 * 1024:
+            raise _err("That recording is too long - keep it under about 2 minutes.", 413)
+        suffix = Path(filename or "clip.webm").suffix.lower() or ".webm"
+        if suffix not in AUDIO_MIME:
+            raise _err("Unsupported audio format.", 415)
+        from indiclearn.studio import speech
+
+        keyterms: list[str] = []
+        if user_id and doc_id:  # the document's own concept names help the recogniser spell them right
+            with contextlib.suppress(Exception):
+                _d, _ix, nodes, _e = self._load(user_id, doc_id)
+                keyterms = [n["label"] for n in nodes if n.get("type") in ("concept", "topic", "section")][:50]
+        got = speech.stt(data, Path(filename or "clip.webm").name, AUDIO_MIME[suffix], keyterms)
+        if got and got.get("text"):
+            return got
+        brain = getattr(self.models, "brain", None)
+        if brain is not None and brain.available and data:
+            got = brain.transcribe(data, AUDIO_MIME[suffix])
+            if got and got.get("text"):
+                return {"text": got["text"], "lang": got.get("lang", ""), "engine": got.get("engine", "")}
+        rec = neural.load_recogniser((lang or "")[:5])
+        if rec is None:
+            raise _err("Voice input is not set up on this server yet. Either set INDICLEARN_GEMINI_API_KEY, or download the "
+                       "offline speech models: python scripts/download_models.py --only whisper_te_small whisper_small", 503)
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as fh:
+            fh.write(data)
+            tmp = fh.name
+        try:
+            text, lang = rec.transcribe(tmp)
+        finally:
+            with contextlib.suppress(OSError):
+                os.unlink(tmp)
+        if not text:
+            raise _err("Could not make out any speech in that recording.", 422)
+        return {"text": text, "lang": lang or ""}
+
+    # ------------------------------------------------------------ translation
+    def translate(self, fields: dict[str, Any], target: str, source: str = "") -> dict[str, Any]:
+        """Convert one tutor reply (answer + reasoning + follow-ups ...) into any supported language.
+
+        Chain: hosted/local LLM (keeps markdown, page tags and English technical terms)
+        -> IndicTrans2 (local) -> NLLB (local) -> 503.
+        """
+        if target not in TARGET_LANGS:
+            raise _err("Unsupported language.", 422)
+        clean = {k: v for k, v in (fields or {}).items() if k in TRANSLATABLE and v}
+        if not isinstance(clean.get("text"), str) or not clean["text"].strip():
+            raise _err("Nothing to translate.")
+        if len(json.dumps(clean, ensure_ascii=False)) > 12000:
+            raise _err("That reply is too long to translate.", 413)
+        key = hashlib.sha1((target + json.dumps(clean, sort_keys=True, ensure_ascii=False)).encode()).hexdigest()
+        with self._lock:
+            if key in self._tcache:
+                return self._tcache[key]
+        out: dict[str, Any] | None = None
+        reasons: list[str] = []
+        brain = getattr(self.models, "brain", None)
+        if brain is not None and brain.available:
+            got = brain.translate(clean, target)
+            if got:
+                out = {k: got.get(k, v) for k, v in clean.items()}
+                out["engine"] = got.get("_engine", "llm")
+        if out is None and brain is not None:
+            reasons.append("AI engines - " + brain.why_unavailable())
+        elif out is None:
+            reasons.append("AI engines are switched off (INDICLEARN_BRAIN=off)")
+        if out is None:
+            out, why = self._translate_local(clean, target, source)
+            if out is None:
+                reasons.append("Offline translators - " + why)
+        if out is None:
+            raise _err("Could not translate. " + " | ".join(reasons) +
+                       " || Fix: put a working key in .env, or install Ollama + run setup_offline.bat, or download IndicTrans2/NLLB.", 503)
+        out["lang"] = target
+        with self._lock:
+            self._tcache[key] = out
+            while len(self._tcache) > 256:
+                self._tcache.popitem(last=False)
+        return out
+
+    def _translate_local(self, fields: dict[str, Any], target: str, source: str = "") -> tuple[dict[str, Any] | None, str]:
+        """Offline machine translation (IndicTrans2, else NLLB). Returns (result, reason-if-it-failed).
+
+        Indic <-> Indic (e.g. Telugu -> Hindi) goes through English automatically, so any two of the
+        supported languages work as long as the two IndicTrans2 folders (or NLLB) are installed."""
+        from indiclearn.studio import neural
+        from indiclearn.studio.lang import detect_language
+        from indiclearn.studio.llm import NLLB_CODES
+
+        base = target.split("-")[0]
+        if "-" in target:
+            return None, "Romanized output (Telugu/Hindi in English letters) needs an LLM - add a key or install Ollama"
+        src = (source or "").split("-")[0] or detect_language(fields["text"]).base
+        if src == base:
+            return None, f"the reply is already in {base}"
+        it = neural.load_indictrans()
+        nl = getattr(self.models, "translator", None)
+        use_it = bool(it and it.can(src, base))
+        use_nl = nl is not None and src in NLLB_CODES and base in NLLB_CODES
+        if not (use_it or use_nl):
+            why = []
+            if it is None:
+                why.append("IndicTrans2: " + neural.LOAD_ERRORS.get("indictrans2", "not installed"))
+            else:
+                why.append(f"IndicTrans2 has no {src}->{base} model")
+            if nl is None:
+                why.append("NLLB: not installed (python scripts/setup_offline.py --nllb)")
+            return None, "; ".join(why)
+
+        def tx(texts: list[str]) -> list[str]:
+            if not texts:
+                return texts
+            if use_it:
+                try:
+                    return it.translate(texts, src, base, strict=True)  # type: ignore[union-attr]
+                except Exception:
+                    if not use_nl:
+                        raise
+            return [nl.translate(t_, src, base) for t_ in texts]  # type: ignore[union-attr]
+
+        def tx_md(md_text: str) -> str:
+            # translate line by line, keeping bullets; bold markers would confuse the MT model
+            lines = md_text.split("\n")
+            body = [re.sub(r"^\s*[-•*]\s+", "", ln).replace("**", "") for ln in lines]
+            idx = [i for i, ln in enumerate(body) if ln.strip()]
+            done = tx([body[i] for i in idx])
+            for i, t_ in zip(idx, done, strict=False):
+                lines[i] = ("- " if re.match(r"^\s*[-•*]\s+", lines[i]) else "") + t_
+            return "\n".join(lines)
+
+        try:
+            out: dict[str, Any] = {"text": tx_md(fields["text"]), "engine": "indictrans2" if use_it else "nllb"}
+            if src != "en" and base != "en" and use_it:
+                out["engine"] = "indictrans2 (via English)"
+            for k in ("reasoning", "follow_ups"):
+                if isinstance(fields.get(k), list):
+                    out[k] = tx([str(x) for x in fields[k]])
+            if isinstance(fields.get("beyond_notes"), str):
+                out["beyond_notes"] = tx([fields["beyond_notes"]])[0]
+            if isinstance(fields.get("key_terms"), list):
+                means = tx([str(x.get("meaning", "")) for x in fields["key_terms"]])
+                out["key_terms"] = [{**x, "meaning": m} for x, m in zip(fields["key_terms"], means, strict=False)]
+        except Exception as e:
+            return None, f"offline translator crashed: {str(e)[:160]}"
+        if out["text"].strip() == fields["text"].strip():
+            return None, "the offline translator returned the text unchanged"
+        return out, ""
+
+    # ------------------------------------------------------------------ speech
+    def speak(self, text: str, lang: str) -> bytes:
+        """Read a reply aloud with local TTS. The browser's own voices are tried first, so this
+        only runs when the device has no voice for the language (common for Telugu on Windows).
+
+        A Telugu voice cannot pronounce English letters (it just skips them), and replies are full of
+        English technical terms. So the text is split into runs: Latin runs are read by the English
+        voice, everything else by the language's voice, and the pieces are joined into one WAV."""
+        from indiclearn.studio import neural
+
+        from indiclearn.studio import speech
+
+        base = (lang or "en").split("-")[0]
+        clean = re.sub(r"\[(?:p\.|page |slide |part )\s*\d+(?:\s*,\s*(?:p\.)?\s*\d+)*\]|[*_`#>]", "", text or "")
+        clean = re.sub(r"\s+", " ", clean).strip()[:3000]
+        hosted = speech.tts(clean, base)  # one natural voice for Telugu-English code-mix (Sarvam Bulbul)
+        if hosted:
+            return hosted[0] if len(hosted) == 1 else join_wavs(hosted, gap_ms=60)
+        clean = clean[:1200]
+        runs = split_script_runs(clean) if base != "en" else [("en", clean)]
+        native = neural.load_speaker(base) if base != "en" else None
+        parler = neural.load_parler() if base in neural.PARLER_LANGS else None
+        english = neural.load_speaker("en")
+        eng_parler = neural.load_parler() if "en" in neural.PARLER_LANGS else None
+        if base != "en" and native is None and parler is None:
+            raise _err(f"No voice installed for this language on the server. Download one with: "
+                       f"python scripts/download_models.py --only {neural.TTS_FOLDERS.get(base, 'mms_tts_tel')}", 503)
+        pieces: list[bytes] = []
+        for kind, chunk in runs:
+            if not re.search(r"\w", chunk):
+                continue
+            wav = b""
+            for part in _chunks(chunk, 280):
+                if kind == "en" or base == "en":
+                    w = english.wav(part) if english is not None else b""
+                    if not w and eng_parler is not None:
+                        w = eng_parler.wav(part, "en")
+                else:
+                    w = parler.wav(part, base) if parler is not None else b""
+                    if not w and native is not None:
+                        w = native.wav(part)
+                if w:
+                    pieces.append(w)
+            _ = wav
+        if not pieces:
+            raise _err("Could not synthesise speech for that text.", 422)
+        return pieces[0] if len(pieces) == 1 else join_wavs(pieces)
+
+
+_LATIN_RUN = re.compile(r"[A-Za-z][A-Za-z0-9'\-.]*(?:[ ,]+[A-Za-z0-9][A-Za-z0-9'\-.]*)*")
+
+
+def split_script_runs(text: str) -> list[tuple[str, str]]:
+    """[("native", "కన్వల్యూషన్ అంటే "), ("en", "Graph Neural Networks"), ...] in reading order."""
+    out: list[tuple[str, str]] = []
+    pos = 0
+    for m in _LATIN_RUN.finditer(text):
+        if m.start() > pos:
+            out.append(("native", text[pos : m.start()]))
+        out.append(("en", m.group(0)))
+        pos = m.end()
+    if pos < len(text):
+        out.append(("native", text[pos:]))
+    return out
+
+
+def _chunks(text: str, n: int) -> list[str]:
+    text = text.strip()
+    if len(text) <= n:
+        return [text]
+    parts, cur = [], ""
+    for w in text.split(" "):
+        if cur and len(cur) + len(w) + 1 > n:
+            parts.append(cur)
+            cur = w
+        else:
+            cur = (cur + " " + w).strip()
+    return parts + ([cur] if cur else [])
+
+
+def join_wavs(wavs: list[bytes], gap_ms: int = 120) -> bytes:
+    """Concatenate mono 16-bit WAVs (resampling to the first one's rate) with a short pause between."""
+    import io
+    import wave
+
+    import numpy as np
+
+    rate, chunks = 0, []
+    for b in wavs:
+        with wave.open(io.BytesIO(b), "rb") as w:
+            r = w.getframerate()
+            x = np.frombuffer(w.readframes(w.getnframes()), dtype="<i2").astype(np.float32)
+        rate = rate or r
+        if r != rate and len(x):
+            x = np.interp(np.linspace(0, len(x) - 1, int(len(x) * rate / r)), np.arange(len(x)), x)
+        chunks += [x, np.zeros(int(rate * gap_ms / 1000), dtype=np.float32)]
+    pcm = np.concatenate(chunks).clip(-32768, 32767).astype("<i2").tobytes()
+    buf = io.BytesIO()
+    with wave.open(buf, "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(rate)
+        w.writeframes(pcm)
+    return buf.getvalue()

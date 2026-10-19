@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import urllib.request
 from typing import Any
 
@@ -21,8 +22,15 @@ from indiclearn.studio.config import Settings
 
 log = logging.getLogger("indiclearn.llm")
 
-NLLB_CODES = {"en": "eng_Latn", "te": "tel_Telu", "hi": "hin_Deva", "sa": "san_Deva"}
+NLLB_CODES = {"en": "eng_Latn", "te": "tel_Telu", "hi": "hin_Deva", "sa": "san_Deva", "ta": "tam_Taml", "kn": "kan_Knda",
+              "ml": "mal_Mlym", "mr": "mar_Deva", "bn": "ben_Beng", "gu": "guj_Gujr", "pa": "pan_Guru", "or": "ory_Orya", "ur": "urd_Arab"}
 LANG_FULL = {"en": "English", "te": "Telugu", "hi": "Hindi", "sa": "Sanskrit"}
+
+
+def _importable(mod: str) -> bool:
+    import importlib.util
+
+    return importlib.util.find_spec(mod) is not None
 
 
 class Embedder:
@@ -96,11 +104,43 @@ class Models:
         self.translator: Translator | None = None
         self.llm: LocalLLM | None = None
         self.notes: list[str] = []
-        if s.embedding_backend == "sentence_transformers":
+        # hybrid generative engine (hosted -> ollama -> none); see brain.py
+        from indiclearn.studio.brain import Brain
+
+        try:
+            self.brain = Brain.from_env(s.llm_model, s.ollama_url)
+        except Exception as e:  # pragma: no cover - a bad env var must not stop the app
+            self.brain = Brain([])
+            self.notes.append(f"brain unavailable ({type(e).__name__})")
+        try:  # a local LLM on a small GPU needs the VRAM: run the helper models on the CPU instead
+            from indiclearn.studio import brain as _b
+            from indiclearn.studio import neural as _n
+
+            if any(isinstance(p, _b.OllamaProvider) for p in self.brain.providers) and os.environ.get("INDICLEARN_AUX_DEVICE", "auto") == "auto":
+                _n.set_aux_device("cpu" if _n.small_gpu() else "auto")
+        except Exception:  # pragma: no cover
+            pass
+        if not self.brain.available:
+            self.notes.append("no LLM configured (set INDICLEARN_GEMINI_API_KEY / INDICLEARN_SARVAM_API_KEY, or run Ollama); using extractive answers")
+        emb_model, emb_on = s.embedding_model, s.embedding_backend == "sentence_transformers"
+        if s.embedding_backend == "auto":
+            # use the multilingual-e5 copy already in models/pretrained (cross-lingual search, no download)
+            from indiclearn.studio.neural import models_dir
+
+            local = models_dir() / "pretrained" / "e5_small"
+            if (local / "config.json").exists() and _importable("sentence_transformers"):
+                emb_model, emb_on = str(local), True
+        if emb_on:
             try:
-                self.embedder = Embedder(s.embedding_model, s.local_files_only)
+                self.embedder = Embedder(emb_model, s.local_files_only)
             except Exception as e:
                 self.notes.append(f"embedder unavailable ({type(e).__name__}); using lexical+phonetic retrieval")
+        if s.translator_backend == "auto":
+            from indiclearn.studio.neural import models_dir
+
+            local = models_dir() / "pretrained" / "nllb_600m"
+            if (local / "config.json").exists() and _importable("transformers"):
+                s.translator_backend, s.translator_model = "nllb", str(local)
         if s.translator_backend == "nllb":
             try:
                 self.translator = Translator(s.translator_model, s.local_files_only)
@@ -113,6 +153,25 @@ class Models:
             else:
                 self.notes.append("ollama not reachable; using extractive answers")
 
+    def translate_query(self, text: str, src: str, tgt: str) -> str | None:
+        """Offline question translation for cross-lingual search: IndicTrans2, else NLLB. None if neither."""
+        if not text.strip() or src == tgt:
+            return None
+        try:
+            from indiclearn.studio import neural
+
+            it = neural.load_indictrans()
+            if it is not None and it.can(src, tgt):
+                return it.translate([text], src, tgt)[0]
+        except Exception as e:  # pragma: no cover
+            log.warning("query translation (IndicTrans2) failed: %s", e)
+        if self.translator is not None and src in NLLB_CODES and tgt in NLLB_CODES:
+            try:
+                return self.translator.translate(text, src, tgt)
+            except Exception as e:  # pragma: no cover
+                log.warning("query translation (NLLB) failed: %s", e)
+        return None
+
     def status(self) -> dict[str, Any]:
         return {"embedder": self.embedder.model_name if self.embedder else None, "translator": self.s.translator_model if self.translator else None,
-                "llm": f"ollama:{self.llm.model}" if self.llm else None, "notes": self.notes}
+                "llm": f"ollama:{self.llm.model}" if self.llm else None, "brain": self.brain.status(), "notes": self.notes}
