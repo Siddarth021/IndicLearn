@@ -23,21 +23,21 @@ class ExamService:
         self.db, self.models = db, models
 
     # ------------------------------------------------------------------ notes
-    def _notes(self, user_id: str, units: list[str], doc_ids: list[str] | None) -> tuple[str, list[dict], dict]:
-        """Text of the student's uploads that are about this subject (+ which docs were used)."""
-        q = "SELECT id, title FROM documents WHERE user_id=? AND status='ready'"
+    def _notes(self, user_id: str, units: list[str], doc_ids: list[str] | None, subject: str = "os") -> tuple[str, list[dict], dict]:
+        """Text of the student's uploads that are about this subject (+ which docs were used). Course lessons are not uploads."""
+        q = "SELECT id, title FROM documents WHERE user_id=? AND status='ready' AND course IS NULL"
         docs = self.db.all(q, (user_id,))
         if doc_ids is not None:
             docs = [d for d in docs if d["id"] in set(doc_ids)]
         used, texts = [], []
         for d in docs:
             text = " ".join(r["text"] for r in self.db.all("SELECT text FROM chunks WHERE doc_id=? ORDER BY idx", (d["id"],)))
-            cov = P.coverage(text, [])  # all units: is this upload about OS at all?
+            cov = P.coverage(text, [], subject)  # all units: is this upload about this subject at all?
             if len(cov["covered"]) >= MIN_TOPICS_FOR_SUBJECT:
                 used.append({"id": d["id"], "title": d["title"]})
                 texts.append(text)
         joined = "\n".join(texts)
-        return joined, used, (P.coverage(joined, units) if joined else {"covered": [], "missing": []})
+        return joined, used, (P.coverage(joined, units, subject) if joined else {"covered": [], "missing": []})
 
     @staticmethod
     def _passages(text: str, topic: dict, limit: int = 3500) -> str:
@@ -64,14 +64,15 @@ class ExamService:
         if not any(want.values()):
             return []
         low = notes.lower()
-        scored = sorted(((sum(P._kw_hits(low, k) for k in t["keywords"]), u, t) for u, t in P.topics_of(None) if t["id"] in topic_ids
+        scored = sorted(((sum(P._kw_hits(low, k) for k in t["keywords"]), u, t) for u, t in P.topics_of(None, bp["subject"]) if t["id"] in topic_ids
                          and not t.get("numerical")), key=lambda x: -x[0])
         picks = [(u, t) for s, u, t in scored[:3] if s >= 3]
         if not picks:
             return []
 
         def one(u: dict, t: dict) -> list[dict]:
-            qs = qgen.gen_topic(brain, u, t, 1, notes=self._passages(notes, t), want=want, tries=1)
+            qs = qgen.gen_topic(brain, u, t, 1, notes=self._passages(notes, t), want=want, tries=1, subject=bp["subject"],
+                                course=P.syllabus(bp["subject"])["title"])
             return [{**q, "source": "notes"} for q in qgen.check(brain, qs)] if qs else []
 
         ex = ThreadPoolExecutor(len(picks))
@@ -89,8 +90,8 @@ class ExamService:
     # ------------------------------------------------------------------ papers
     def new(self, user_id: str, blueprint: dict[str, Any], doc_ids: list[str] | None = None) -> dict[str, Any]:
         bp = P.validate(blueprint)
-        notes, used_docs, cov = self._notes(user_id, bp["units"], doc_ids)
-        ticked = [t["id"] for _u, t in P.topics_of(bp["units"])]
+        notes, used_docs, cov = self._notes(user_id, bp["units"], doc_ids, bp["subject"])
+        ticked = [t["id"] for _u, t in P.topics_of(bp["units"], bp["subject"])]
         topics = [t for t in ticked if t in set(cov["covered"])] if used_docs and cov["covered"] else ticked
         fresh = self._fresh(notes, topics, bp) if used_docs else []
         seen: set[str] = set()
@@ -118,7 +119,8 @@ class ExamService:
 
     def pdf(self, user_id: str, pid: str, answers: bool = False) -> tuple[bytes, str]:
         paper = self._load(user_id, pid)
-        name = re.sub(r"[^A-Za-z0-9]+", "_", f"OS_{paper['blueprint']['name']}_{'answer_key' if answers else 'paper'}").strip("_") + ".pdf"
+        short = (P.syllabus(paper.get("course") or "os").get("short") or "OS").replace(" ", "")
+        name = re.sub(r"[^A-Za-z0-9]+", "_", f"{short}_{paper['blueprint']['name']}_{'answer_key' if answers else 'paper'}").strip("_") + ".pdf"
         return pdf.render(paper, answers), name
 
     def list(self, user_id: str) -> list[dict[str, Any]]:

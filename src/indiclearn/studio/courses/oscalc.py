@@ -480,6 +480,7 @@ def _paging_value(rng: random.Random, difficulty: str) -> tuple[list[dict], floa
 
 _TRAPS: dict[int, list] = {}  # common-mistake answers per generated question (for MCQ distractors)
 
+MSQ_KINDS = ("pages", "disk", "cpu")  # kinds gen_msq_numeric can build
 VALUE_GENERATORS = {"cpu": _cpu_value, "pages": _pages_value, "disk": _disk_value, "eat": _eat_value, "paging": _paging_value}
 
 

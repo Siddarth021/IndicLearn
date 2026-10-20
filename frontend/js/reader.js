@@ -1,6 +1,6 @@
 import { api } from "./api.js";
 import { t, unitName } from "./i18n.js";
-import { h, toast } from "./util.js";
+import { h, toast, mathify } from "./util.js";
 import { S, emit, on, clearOwner } from "./state.js";
 
 const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -27,8 +27,10 @@ export function createReader(root) {
     const frag = document.createDocumentFragment();
     if (!termRe) { frag.append(text); return frag; }
     let last = 0; termRe.lastIndex = 0; let m; let count = 0;
+    const math = [...text.matchAll(/\$[^$]+\$/g)].map((x) => [x.index, x.index + x[0].length]); // never cut a formula in two
     while ((m = termRe.exec(text)) && count < 8) {
       const id = termId(m[0]); if (!id) continue;
+      if (math.some(([a, b]) => m.index < b && m.index + m[0].length > a)) continue;
       frag.append(text.slice(last, m.index));
       frag.append(h("mark", { class: "term", "data-id": id, onclick: (e) => openPop(id, e) }, m[0]));
       last = m.index + m[0].length; count++;
@@ -73,7 +75,7 @@ export function createReader(root) {
 
   function render() {
     root.innerHTML = "";
-    const bar = h("div", { class: "toolbar" }, h("h2", {}, S.doc.title), h("span", { class: "chip" }, t(S.doc.unit_label === "Slide" ? "slides_n" : S.doc.unit_label === "Part" ? "parts_n" : "pages_n", { n: S.doc.n_pages })), h("span", { class: "grow" }));
+    const bar = h("div", { class: "toolbar" }, h("h2", {}, S.doc.title), h("span", { class: "chip" }, t(S.doc.unit_label === "Slide" ? "slides_n" : S.doc.unit_label === "Part" ? "parts_n" : S.doc.unit_label === "Lesson" ? "lessons_n" : "pages_n", { n: S.doc.n_pages })), h("span", { class: "grow" }));
     if (data.has_original) bar.append(h("button", { class: "btn sm ghost", onclick: togglePdf }, showPdf ? t("text_view") : t("original")));
     bar.append(h("button", { "data-tutor-toggle": "1", class: "btn sm", onclick: () => { S.tutorOpen = !S.tutorOpen; emit("layout"); } }, S.tutorOpen ? t("hide_tutor") : "✦ " + t("ask_tutor")));
     tocEl = h("nav", { class: "toc" }, h("div", { class: "small-caps", style: { padding: "0 8px 8px" } }, t("contents")));
@@ -98,6 +100,7 @@ export function createReader(root) {
     readerEl.append(paper);
     const body = h("div", { class: "study" }, tocEl, readerEl);
     root.append(bar, body);
+    mathify(paper); // course lessons and maths notes carry $...$ formulas
     if (showPdf) renderPdf();
   }
 

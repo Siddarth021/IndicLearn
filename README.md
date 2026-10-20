@@ -40,10 +40,18 @@ questions skip the extra "understand" call, which halves the free-tier usage.
 * **Quizzes** - understanding-level MCQs written in the background right after upload (instant to open);
   every answer key is double-checked by a second blind pass, wrong-keyed questions are dropped.
 * **Mind map** - AI concept map (or rules + M1/M2/M3 offline), labels never clipped, progress colours.
-* **OS course** - 38 lessons (one per syllabus topic) in English, Telugu on request (translated once and cached):
+* **Courses** - Operating Systems (8 units, 38 lessons) and Discrete Structures and Matrix Algebra (DSMA: 6 units,
+  47 lessons; Rosen 7e, Strang 3e, Liu, Lovász; MIT 18.06 lecture numbers). Each course is also the student's study
+  document: a doubt chat beside every lesson (answers grounded in the lessons), a default knowledge map built from the
+  syllabus (units -> topics -> key terms, prerequisite links) and a personal map coloured by quick checks, quizzes,
+  "mark as learned" and the doubts asked (each doubt becomes a node). DSMA maths renders with KaTeX and prints in PDFs
+  with real matrices. Exact DSMA generators cover 40 problem kinds (truth tables, normal forms, counting, recurrences,
+  relations and closures, posets, elimination, LU, rank, null space, Gram-Schmidt, eigenvalues, SVD, ...),
+  each checked against brute force (see tests/studio/test_courses.py).
+* **Lessons** - one per syllabus topic in English, Telugu on request (translated once and cached):
   explanation, key terms, exam tips, common mistakes, a live exactly-solved example for numerical topics
   ("New example"), the solver's exact rules, a quick check, listen-aloud, "mark as learned" and a jump to a paper.
-* **Exam papers (Operating Systems)** - the student sets the skeleton (total marks, time, units, rows such as
+* **Exam papers (OS and DSMA)** - the student picks the course and sets the skeleton (total marks, time, units, rows such as
   "5 x 1 mark MCQ" or "2 x 4 marks numerical"; Mid-sem / End-sem / Unit-test presets) and gets a printable question
   paper. Answers stay hidden until asked for (per question, all at once, or as a separate answer-key PDF).
   Topics = the ticked syllabus units that the student's uploaded OS notes also cover. Numericals (CPU scheduling,

@@ -21,7 +21,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from indiclearn.studio.courses import oscalc
+from indiclearn.studio.courses import dsmacalc, oscalc
 
 HERE = Path(__file__).resolve().parent
 QTYPES = {"auto": "Any type", "fill": "Fill in the blank", "mcq": "Multiple choice", "short": "Short answer",
@@ -50,11 +50,19 @@ class PaperError(ValueError):
 # --------------------------------------------------------------------------- course data
 
 
-@lru_cache(maxsize=4)
+SUBJECTS = ("os", "dsma")  # the order courses are listed in
+CALC = {"os": oscalc, "dsma": dsmacalc}  # exact numerical generators per subject
+
+
+def calc(subject: str) -> Any:
+    return CALC[subject] if subject in CALC else CALC[syllabus(subject)["subject"]]
+
+
+@lru_cache(maxsize=8)
 def syllabus(subject: str = "os") -> dict[str, Any]:
-    if subject != "os":
-        raise PaperError("Only Operating Systems is available for now.")
-    return json.loads((HERE / "os_syllabus.json").read_text(encoding="utf-8"))
+    if subject not in SUBJECTS:
+        raise PaperError("Course not found.")
+    return json.loads((HERE / f"{subject}_syllabus.json").read_text(encoding="utf-8"))
 
 
 def topics_of(units: list[str] | None, subject: str = "os") -> list[tuple[dict, dict]]:
@@ -73,13 +81,20 @@ def bank(subject: str = "os") -> list[dict]:
     return list(_bank_cached(subject, path.stat().st_mtime)) if path.exists() else []
 
 
+def presets(subject: str) -> list[dict[str, Any]]:
+    short = syllabus(subject).get("short") or ("OS" if subject == "os" else subject.upper())
+    return [{**p, "name": f"GATE-style ({short})"} if p["id"] == "gate" else p for p in PRESETS]
+
+
 def courses() -> list[dict[str, Any]]:
-    syl = syllabus("os")
-    b = bank("os")
-    return [{"id": "os", "title": syl["title"], "questions": len(b),
-             "units": [{"id": u["id"], "title": u["title"], "topics": [{"id": t["id"], "label": t["label"], "numerical": bool(t.get("numerical"))} for t in u["topics"]]}
-                       for u in syl["units"]],
-             "presets": PRESETS, "qtypes": QTYPES, "difficulty": DIFFICULTY}]
+    out = []
+    for subject in SUBJECTS:
+        syl = syllabus(subject)
+        out.append({"id": subject, "title": syl["title"], "short": syl.get("short", syl["title"]), "questions": len(bank(subject)),
+                    "units": [{"id": u["id"], "title": u["title"], "topics": [{"id": t["id"], "label": t["label"], "numerical": bool(t.get("numerical"))} for t in u["topics"]]}
+                              for u in syl["units"]],
+                    "presets": presets(subject), "qtypes": QTYPES, "difficulty": DIFFICULTY})
+    return out
 
 
 # --------------------------------------------------------------------------- blueprint
@@ -114,10 +129,11 @@ def validate(bp: dict[str, Any]) -> dict[str, Any]:
     if sum(r["count"] for r in rows) > 60:
         raise PaperError("At most 60 questions in one paper.")
     units = [u for u in (bp.get("units") or []) if isinstance(u, str)]
-    known = {u["id"] for u in syllabus(bp.get("subject") or "os")["units"]}
+    subject = bp.get("subject") or "os"
+    known = {u["id"] for u in syllabus(subject)["units"]}
     units = [u for u in units if u in known] or sorted(known)
     style = "gate" if bp.get("style") == "gate" or any(r["qtype"] in ("msq", "nat") for r in rows) else "college"
-    return {"subject": "os", "style": style, "name": str(bp.get("name") or "Practice paper")[:60], "total": got, "minutes": minutes or max(30, got * 3),
+    return {"subject": subject, "style": style, "name": str(bp.get("name") or "Practice paper")[:60], "total": got, "minutes": minutes or max(30, got * 3),
             "units": units, "difficulty": bp.get("difficulty") if bp.get("difficulty") in DIFFICULTY else "college", "rows": rows}
 
 
@@ -192,10 +208,12 @@ def _scale_scheme(scheme: list[dict], marks: int) -> list[dict]:
 def assemble(bp: dict[str, Any], topic_ids: list[str], fresh: list[dict], used: set[str], seed: int | None = None) -> dict[str, Any]:
     """Fill every row of the blueprint. Returns the paper with questions AND answers (the API strips answers)."""
     rng = random.Random(seed)
-    syl_topics = {t["id"]: (u, t) for u, t in topics_of(None)}
+    subject = bp.get("subject") or "os"
+    oc = calc(subject)
+    syl_topics = {t["id"]: (u, t) for u, t in topics_of(None, subject)}
     tset = set(topic_ids)
-    num_topics = [t for t in topic_ids if syl_topics[t][1].get("numerical")]
-    pool = [q for q in bank() + fresh if q["topic"] in tset and not numericish(q)]
+    num_topics = [t for t in topic_ids if syl_topics[t][1].get("numerical") in oc.GENERATORS]
+    pool = [q for q in bank(subject) + fresh if q["topic"] in tset and not numericish(q)]
     taken: set[str] = set()
     topic_count: dict[str, int] = {}
     questions, notes = [], []
@@ -204,8 +222,8 @@ def assemble(bp: dict[str, Any], topic_ids: list[str], fresh: list[dict], used: 
         for _ in range(row["count"]):
             kind = _slot_kind(row["qtype"], row["marks"], rng, bool(num_topics), bp.get("style", "college"))
             diff = {"easy": "easy", "college": "medium", "tough": "hard"}[bp["difficulty"]]
-            val_topics = [t for t in num_topics if syl_topics[t][1]["numerical"] in oscalc.VALUE_GENERATORS]
-            msq_topics = [t for t in num_topics if syl_topics[t][1]["numerical"] in ("pages", "disk", "cpu")]
+            val_topics = [t for t in num_topics if syl_topics[t][1]["numerical"] in oc.VALUE_GENERATORS]
+            msq_topics = [t for t in num_topics if syl_topics[t][1]["numerical"] in oc.MSQ_KINDS]
             if kind == "nat" and not val_topics:
                 kind = "mcq"
             if kind == "numerical" and not num_topics:
@@ -217,14 +235,14 @@ def assemble(bp: dict[str, Any], topic_ids: list[str], fresh: list[dict], used: 
             if kind == "nat":
                 t = pick_t(val_topics)
                 num_kinds_used[syl_topics[t][1]["numerical"]] = num_kinds_used.get(syl_topics[t][1]["numerical"], 0) + 1
-                g = oscalc.gen_nat(syl_topics[t][1]["numerical"], rng, row["marks"], diff, t)
+                g = oc.gen_nat(syl_topics[t][1]["numerical"], rng, row["marks"], diff, t)
                 q = {"id": "nat-" + uuid.uuid4().hex[:8], "kind": "nat", "topic": t, "blocks": g["blocks"], "answer_blocks": g["answer"],
                      "value": g["value"], "tolerance": g["tolerance"]}
             elif kind == "msq" and msq_topics and (not [c for c in pool if c["qtype"] == "msq" and c["id"] not in taken] or rng.random() < 0.5):
                 t = pick_t(msq_topics)
                 g = None
                 for _ in range(8):
-                    g = oscalc.gen_msq_numeric(syl_topics[t][1]["numerical"], rng, row["marks"], diff, t)
+                    g = oc.gen_msq_numeric(syl_topics[t][1]["numerical"], rng, row["marks"], diff, t)
                     if g:
                         break
                 if g:
@@ -234,7 +252,7 @@ def assemble(bp: dict[str, Any], topic_ids: list[str], fresh: list[dict], used: 
             elif kind == "mcq" and bp.get("style") == "gate" and row["marks"] >= 2 and val_topics and rng.random() < 0.6:
                 t = pick_t(val_topics)
                 num_kinds_used[syl_topics[t][1]["numerical"]] = num_kinds_used.get(syl_topics[t][1]["numerical"], 0) + 1
-                g = oscalc.gen_mcq_numeric(syl_topics[t][1]["numerical"], rng, row["marks"], diff, t)
+                g = oc.gen_mcq_numeric(syl_topics[t][1]["numerical"], rng, row["marks"], diff, t)
                 q = {"id": "mcqn-" + uuid.uuid4().hex[:8], "kind": "mcq", "topic": t, "blocks": g["blocks"], "options": g["options"],
                      "correct": g["correct"], "answer_blocks": g["answer"]}
             if q is not None:
@@ -244,13 +262,13 @@ def assemble(bp: dict[str, Any], topic_ids: list[str], fresh: list[dict], used: 
                 t = pick_t(num_topics)
                 nk = syl_topics[t][1]["numerical"]
                 num_kinds_used[nk] = num_kinds_used.get(nk, 0) + 1
-                g = oscalc.generate(nk, rng, row["marks"], diff, t)
+                g = oc.generate(nk, rng, row["marks"], diff, t)
                 q = {"id": "num-" + uuid.uuid4().hex[:8], "kind": "numerical", "topic": t, "blocks": g["blocks"], "answer_blocks": g["answer"]}
             else:
                 types = _bank_type(kind, row["marks"])
                 cands = [c for c in pool if c["qtype"] in types and c["id"] not in taken]
                 if not cands:
-                    cands = [c for c in bank() if c["qtype"] in types and c["id"] not in taken and not numericish(c)]
+                    cands = [c for c in bank(subject) if c["qtype"] in types and c["id"] not in taken and not numericish(c)]
                 if cands:
                     def w(c: dict) -> float:
                         fit = 1.0 if c["qtype"] == types[0] else 0.4

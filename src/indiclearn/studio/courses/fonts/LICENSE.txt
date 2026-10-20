@@ -1,0 +1,2 @@
+DejaVu Serif fonts (https://dejavu-fonts.github.io/) - Bitstream Vera Fonts copyright + DejaVu changes, public domain.
+Free to use, copy and redistribute (Bitstream Vera license). Bundled so printed papers show logic and maths symbols on every computer.

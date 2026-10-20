@@ -35,7 +35,7 @@ function stopSpeaking() {
   if (speaking?.btn) speaking.btn.classList.remove("on");
   speaking = null;
 }
-function plain(text) { return String(text || "").replace(/\[(?:p\.|page |slide |part )\s*\d+\]/gi, "").replace(/[*_`#>]/g, "").replace(/\s+/g, " ").trim(); }
+function plain(text) { return String(text || "").replace(/\$([^$]+)\$/g, (_m, x) => x.replace(/\\[a-zA-Z]+/g, " ").replace(/[{}^_]/g, " ")).replace(/\[(?:p\.|page |slide |part |lesson )\s*\d+\]/gi, "").replace(/[*_`#>]/g, "").replace(/\s+/g, " ").trim(); }
 // English words inside a Telugu/Hindi reply need an English voice: a Telugu voice skips Latin letters.
 function scriptRuns(text) {
   const re = /[A-Za-z][A-Za-z0-9'\-.]*(?:[ ,]+[A-Za-z0-9][A-Za-z0-9'\-.]*)*/g;

@@ -14,7 +14,7 @@ from typing import Any
 
 from indiclearn.studio import brain as B
 
-SYSTEM_GEN = """You are an experienced Operating Systems professor at an Indian engineering college (B.Tech CSE). You set
+SYSTEM_GEN = """You are an experienced {course} professor at an Indian engineering college (B.Tech CSE). You set
 mid-semester and end-semester papers, and you know the GATE CSE syllabus. Write ORIGINAL exam questions on ONE topic.
 Mix difficulty: some direct, some that make students think (why / what happens if / compare / apply to a scenario).
 Model answers must be what a top student writes in the exam: correct, concise, exam-style, with the key terms.
@@ -30,9 +30,16 @@ Return ONLY JSON:
   "scheme": [{"point": "...", "marks": 2}], "diagram": "..."}
 ]}
 Rules: scheme marks add up to the question's marks. No numerical problems needing a computed table (those are generated
-separately) - but small reasoning with numbers is fine. Plain text only (no LaTeX, no $). Never copy a known paper verbatim."""
+separately) - but small reasoning with numbers is fine. {fmt} Never copy a known paper verbatim."""
+FORMAT = {"os": "Plain text only (no LaTeX, no $).",
+          "dsma": "Write mathematics in LaTeX between single $ signs on one line (e.g. $p \\rightarrow q$, $\\binom{n}{k}$, $A^{-1}$); in "
+                  "MCQ/MSQ questions small calculations are welcome (e.g. a truth value, a count, a rank) - recompute them before you answer."}
 
-SYSTEM_CHECK = """You are a strict OS examiner checking questions before they go into a paper. For EACH question:
+
+def system_gen(subject: str = "os", course: str = "Operating Systems") -> str:
+    return SYSTEM_GEN.replace("{course}", course).replace("{fmt}", FORMAT.get(subject, FORMAT["os"]))
+
+SYSTEM_CHECK = """You are a strict examiner of this subject checking questions before they go into a paper. For EACH question:
 - MCQ (no key is given to you): solve it yourself and put the option number in "pick"; if two options are equally right or
   none is, pick -1.
 - MSQ (type "msq", several options may be correct, no key given): put the list of ALL correct option numbers in "pick" and
@@ -43,15 +50,16 @@ SYSTEM_CHECK = """You are a strict OS examiner checking questions before they go
 Return ONLY JSON: {"verdicts": {"Q0": {"v": "ok|fix|drop", "pick": <MCQ only>, "answer": "<only for fix>"}, "Q1": {...}}}"""
 
 
-def gen_topic(brain: Any, unit: dict, topic: dict, per: int, notes: str = "", want: dict | None = None, tries: int = 3) -> list[dict]:
+def gen_topic(brain: Any, unit: dict, topic: dict, per: int, notes: str = "", want: dict | None = None, tries: int = 3,
+              subject: str = "os", course: str = "Operating Systems") -> list[dict]:
     want = want or {"fill": per, "mcq": per, "short": per + 1, "medium": per, "long": max(1, per - 1)}
     ask = ", ".join(f"{n} {k}" for k, n in want.items() if n)
-    user = (f"SUBJECT: Operating Systems\nUNIT: {unit['title']}\nTOPIC: {topic['label']}\n"
+    user = (f"SUBJECT: {course}\nUNIT: {unit['title']}\nTOPIC: {topic['label']}\n"
             + (f"STUDENT'S OWN CLASS NOTES on this topic (base the questions on what these notes teach, in the professor's terms):\n{notes[:3500]}\n" if notes else "")
             + f"Write exactly: {ask} questions.")
     r = None
     for _ in range(tries):
-        r = brain._run(SYSTEM_GEN, user, True, 7000, lambda v: v if isinstance(v, dict) and isinstance(v.get("questions"), list) and v["questions"] else None)
+        r = brain._run(system_gen(subject, course), user, True, 7000, lambda v: v if isinstance(v, dict) and isinstance(v.get("questions"), list) and v["questions"] else None)
         if r:
             break
         time.sleep(5)
@@ -62,7 +70,7 @@ def gen_topic(brain: Any, unit: dict, topic: dict, per: int, notes: str = "", wa
     for q in r[0]["questions"]:
         q = clean(q)
         if q and (len(only) != 1 or q["qtype"] == only[0]):  # asked for one type only: drop strays
-            out.append({**q, "subject": "os", "unit": unit["id"], "topic": topic["id"], "engine": r[1]})
+            out.append({**q, "id": f"{subject}-{q['id'].split('-', 1)[1]}", "subject": subject, "unit": unit["id"], "topic": topic["id"], "engine": r[1]})
     return out
 
 
@@ -109,7 +117,7 @@ def clean(q: dict) -> dict | None:
     return out
 
 
-SYSTEM_SOLVE = """Solve these GATE-style multiple-select questions on Operating Systems. Several options may be correct.
+SYSTEM_SOLVE = """Solve these GATE-style multiple-select questions (B.Tech CSE). Several options may be correct.
 Return ONLY JSON {"answers": {"Q0": [<all correct option numbers>], "Q1": [...]}}"""
 
 

@@ -63,3 +63,16 @@ written by Sarvam (or Gemini: `WRITER=gemini`), reviewed and corrected by Gemini
 sentences, English technical terms). `--te-only` finishes missing Telugu; the app also translates a lesson the first time
 a student opens it in Telugu and caches it. For numerical topics the app replaces any model-written "conventions" with the
 exact rules the solver uses (`courses/lessons.py: RULES`), so a lesson can never contradict its worked example.
+
+
+## DSMA (and any other course)
+
+Every course script takes `--subject` (default `os`):
+
+    python training/make_os_lessons.py --subject dsma --no-te        # write + review the lessons (English)
+    python training/make_os_lessons.py --subject dsma --review-only  # review lessons saved without a review
+    python training/make_os_lessons.py --subject dsma --te-only      # Telugu translations
+    WRITER=gemini python training/make_os_bank.py --subject dsma --per 2   # checked question bank
+
+Several Gemini accounts (`INDICLEARN_GEMINI_API_KEY_2` ... `_8`) multiply the free daily quota; the scripts run with no
+time budget (`INDICLEARN_BRAIN_BUDGET_S=0`), while students' chat gives up on busy engines after 25 s.

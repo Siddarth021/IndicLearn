@@ -34,10 +34,11 @@ _lock = threading.Lock()
 
 def quizzable(nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Concepts first (by importance), then sections that have a real definition."""
+    banked = [n for n in nodes if n.get("quiz")]  # course topics: they carry the checked question bank
     concepts = [n for n in nodes if n.get("type") == "concept"]
-    topics = [n for n in nodes if n.get("type") == "topic" and len((n.get("definition") or "").strip()) >= 40]
+    topics = [n for n in nodes if n.get("type") == "topic" and len((n.get("definition") or "").strip()) >= 40 and not n.get("quiz")]
     concepts.sort(key=lambda n: -float(n.get("importance") or n.get("weight") or 0.5))
-    return (concepts + topics)[:MAX_NODES]
+    return banked + (concepts + topics)[: max(0, MAX_NODES - len(banked))]
 
 
 def scope_ids(nodes: list[dict[str, Any]], scope: str | None) -> set[str] | None:

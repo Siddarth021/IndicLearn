@@ -590,3 +590,46 @@ def test_gemini_keys_accept_a_comma_list_and_skip_duplicates(monkeypatch):
     monkeypatch.setenv("INDICLEARN_GEMINI_API_KEY_2", "b")
     monkeypatch.setenv("INDICLEARN_GEMINI_API_KEY_3", "c")
     assert B.gemini_keys() == ["a", "b", "c"]
+
+
+def test_a_student_never_waits_for_every_engine_in_turn(monkeypatch):
+    """Daily quota used up: the provider's retry-after is honoured, a busy model is skipped on the other accounts,
+    and the hosted chain gives up after the time budget so the answer comes from the notes."""
+    import time as _t
+
+    from indiclearn.studio import brain as B
+
+    for k in ("INDICLEARN_SARVAM_API_KEY", "SARVAM_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY"):
+        monkeypatch.delenv(k, raising=False)
+    monkeypatch.setenv("INDICLEARN_BRAIN", "gemini")
+    monkeypatch.setenv("INDICLEARN_GEMINI_API_KEY", "a")
+    monkeypatch.setenv("INDICLEARN_GEMINI_API_KEY_2", "b")
+    monkeypatch.setenv("INDICLEARN_GEMINI_MODEL", "busy,daily")
+    monkeypatch.setenv("INDICLEARN_BRAIN_BUDGET_S", "25")
+    b = B.Brain.from_env()
+    calls = []
+
+    def fake(self, system, user, json_mode=True, max_tokens=2048):
+        calls.append((self.model, self.key))
+        if self.model == "busy":
+            raise RuntimeError('HTTP 503: {"error": {"message": "This model is currently experiencing high demand."}}')
+        raise RuntimeError('HTTP 429: {"quotaId": "GenerateRequestsPerDayPerProjectPerModel-FreeTier", "retryDelay": "40000s"}')
+
+    monkeypatch.setattr(B.GeminiProvider, "complete", fake)
+    assert b._run("s", "u") is None
+    assert calls == [("busy", "a"), ("daily", "a"), ("daily", "b")]  # "busy" was not retried on account b
+    daily = [p for p in b.providers if p.model == "daily"]
+    assert all(p.down_until - _t.time() > 21000 for p in daily)  # waits (up to 6 h) for the quota to really come back
+    # time budget: a slow chain stops trying hosted engines
+    monkeypatch.setenv("INDICLEARN_BRAIN_BUDGET_S", "0.05")
+    b2 = B.Brain.from_env()
+    calls.clear()
+
+    def slow(self, system, user, json_mode=True, max_tokens=2048):
+        calls.append(self.model)
+        _t.sleep(0.1)
+        raise RuntimeError("HTTP 500: oops")
+
+    monkeypatch.setattr(B.GeminiProvider, "complete", slow)
+    assert b2._run("s", "u") is None
+    assert len(calls) == 1

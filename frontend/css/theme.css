@@ -379,3 +379,21 @@ html[lang="te"] .nav button,html[lang="hi"] .nav button,html[lang="sa"] .nav but
 .pmatch{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;margin:-6px -6px 16px;background:var(--gold-wash);border:1px dashed var(--gold-soft);border-radius:12px}.pmatch>div{display:flex;flex-direction:column;gap:2px;flex:1;min-width:220px}.pmatch small{color:var(--ink-2);font-size:12.5px}
 .lrules{background:var(--good-soft);border-radius:12px;padding:2px 16px 10px;margin-top:20px}
 .qdone .qrev b,.qdone .qrev .stem{font-family:Inter,system-ui,sans-serif;font-size:13.5px;line-height:1.5}.qdone .qrev .stem{font-weight:600}
+/* ---- courses list, course home, lesson extras */
+.ccards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.ccard{cursor:pointer;display:flex;flex-direction:column;gap:10px;padding:22px}.ccard:hover{border-color:var(--gold)}
+.ccard h3{margin:0;font-size:21px}.ccard .meta{display:flex;flex-wrap:wrap;gap:6px}
+.ccard .foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}.ccard .foot small{color:var(--ink-2)}
+.cacts{display:flex;flex-wrap:wrap;gap:8px;margin:-6px 0 18px}
+.cbooks{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:8px}
+.cbooks h3{font-size:16px;margin:0 0 8px}.cbooks ul{margin:0;padding-left:0;list-style:none;display:grid;gap:8px;font-size:13.5px;line-height:1.5}
+.cbooks a{color:var(--gold);font-weight:600}
+.lmeta{display:flex;flex-direction:column;gap:6px;margin:-6px 0 14px;font-size:13px;color:var(--ink-2)}
+.lmeta .chipbtn{margin:0 4px 4px 0;font-size:12.5px;padding:3px 10px}
+.lrefs{font-size:12.5px}
+.lsumbar{display:flex;flex-wrap:wrap;gap:8px}
+.mathblk{overflow-x:auto;overflow-y:hidden;margin:8px 0;padding:2px 0}
+.qans .mathblk,.lex .mathblk{font-size:14px}
+.ptable th,.ptable td{white-space:nowrap}
+.pcourse{display:flex;align-items:center;gap:12px;margin:-4px 0 14px;flex-wrap:wrap}
+@media (max-width:640px){.ccards{grid-template-columns:1fr}.cacts .btn{flex:1 1 calc(50% - 8px);justify-content:center}}

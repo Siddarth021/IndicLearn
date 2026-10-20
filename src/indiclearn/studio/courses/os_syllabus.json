@@ -16,7 +16,10 @@
       "resource manager",
       "functions of os"
      ],
-     "gate": false
+     "gate": false,
+     "refs": [
+      "Galvin 10e ch.1-2"
+     ]
     },
     {
      "id": "os-types",
@@ -32,7 +35,10 @@
       "distributed os",
       "multiprocessing"
      ],
-     "gate": false
+     "gate": false,
+     "refs": [
+      "Galvin 10e ch.1-2"
+     ]
     },
     {
      "id": "syscalls",
@@ -43,7 +49,14 @@
       "fork",
       "exec"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "os-functions"
+     ],
+     "refs": [
+      "Galvin 10e ch.1-2",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "os-structure",
@@ -55,7 +68,13 @@
       "kernel module",
       "hybrid kernel"
      ],
-     "gate": false
+     "gate": false,
+     "prereq": [
+      "os-functions"
+     ],
+     "refs": [
+      "Galvin 10e ch.1-2"
+     ]
     },
     {
      "id": "dual-mode",
@@ -68,7 +87,14 @@
       "privileged instruction",
       "mode bit"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "syscalls"
+     ],
+     "refs": [
+      "Galvin 10e ch.1-2",
+      "GATE CSE: Operating System"
+     ]
     }
    ]
   },
@@ -84,7 +110,11 @@
       "process control block",
       "address space"
      ],
-     "gate": true
+     "gate": true,
+     "refs": [
+      "Galvin 10e ch.3-4",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "process-states",
@@ -93,7 +123,14 @@
       "process state",
       "state transition"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "process"
+     ],
+     "refs": [
+      "Galvin 10e ch.3-4",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "context-switch",
@@ -103,7 +140,15 @@
       "dispatcher",
       "dispatch latency"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "process-states",
+      "dual-mode"
+     ],
+     "refs": [
+      "Galvin 10e ch.3-4",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "process-ops",
@@ -115,7 +160,15 @@
       "orphan",
       "child process"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "process",
+      "syscalls"
+     ],
+     "refs": [
+      "Galvin 10e ch.3-4",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "ipc",
@@ -127,7 +180,14 @@
       "message passing",
       "pipe"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "process-ops"
+     ],
+     "refs": [
+      "Galvin 10e ch.3-4",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "threads",
@@ -142,7 +202,14 @@
       "many-to-many",
       "pthread"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "process"
+     ],
+     "refs": [
+      "Galvin 10e ch.3-4",
+      "GATE CSE: Operating System"
+     ]
     }
    ]
   },
@@ -163,7 +230,14 @@
       "short-term scheduler",
       "medium-term"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "process-states"
+     ],
+     "refs": [
+      "Galvin 10e ch.5",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "fcfs-sjf",
@@ -178,7 +252,14 @@
       "convoy effect"
      ],
      "gate": true,
-     "numerical": "cpu"
+     "numerical": "cpu",
+     "prereq": [
+      "sched-criteria"
+     ],
+     "refs": [
+      "Galvin 10e ch.5",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "priority-sched",
@@ -190,7 +271,14 @@
       "preemptive priority"
      ],
      "gate": true,
-     "numerical": "cpu"
+     "numerical": "cpu",
+     "prereq": [
+      "fcfs-sjf"
+     ],
+     "refs": [
+      "Galvin 10e ch.5",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "round-robin",
@@ -201,7 +289,15 @@
       "time slice"
      ],
      "gate": true,
-     "numerical": "cpu"
+     "numerical": "cpu",
+     "prereq": [
+      "fcfs-sjf",
+      "context-switch"
+     ],
+     "refs": [
+      "Galvin 10e ch.5",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "mlq",
@@ -211,7 +307,15 @@
       "multilevel feedback",
       "mlfq"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "priority-sched",
+      "round-robin"
+     ],
+     "refs": [
+      "Galvin 10e ch.5",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "rt-sched",
@@ -224,7 +328,13 @@
       "processor affinity",
       "load balancing"
      ],
-     "gate": false
+     "gate": false,
+     "prereq": [
+      "priority-sched"
+     ],
+     "refs": [
+      "Galvin 10e ch.5"
+     ]
     }
    ]
   },
@@ -242,7 +352,15 @@
       "progress",
       "bounded waiting"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "threads",
+      "ipc"
+     ],
+     "refs": [
+      "Galvin 10e ch.6-7",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "peterson-hw",
@@ -255,7 +373,14 @@
       "atomic",
       "spinlock"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "critical-section"
+     ],
+     "refs": [
+      "Galvin 10e ch.6-7",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "semaphores",
@@ -270,7 +395,14 @@
       "p()",
       "v()"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "critical-section"
+     ],
+     "refs": [
+      "Galvin 10e ch.6-7",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "monitors",
@@ -278,7 +410,13 @@
      "keywords": [
       "condition variable"
      ],
-     "gate": false
+     "gate": false,
+     "prereq": [
+      "semaphores"
+     ],
+     "refs": [
+      "Galvin 10e ch.6-7"
+     ]
     },
     {
      "id": "classic-sync",
@@ -291,7 +429,14 @@
       "readers-writers",
       "dining philosophers"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "semaphores"
+     ],
+     "refs": [
+      "Galvin 10e ch.6-7",
+      "GATE CSE: Operating System"
+     ]
     }
    ]
   },
@@ -310,7 +455,14 @@
       "circular wait",
       "resource allocation graph"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "semaphores"
+     ],
+     "refs": [
+      "Galvin 10e ch.8",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "deadlock-prevention",
@@ -319,7 +471,14 @@
       "deadlock prevention",
       "resource ordering"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "deadlock-conditions"
+     ],
+     "refs": [
+      "Galvin 10e ch.8",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "bankers",
@@ -333,7 +492,14 @@
       "avoidance"
      ],
      "gate": true,
-     "numerical": "bankers"
+     "numerical": "bankers",
+     "prereq": [
+      "deadlock-conditions"
+     ],
+     "refs": [
+      "Galvin 10e ch.8",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "deadlock-detection",
@@ -345,7 +511,14 @@
       "rollback",
       "victim"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "bankers"
+     ],
+     "refs": [
+      "Galvin 10e ch.8",
+      "GATE CSE: Operating System"
+     ]
     }
    ]
   },
@@ -367,7 +540,11 @@
       "compaction"
      ],
      "gate": true,
-     "numerical": "fit"
+     "numerical": "fit",
+     "refs": [
+      "Galvin 10e ch.9",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "paging",
@@ -381,7 +558,14 @@
       "offset"
      ],
      "gate": true,
-     "numerical": "paging"
+     "numerical": "paging",
+     "prereq": [
+      "contiguous"
+     ],
+     "refs": [
+      "Galvin 10e ch.9",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "tlb",
@@ -393,7 +577,14 @@
       "hit ratio"
      ],
      "gate": true,
-     "numerical": "eat"
+     "numerical": "eat",
+     "prereq": [
+      "paging"
+     ],
+     "refs": [
+      "Galvin 10e ch.9",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "page-table-structures",
@@ -405,7 +596,14 @@
       "inverted page table",
       "two-level"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "paging"
+     ],
+     "refs": [
+      "Galvin 10e ch.9",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "segmentation",
@@ -414,7 +612,14 @@
       "segmentation",
       "segment table"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "contiguous"
+     ],
+     "refs": [
+      "Galvin 10e ch.9",
+      "GATE CSE: Operating System"
+     ]
     }
    ]
   },
@@ -432,7 +637,15 @@
       "valid-invalid bit",
       "copy-on-write"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "paging",
+      "tlb"
+     ],
+     "refs": [
+      "Galvin 10e ch.10",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "page-replacement",
@@ -444,7 +657,14 @@
       "reference string"
      ],
      "gate": true,
-     "numerical": "pages"
+     "numerical": "pages",
+     "prereq": [
+      "demand-paging"
+     ],
+     "refs": [
+      "Galvin 10e ch.10",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "thrashing",
@@ -455,7 +675,14 @@
       "frame allocation",
       "page fault frequency"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "page-replacement"
+     ],
+     "refs": [
+      "Galvin 10e ch.10",
+      "GATE CSE: Operating System"
+     ]
     }
    ]
   },
@@ -476,7 +703,14 @@
       "rotational latency"
      ],
      "gate": true,
-     "numerical": "disk"
+     "numerical": "disk",
+     "prereq": [
+      "process"
+     ],
+     "refs": [
+      "Galvin 10e ch.11, 13-14",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "raid",
@@ -487,7 +721,13 @@
       "striping",
       "parity"
      ],
-     "gate": false
+     "gate": false,
+     "prereq": [
+      "disk-sched"
+     ],
+     "refs": [
+      "Galvin 10e ch.11, 13-14"
+     ]
     },
     {
      "id": "file-concepts",
@@ -501,7 +741,11 @@
       "tree-structured",
       "acyclic graph"
      ],
-     "gate": true
+     "gate": true,
+     "refs": [
+      "Galvin 10e ch.11, 13-14",
+      "GATE CSE: Operating System"
+     ]
     },
     {
      "id": "file-allocation",
@@ -514,9 +758,45 @@
       "free space",
       "bit vector"
      ],
-     "gate": true
+     "gate": true,
+     "prereq": [
+      "file-concepts",
+      "contiguous"
+     ],
+     "refs": [
+      "Galvin 10e ch.11, 13-14",
+      "GATE CSE: Operating System"
+     ]
     }
    ]
+  }
+ ],
+ "short": "OS",
+ "books": [
+  {
+   "key": "Galvin 10e",
+   "title": "A. Silberschatz, P. B. Galvin, G. Gagne, Operating System Concepts, 10th ed., Wiley, 2018",
+   "kind": "text"
+  },
+  {
+   "key": "Stallings",
+   "title": "W. Stallings, Operating Systems: Internals and Design Principles, 9th ed., Pearson",
+   "kind": "reference"
+  },
+  {
+   "key": "OSTEP",
+   "title": "R. Arpaci-Dusseau, A. Arpaci-Dusseau, Operating Systems: Three Easy Pieces (free online)",
+   "kind": "reference"
+  }
+ ],
+ "links": [
+  {
+   "title": "OSTEP - Operating Systems: Three Easy Pieces (free book)",
+   "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/"
+  },
+  {
+   "title": "NPTEL Operating System Fundamentals (IIT Kharagpur)",
+   "url": "https://nptel.ac.in/courses/106105214"
   }
  ]
 }

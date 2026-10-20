@@ -101,6 +101,11 @@ class Database:
             try:
                 c.execute("PRAGMA journal_mode=WAL")
                 c.executescript(SCHEMA)
+                # additive migrations for databases created by an older version
+                cols = {r[1] for r in c.execute("PRAGMA table_info(documents)").fetchall()}
+                if cols and "course" not in cols:
+                    c.execute("ALTER TABLE documents ADD COLUMN course TEXT")  # a course's study document (subject id)
+                c.execute("CREATE INDEX IF NOT EXISTS idx_documents_course ON documents(user_id, course)")
             finally:
                 c.close()
 

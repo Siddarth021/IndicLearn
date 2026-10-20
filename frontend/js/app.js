@@ -8,7 +8,7 @@ import { createMapView } from "./mapview.js";
 import { renderQuiz } from "./quizcard.js";
 import { createHud } from "./hud.js";
 import { renderPapers } from "./papers.js";
-import { renderCourse } from "./course.js";
+import { renderCourse, courseOpen } from "./course.js";
 
 const $app = document.getElementById("app-root");
 const DOCLESS = new Set(["library", "course", "papers"]); // views that work without an open document
@@ -96,10 +96,7 @@ function go(view, opts = {}) {
   S.view = view;
   for (const k in views) views[k].hidden = k !== view;
   document.querySelectorAll(".nav button").forEach((b) => b.classList.toggle("on", b.dataset.v === view));
-  const app = document.getElementById("app");
-  const showTutor = (view === "study" || view === "map") && S.doc && S.tutorOpen;
-  app.classList.toggle("with-tutor", !!showTutor);
-  document.getElementById("tutor").style.display = showTutor ? "" : "none";
+  applyTutor();
   if (view === "library") renderLibrary();
   else if (view === "study") { if (!opts.keep) reader.load?.call && null; }
   else if (view === "map") mapView.show(opts.select);
@@ -109,9 +106,21 @@ function go(view, opts = {}) {
   else if (view === "course") renderCourse(views.course);
   opts.then?.();
 }
+// the doubt chat sits beside the reader, the map, and a course's pages (whose "notes" are the course lessons)
+function applyTutor() {
+  const app = document.getElementById("app");
+  if (!app) return;
+  const inCourse = S.view === "course" && S.doc?.course && courseOpen() === S.doc.course;
+  const showTutor = (S.view === "study" || S.view === "map" || inCourse) && S.doc && S.tutorOpen;
+  app.classList.toggle("with-tutor", !!showTutor);
+  document.getElementById("tutor").style.display = showTutor ? "" : "none";
+}
+on("layout-course", () => applyTutor());
+on("course-doc", () => { shellKeepNav(); });
 on("nav", ({ view, select, then }) => { go(view, { select }); if (then) setTimeout(then, 350); });
 on("layout", () => {
-  go(S.view, { keep: true });
+  if (S.view === "course") applyTutor(); // opening the chat must not reload the lesson the student is reading
+  else go(S.view, { keep: true });
   document.querySelectorAll("[data-tutor-toggle]").forEach((b) => (b.textContent = S.tutorOpen ? t("hide_tutor") : "✦ " + t("ask_tutor")));
 });
 on("mark", ({ id, kind }) => { if (S.doc) api.mark(S.doc.id, id, kind).catch(() => {}); });

@@ -48,7 +48,16 @@ log = logging.getLogger("indiclearn.brain")
 
 COOLDOWN_S = 60.0
 QUOTA_COOLDOWN_S = 1800.0  # a used-up DAILY free quota will not come back in a minute
-DEFAULT_GEMINI_MODELS = "gemini-3.8-flash,gemini-3.5-flash,gemini-flash-latest,gemini-2.5-flash"
+MAX_RETRY_WAIT_S = 6 * 3600.0  # honour the provider's own "retry after" (Gemini says when the daily quota returns), capped
+# A student waits at most this long for the hosted AI engines before the answer comes from the notes / a local model.
+# Training scripts raise it (INDICLEARN_BRAIN_BUDGET_S=0 means no limit).
+DEFAULT_BUDGET_S = 25.0
+
+
+def _retry_after(msg: str) -> float | None:
+    m = re.search(r'"retryDelay":\s*"(\d+(?:\.\d+)?)s"', msg)
+    return min(float(m.group(1)), MAX_RETRY_WAIT_S) if m else None
+DEFAULT_GEMINI_MODELS = "gemini-3.8-flash,gemini-3.7-flash,gemini-3.6-flash,gemini-3.5-flash,gemini-flash-latest"
 
 # Languages a reply can be *converted* into (per-reply dropdown).  The tutor itself chats in
 # SUPPORTED_LANGS; any of these is fine as a translation target for an LLM or IndicTrans2.
@@ -175,11 +184,53 @@ def strip_think(text: str) -> str:
     return t.strip()
 
 
+# LaTeX inside JSON strings: models often write "$\\frac{a}{b}$" with ONE backslash. JSON then either rejects it
+# (\l, \s, \{ are not escapes) or silently turns it into a control character (\f = form feed, \n = newline, \t, \b, \r).
+_MATH_SEG = re.compile(r"\$[^$\"\n]{1,400}?\$")
+_LONE_BS = re.compile(r"(?<!\\)\\(?=[A-Za-tv-z{}|,;:!%# ]|u(?![0-9a-fA-F]{4}))")
+_CTRL = {"\n": "\\n", "\t": "\\t", "\r": "\\r", "\f": "\\f", "\b": "\\b"}
+
+
+def _protect_latex(raw: str) -> str:
+    return _MATH_SEG.sub(lambda m: _LONE_BS.sub(r"\\\\", m.group(0)), raw) if "$" in raw else raw
+
+
+# a math segment never spans a real line break - except one JSON made out of \neg, \ne, \nabla, \nu, \not ...
+_MATH_REPAIR = re.compile(r"\$(?:[^$\n]|\n(?=(?:eg|eq|e\b|abla|u\b|ot|i\b|mid|ewline)))+?\$")
+
+
+def _fix_math(seg: str) -> str:
+    seg = "".join(_CTRL.get(c, c) for c in seg)
+    seg = re.sub(r"_{3,}", r"\\underline{\\qquad}", seg)  # a fill-in blank inside a formula
+    if re.search(r"\\begin\{(?:[bpv]?matrix|cases|aligned|array)\}", seg):
+        # a matrix row break written as ONE backslash ("1 & 2 \ 3 & 4") would draw the matrix as a single row
+        seg = re.sub(r"(?<!\\)\\(?=\s)", r"\\\\", seg)
+    return seg
+
+
+def repair_latex(v: Any) -> Any:
+    """Undo what JSON escaping did to LaTeX (control characters, halved matrix row breaks) - only inside $...$."""
+    if isinstance(v, str):
+        if "$" not in v:
+            return v
+        return _MATH_REPAIR.sub(lambda m: _fix_math(m.group(0)), v)
+    if isinstance(v, list):
+        return [repair_latex(x) for x in v]
+    if isinstance(v, dict):
+        return {k: repair_latex(x) for k, x in v.items()}
+    return v
+
+
 def parse_json(text: str) -> dict[str, Any] | None:
-    """Pull the first JSON object out of a model reply (tolerates ```json fences and chatter)."""
+    """Pull the first JSON object out of a model reply (tolerates ```json fences, chatter and unescaped LaTeX)."""
     if not text:
         return None
-    t = _FENCE.sub("", strip_think(text))
+    t = _protect_latex(_FENCE.sub("", strip_think(text)))
+    v = _parse_json(t)
+    return repair_latex(v) if v is not None else None
+
+
+def _parse_json(t: str) -> dict[str, Any] | None:
     try:
         v = json.loads(t)
         return v if isinstance(v, dict) else None
@@ -576,7 +627,9 @@ Rules
 - If the notes do not cover something, you may use your general knowledge, but set "used_general_knowledge": true
   and say so in "beyond_notes". Never invent page numbers or claim the notes say something they don't.
 - Be encouraging and friendly, like a good senior explaining over tea. No filler, no lectures about studying.
-- Markdown allowed in "answer": **bold**, bullet lines starting with "- ", `code`. No headings, no tables, no LaTeX.
+- Markdown allowed in "answer": **bold**, bullet lines starting with "- ", `code` (for program code only). No headings, no
+  tables. Mathematics goes in LaTeX between single $ signs on one line, e.g. $\\det(A - \\lambda I) = 0$, $\\binom{{n}}{{k}}$,
+  $p \\rightarrow q$ (the app renders it); keep plain words outside the $ signs.
 
 Return ONLY a JSON object with exactly these keys:
 {{
@@ -765,8 +818,16 @@ class Brain:
         """system / user may be strings or callables(provider) -> str (local models get shorter prompts).
 
         on_delta(raw_so_far) is called while a reply streams in (None = "discard what you showed, retrying")."""
+        start = time.time()
+        try:
+            budget_s = float(os.environ.get("INDICLEARN_BRAIN_BUDGET_S", DEFAULT_BUDGET_S))
+        except ValueError:
+            budget_s = DEFAULT_BUDGET_S
+        overloaded: set[str] = set()  # "model busy" (503) is the same on every account: skip that model for this call
         for p in list(self.providers):
             if not p.ok():
+                continue
+            if not p.local and (p.model in overloaded and p.name == "gemini" or (budget_s > 0 and time.time() - start > budget_s)):
                 continue
             t0 = time.time()
             shown = False
@@ -800,8 +861,11 @@ class Brain:
                     # A local model that is merely slow/busy is still there - don't lock students out of it.
                     busy_local = p.local and ("timed out" in str(e).lower() or "timeout" in str(e).lower())
                     daily = "perday" in str(e).lower().replace(" ", "") or "per day" in str(e).lower()
+                    wait = _retry_after(str(e)) if "429" in str(e) else None
                     if not busy_local:
-                        p.down_until = time.time() + (QUOTA_COOLDOWN_S if daily else COOLDOWN_S)
+                        p.down_until = time.time() + (wait if wait and daily else QUOTA_COOLDOWN_S if daily else max(COOLDOWN_S, wait or 0))
+                    if "503" in str(e) or "overloaded" in str(e).lower() or "high demand" in str(e).lower():
+                        overloaded.add(p.model)
                     p.last_error = _friendly_error(e)
                 if shown and on_delta is not None:
                     on_delta(None)

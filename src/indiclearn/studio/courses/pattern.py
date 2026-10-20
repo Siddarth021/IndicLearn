@@ -91,7 +91,13 @@ def _rows(questions: list[dict]) -> list[dict]:
     return [{"count": n, "marks": m, "qtype": t} for (m, t), n in sorted(c.items(), key=lambda x: (order.get(x[0][1], 9), x[0][0]))]
 
 
-def blueprint_from(data: bytes, filename: str, brain: Any = None) -> dict[str, Any]:
+def detect_subject(text: str) -> str | None:
+    """Which course a past paper belongs to (the one whose syllabus topics it mentions most)."""
+    best = max(((len(P.coverage(text, [], s, min_hits=1)["covered"]), s) for s in P.SUBJECTS), default=(0, None))
+    return best[1] if best[0] >= 2 else None
+
+
+def blueprint_from(data: bytes, filename: str, brain: Any = None, subject: str | None = None) -> dict[str, Any]:
     text = text_of(data, filename)
     found = _heuristic(text)
     engine = "rules"
@@ -108,6 +114,10 @@ def blueprint_from(data: bytes, filename: str, brain: Any = None) -> dict[str, A
                     return None
                 if not 0 < m <= 20 or t not in ("fill", "mcq", "short", "long", "numerical"):
                     return None
+                if t == "long" and m <= 3:  # a 3-mark question is a short answer, whatever the model calls it
+                    t = "short"
+                elif t == "short" and m >= 6:
+                    t = "long"
                 clean.append({"marks": m, "qtype": t})
             return {**v, "questions": clean}
 
@@ -115,10 +125,11 @@ def blueprint_from(data: bytes, filename: str, brain: Any = None) -> dict[str, A
         if r and sum(q["marks"] for q in r[0]["questions"]) == found["total"]:
             found = {**found, "questions": r[0]["questions"], "title": r[0].get("title")}
             engine = r[1]
-    cov = P.coverage(text, [], min_hits=1)  # a paper mentions each topic once or twice
-    units = sorted({u["id"] for u, t in P.topics_of(None) if t["id"] in set(cov["covered"])})
+    subject = subject if subject in P.SUBJECTS else (detect_subject(text) or "os")
+    cov = P.coverage(text, [], subject, min_hits=1)  # a paper mentions each topic once or twice
+    units = sorted({u["id"] for u, t in P.topics_of(None, subject) if t["id"] in set(cov["covered"])})
     name = str(found.get("title") or "My college pattern")[:60]
-    bp = {"name": name, "total": found["total"], "minutes": found["minutes"] or max(30, found["total"] * 3), "difficulty": "college",
-          "units": units or [u["id"] for u in P.syllabus("os")["units"]], "rows": _rows(found["questions"]), "style": "college"}
+    bp = {"name": name, "subject": subject, "total": found["total"], "minutes": found["minutes"] or max(30, found["total"] * 3), "difficulty": "college",
+          "units": units or [u["id"] for u in P.syllabus(subject)["units"]], "rows": _rows(found["questions"]), "style": "college"}
     P.validate(bp)  # never hand the student a blueprint the builder would reject
     return {"blueprint": bp, "engine": engine, "questions_found": len(found["questions"]), "units_from_paper": bool(units)}

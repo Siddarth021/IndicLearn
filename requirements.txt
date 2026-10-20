@@ -13,3 +13,4 @@ pypdfium2>=4.30                # renders scanned PDF pages for OCR
 rapidocr-onnxruntime>=1.2.3     # OCR for text inside pictures (scanned PDFs, image slides); no PyTorch needed
 reportlab>=4                    # printable exam papers (PDF)
 wordninja>=2.0               # puts back the spaces OCR drops between English words
+sympy>=1.12                     # exact maths for DSMA solved examples and exam numericals

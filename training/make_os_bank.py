@@ -29,6 +29,7 @@ OUT = COURSE / "os_bank.jsonl"
 
 def main() -> None:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--subject", default="os")
     ap.add_argument("--topics", nargs="*")
     ap.add_argument("--per", type=int, default=3, help="questions per type per topic (short gets +1, long -1)")
     ap.add_argument("--workers", type=int, default=4)
@@ -36,13 +37,19 @@ def main() -> None:
     a = ap.parse_args()
     load_dotenv(str(ROOT / ".env"))
     import os
+
+    os.environ.setdefault("INDICLEARN_BRAIN_BUDGET_S", "0")  # a batch job may wait for the AI; a student may not
     # the writer and the checker are different models where possible, so the check is really independent
-    os.environ["INDICLEARN_BRAIN"] = "sarvam,gemini"
+    os.environ["INDICLEARN_BRAIN"] = os.environ.get("WRITER", "sarvam,gemini")
+    if os.environ.get("WRITER_MODEL"):
+        os.environ["INDICLEARN_GEMINI_MODEL"] = os.environ["WRITER_MODEL"]
     gen_brain = B.Brain.from_env()
     os.environ["INDICLEARN_BRAIN"] = "gemini,sarvam"  # Sarvam checks only when every Gemini model is out of quota
-    os.environ["INDICLEARN_GEMINI_MODEL"] = os.environ.get("CHECK_MODEL", "gemini-3.5-flash,gemini-2.5-flash,gemini-3.5-flash-lite")  # a different model family checks
+    os.environ["INDICLEARN_GEMINI_MODEL"] = os.environ.get("CHECK_MODEL", "gemini-3.5-flash,gemini-3.6-flash,gemini-3.5-flash-lite")  # a different model family checks
     check_brain = B.Brain.from_env()
-    syl = json.loads((COURSE / "os_syllabus.json").read_text(encoding="utf-8"))
+    global OUT
+    OUT = COURSE / f"{a.subject}_bank.jsonl"
+    syl = json.loads((COURSE / f"{a.subject}_syllabus.json").read_text(encoding="utf-8"))
     have = {}
     if OUT.exists():
         for line in OUT.read_text(encoding="utf-8").splitlines():
@@ -57,7 +64,7 @@ def main() -> None:
 
     def work(job: tuple[dict, dict]) -> list[dict]:
         u, t = job
-        qs = gen_topic(gen_brain, u, t, a.per, want=want_only)
+        qs = gen_topic(gen_brain, u, t, a.per, want=want_only, subject=a.subject, course=syl["title"])
         kept = check(check_brain, qs, second=gen_brain) if qs else []
         print(f"  {t['id']:<24} generated {len(qs):>2}  kept {len(kept):>2}", flush=True)
         return kept
@@ -72,7 +79,7 @@ def main() -> None:
         stats["by_type"][q["qtype"]] = stats["by_type"].get(q["qtype"], 0) + 1
         stats["by_unit"][q["unit"]] = stats["by_unit"].get(q["unit"], 0) + 1
     (ROOT / "training" / "reports").mkdir(exist_ok=True)
-    (ROOT / "training" / "reports" / "os_bank.json").write_text(json.dumps(stats, indent=1))
+    (ROOT / "training" / "reports" / f"{a.subject}_bank.json").write_text(json.dumps(stats, indent=1))
     print(json.dumps(stats, indent=1))
 
 

@@ -35,7 +35,7 @@ T: dict[str, dict[str, str]] = {
         "reason_weak_quiz": "you missed questions on it", "reason_asked_doubt": "you asked about it", "reason_not_started": "not started yet",
         "reason_keep_practising": "keep practising", "reason_prereq_for": "needed before {for_label}", "chapters": "Chapters",
         "low_grounding": "Check this against your notes — the answer may go beyond them.",
-        "unit_Page": "page", "unit_Slide": "slide", "unit_Part": "part",
+        "unit_Page": "page", "unit_Slide": "slide", "unit_Part": "part", "unit_Lesson": "lesson",
     },
     "te": {
         "q_cloze": "ఖాళీని పూరించండి",
@@ -62,7 +62,7 @@ T: dict[str, dict[str, str]] = {
         "reason_weak_quiz": "ఇందులో ప్రశ్నలు తప్పాయి", "reason_asked_doubt": "దీని గురించి అడిగారు", "reason_not_started": "ఇంకా మొదలుపెట్టలేదు",
         "reason_keep_practising": "ఇంకా సాధన చేయండి", "reason_prereq_for": "{for_label} కంటే ముందు అవసరం", "chapters": "అధ్యాయాలు",
         "low_grounding": "ఈ సమాధానాన్ని మీ నోట్స్‌తో సరిచూడండి — ఇది నోట్స్‌కు మించి ఉండవచ్చు.",
-        "unit_Page": "పేజీ", "unit_Slide": "స్లైడ్", "unit_Part": "భాగం",
+        "unit_Page": "పేజీ", "unit_Slide": "స్లైడ్", "unit_Part": "భాగం", "unit_Lesson": "lesson",
     },
     "hi": {
         "q_cloze": "रिक्त स्थान भरें",
@@ -89,7 +89,7 @@ T: dict[str, dict[str, str]] = {
         "reason_weak_quiz": "इसमें प्रश्न गलत हुए", "reason_asked_doubt": "आपने इसके बारे में पूछा", "reason_not_started": "अभी शुरू नहीं हुआ",
         "reason_keep_practising": "अभ्यास जारी रखें", "reason_prereq_for": "{for_label} से पहले ज़रूरी", "chapters": "अध्याय",
         "low_grounding": "इसे अपने नोट्स से मिलाकर देखें — उत्तर नोट्स से आगे जा सकता है।",
-        "unit_Page": "पृष्ठ", "unit_Slide": "स्लाइड", "unit_Part": "भाग",
+        "unit_Page": "पृष्ठ", "unit_Slide": "स्लाइड", "unit_Part": "भाग", "unit_Lesson": "पाठ",
     },
     "sa": {
         "q_cloze": "रिक्तस्थानं पूरयत",
@@ -115,7 +115,7 @@ T: dict[str, dict[str, str]] = {
         "reason_weak_quiz": "अस्मिन् प्रश्नाः दुष्टाः जाताः", "reason_asked_doubt": "एतत् भवता पृष्टम्", "reason_not_started": "अद्यापि न आरब्धम्",
         "reason_keep_practising": "अभ्यासं करोतु", "reason_prereq_for": "{for_label} इत्यस्मात् पूर्वम् आवश्यकम्", "chapters": "अध्यायाः",
         "low_grounding": "एतत् स्वटिप्पणीभिः सह परीक्षताम् — उत्तरं टिप्पणीभ्यः अधिकं स्यात्।",
-        "unit_Page": "पृष्ठम्", "unit_Slide": "पटलम्", "unit_Part": "भागः",
+        "unit_Page": "पृष्ठम्", "unit_Slide": "पटलम्", "unit_Part": "भागः", "unit_Lesson": "पाठः",
     },
 }
 

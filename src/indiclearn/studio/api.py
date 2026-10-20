@@ -198,37 +198,42 @@ def build_router(svc: StudioService) -> APIRouter:
 
         return courses()
 
-    @r.get("/courses/os/lessons")
-    def lessons_index(u: dict = Depends(current)) -> dict[str, Any]:
+    @r.get("/courses/{subject}/lessons")
+    def lessons_index(subject: str, u: dict = Depends(current)) -> dict[str, Any]:
         from indiclearn.studio.courses import lessons
 
-        return lessons.index(svc.db, u["id"])
+        return wrap(lessons.index, svc.db, u["id"], subject)
 
-    @r.get("/courses/os/lessons/{topic}")
-    def lesson_get(topic: str, lang: str = "en", seed: int | None = None, u: dict = Depends(current)) -> dict[str, Any]:
-        from indiclearn.studio.courses import lessons
+    @r.post("/courses/{subject}/open")
+    def course_open(subject: str, u: dict = Depends(current)) -> dict[str, Any]:
+        """The course as a study document (for the chat, mind map, quiz and progress views)."""
+        return wrap(svc.course_doc, u["id"], subject)
 
-        return wrap(lessons.lesson, svc.db, u["id"], topic, lang, seed, getattr(svc.models, "brain", None))
+    @r.get("/courses/{subject}/lessons/{topic}")
+    def lesson_get(subject: str, topic: str, lang: str = "en", seed: int | None = None, u: dict = Depends(current)) -> dict[str, Any]:
+        return wrap(svc.course_lesson, u["id"], subject, topic, lang, seed)
 
-    @r.post("/courses/os/lessons/{topic}/mark")
-    def lesson_mark(topic: str, status: str = "learned", u: dict = Depends(current)) -> dict[str, Any]:
-        from indiclearn.studio.courses import lessons
+    @r.post("/courses/{subject}/lessons/{topic}/mark")
+    def lesson_mark(subject: str, topic: str, status: str = "learned", u: dict = Depends(current)) -> dict[str, Any]:
+        return wrap(svc.course_mark, u["id"], subject, topic, status)
 
-        return wrap(lessons.mark, svc.db, u["id"], topic, status)
+    @r.post("/courses/{subject}/lessons/{topic}/check")
+    def lesson_check(subject: str, topic: str, correct: bool = False, u: dict = Depends(current)) -> dict[str, Any]:
+        return wrap(svc.course_check, u["id"], subject, topic, correct)
 
     @r.get("/papers")
     def papers_list(u: dict = Depends(current)) -> list[dict[str, Any]]:
         return svc.exams.list(u["id"])
 
     @r.post("/papers/pattern")
-    async def paper_pattern(file: UploadFile = File(...), u: dict = Depends(current)) -> dict[str, Any]:
+    async def paper_pattern(file: UploadFile = File(...), subject: str | None = Form(default=None), u: dict = Depends(current)) -> dict[str, Any]:
         """A past question paper (PDF / Word / photo) -> a blueprint the student can edit."""
         from indiclearn.studio.courses.pattern import blueprint_from
 
         data = await file.read(15 * 1024 * 1024 + 1)
         if len(data) > 15 * 1024 * 1024:
             raise HTTPException(413, "That file is larger than 15 MB.")
-        return wrap(blueprint_from, data, file.filename or "paper.jpg", getattr(svc.models, "brain", None))
+        return wrap(blueprint_from, data, file.filename or "paper.jpg", getattr(svc.models, "brain", None), subject)
 
     @r.post("/papers")
     def paper_new(b: PaperIn, u: dict = Depends(current)) -> dict[str, Any]:

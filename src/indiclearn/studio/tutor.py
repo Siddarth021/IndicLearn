@@ -112,7 +112,7 @@ def _answer_extractive(
     lang = pick_reply_lang(question, ui_lang, auto_lang)
     by_id = {n["id"]: n for n in nodes}
     intents = detect_intent(question)
-    unit = tr(lang, f"unit_{unit_label}") if unit_label in ("Page", "Slide", "Part") else tr(lang, "page")
+    unit = tr(lang, f"unit_{unit_label}") if unit_label in ("Page", "Slide", "Part", "Lesson") else tr(lang, "page")
 
     if "greet" in intents and not any(i in intents for i in ("quiz", "summary", "recommend")):
         return TutorReply(tr(lang, "greeting", title=title), "greet", lang)
@@ -267,7 +267,7 @@ def _l(x: dict[str, Any]) -> dict[str, Any]:
 
 # --------------------------------------------------------------------------- generative path
 _PAGE_TAG = re.compile(r"\[(?:p\.|page |slide |part )\s*(\d+)\]", re.IGNORECASE)
-_UNIT_TAG = {"Page": "p.", "Slide": "slide ", "Part": "part "}
+_UNIT_TAG = {"Page": "p.", "Slide": "slide ", "Part": "part ", "Lesson": "lesson "}
 _BRAIN_INTENTS = {"explain", "example", "simple", "summary", "compare", "formula", "exam", "other"}
 
 

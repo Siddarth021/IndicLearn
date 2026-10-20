@@ -27,6 +27,13 @@ export function md(src) {
   if (list) out.push(`</${list}>`);
   return out.join("");
 }
+// solved-problem blocks: {p: text with $math$}, {math: display LaTeX}, {table: rows}
+export function renderBlocks(bs) {
+  const inl = (t) => md(t).replace(/^<p>|<\/p>$/g, "");
+  return (bs || []).map((b) => b.table ? h("div", { class: "tblwrap" }, h("table", { class: "ptable" }, ...b.table.map((r, i) => h("tr", {}, ...r.map((c) => h(i ? "td" : "th", { html: inl(c) }))))))
+    : b.math !== undefined ? h("div", { class: "mathblk" }, "$$" + b.math + "$$")
+    : h("p", { html: inl(b.p || "") }));
+}
 let toastEl;
 export function toast(msg, err = false) {
   toastEl?.remove();

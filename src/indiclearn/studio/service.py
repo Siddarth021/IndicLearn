@@ -86,6 +86,8 @@ class StudioService:
         from indiclearn.studio.courses.exams import ExamService
 
         self.exams = ExamService(self.db, self.models)
+        self._course_vecs: dict = {}  # (doc, subject) -> background embedding in progress
+        self._course_lock = threading.Lock()
         self.pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="ingest")
         self._cache: OrderedDict[str, tuple[DocIndex, list[dict[str, Any]], list[dict[str, Any]]]] = OrderedDict()
         self._lock = threading.Lock()
@@ -117,7 +119,8 @@ class StudioService:
     def _doc_public(r: Any) -> dict[str, Any]:
         return {"id": r["id"], "title": r["title"], "filename": r["filename"], "ext": r["ext"], "size_bytes": r["size_bytes"], "lang": r["lang"], "script": r["script"],
                 "unit_label": r["unit_label"], "n_pages": r["n_pages"], "status": r["status"], "error": r["error"], "created_at": r["created_at"],
-                "stats": jload(r["stats_json"], {}), "summary": r["summary"], "is_sample": bool(r["is_sample"])}
+                "stats": jload(r["stats_json"], {}), "summary": r["summary"], "is_sample": bool(r["is_sample"]),
+                "course": r["course"] if "course" in r.keys() else None}
 
     # ------------------------------------------------------------------ ingest
     def rename_doc(self, user_id: str, doc_id: str, title: str) -> dict[str, Any]:
@@ -130,7 +133,7 @@ class StudioService:
 
     def list_docs(self, user_id: str) -> list[dict[str, Any]]:
         out = []
-        for r in self.db.all("SELECT * FROM documents WHERE user_id=? ORDER BY created_at DESC", (user_id,)):
+        for r in self.db.all("SELECT * FROM documents WHERE user_id=? AND course IS NULL ORDER BY created_at DESC", (user_id,)):
             d = self._doc_public(r)
             if d["status"] == "processing" and r["id"] in self._progress:
                 d["progress"] = self._progress[r["id"]]
@@ -145,7 +148,7 @@ class StudioService:
             raise _err("The file is empty.")
         if len(data) > self.s.max_upload_mb * 1024 * 1024:
             raise _err(f"File is larger than {self.s.max_upload_mb} MB.", 413)
-        n = self.db.one("SELECT COUNT(*) c FROM documents WHERE user_id=?", (user_id,))["c"]
+        n = self.db.one("SELECT COUNT(*) c FROM documents WHERE user_id=? AND course IS NULL", (user_id,))["c"]
         if n >= self.s.max_docs_per_user:
             raise _err(f"You can keep up to {self.s.max_docs_per_user} documents - delete one first.", 429)
         doc_id = uuid.uuid4().hex[:16]
@@ -258,6 +261,60 @@ class StudioService:
             quizbank.build_in_background(self.db, getattr(self.models, "brain", None), doc_id, nodes, ix, langs)
         except Exception as e:  # pragma: no cover - the bank is an extra, never a failure
             log.warning("quiz bank not started for %s: %s", doc_id, e)
+
+    # ------------------------------------------------------------------ courses (lessons as a study document)
+    def course_doc(self, user_id: str, subject: str) -> dict[str, Any]:
+        """The student's study document for a course: the lessons with a ready knowledge map, chat, quiz and progress."""
+        from indiclearn.studio.courses import workspace
+
+        cache_dir = Path(self.s.data_dir) / "course_vectors"
+        doc_id, changed, needs = workspace.ensure(self.db, user_id, subject, cache_dir)
+        if changed:
+            with self._lock:
+                self._cache.pop(doc_id, None)
+        if needs and self.models.embedder is not None and (doc_id, subject) not in self._course_vecs:
+            self._course_vecs[(doc_id, subject)] = True
+
+            def work() -> None:
+                try:
+                    with self._course_lock:  # one embedding run per course at a time; the others then read the disk cache
+                        vecs = workspace.vectors(subject, self.models.embedder, cache_dir)
+                    workspace.fill_vectors(self.db, doc_id, subject, vecs)
+                    with self._lock:
+                        self._cache.pop(doc_id, None)
+                except Exception as e:  # pragma: no cover - keyword search keeps working
+                    log.warning("course vectors failed for %s: %s", subject, e)
+                finally:
+                    self._course_vecs.pop((doc_id, subject), None)
+            self.pool.submit(work)
+        return self._doc_public(self._doc(user_id, doc_id))
+
+    def course_lesson(self, user_id: str, subject: str, topic: str, lang: str = "en", seed: int | None = None) -> dict[str, Any]:
+        from indiclearn.studio.courses import lessons
+
+        out = lessons.lesson(self.db, user_id, topic, lang, seed, getattr(self.models, "brain", None), subject)
+        doc = self.course_doc(user_id, subject)
+        mastery.record_evidence(self.db, user_id, doc["id"], topic, "viewed", {"lesson": True})
+        return {**out, "doc_id": doc["id"]}
+
+    def course_mark(self, user_id: str, subject: str, topic: str, status: str) -> dict[str, Any]:
+        from indiclearn.studio.courses import lessons
+
+        out = lessons.mark(self.db, user_id, topic, status, subject)
+        if status == "learned":
+            doc = self.course_doc(user_id, subject)
+            mastery.record_evidence(self.db, user_id, doc["id"], topic, "self_understood", {"lesson": True})
+        return out
+
+    def course_check(self, user_id: str, subject: str, topic: str, correct: bool) -> dict[str, Any]:
+        """A quick-check answer on a lesson page counts like a quiz answer on the personal map."""
+        from indiclearn.studio.courses import papers as P
+
+        if topic not in {t["id"] for _u, t in P.topics_of(None, subject)}:
+            raise _err("Lesson not found.", 404)
+        doc = self.course_doc(user_id, subject)
+        mastery.record_evidence(self.db, user_id, doc["id"], topic, "quiz_correct" if correct else "quiz_incorrect", {"lesson_check": True})
+        return {"ok": True}
 
     def delete_doc(self, user_id: str, doc_id: str) -> None:
         d = self._doc(user_id, doc_id)

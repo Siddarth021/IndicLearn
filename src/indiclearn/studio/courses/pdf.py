@@ -18,8 +18,13 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import HRFlowable, Indenter, KeepTogether, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
+from indiclearn.studio.courses import texplain
+
+_HERE = os.path.dirname(os.path.abspath(__file__))
+
 _FONT: tuple[str, str] | None = None
-_CANDIDATES = [  # a Unicode serif if the machine has one (arrows, x, <= print correctly), else the built-in Times
+_CANDIDATES = [  # a Unicode serif (logic and maths symbols print correctly): the bundled DejaVu Serif, else the machine's
+    ("PaperSerif", os.path.join(_HERE, "fonts", "DejaVuSerif.ttf"), os.path.join(_HERE, "fonts", "DejaVuSerif-Bold.ttf")),
     ("PaperSerif", "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"),
     ("PaperSerif", "C:/Windows/Fonts/times.ttf", "C:/Windows/Fonts/timesbd.ttf"),
     ("PaperSerif", "/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf", "/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf"),
@@ -46,7 +51,7 @@ def _fonts() -> tuple[str, str]:
 
 
 def _txt(s: Any) -> str:
-    s = str(s or "")
+    s = texplain.text(str(s or ""))  # $\\frac{1}{2}$ -> 1/2, $p \\rightarrow q$ -> p → q
     if _fonts()[0].startswith("Times"):
         s = s.translate(_ASCII).encode("latin-1", "replace").decode("latin-1")
     s = escape(s, quote=False)
@@ -64,6 +69,7 @@ def _styles() -> dict[str, ParagraphStyle]:
         "bold": ParagraphStyle("bo", fontName=bold, fontSize=10.5, leading=14),
         "head": ParagraphStyle("h", fontName=bold, fontSize=10.5, leading=14, alignment=TA_CENTER),
         "bullet": ParagraphStyle("bu", fontName=reg, fontSize=10.5, leading=14, leftIndent=12, bulletIndent=2),
+        "mcell": ParagraphStyle("mc", fontName=reg, fontSize=9.5, leading=11, alignment=TA_CENTER),
     }
 
 
@@ -81,8 +87,78 @@ def _blocks(blocks: list[dict], st: dict[str, ParagraphStyle], width: float) -> 
     for b in blocks:
         if "table" in b:
             out += [Spacer(1, 3), _table(b["table"], st, width), Spacer(1, 3)]
+        elif "math" in b:
+            out += _math(b["math"], st, width)
         else:
             out += _rich(b.get("p", ""), st)
+    return out
+
+
+def _matrix(rows: list[list[str]], st: dict[str, ParagraphStyle]) -> Table:
+    """A matrix drawn with bracket lines on both sides."""
+    ncol = max(len(r) for r in rows)
+    w = max(6.5 * mm, max(len(c) for r in rows for c in r) * 1.9 * mm + 2.5 * mm)
+    data = [[Paragraph(escape(c), st["mcell"]) for c in r] + [""] * (ncol - len(r)) for r in rows]
+    t = Table(data, colWidths=[w] * ncol, hAlign="LEFT")
+    t.setStyle(TableStyle([("LINEBEFORE", (0, 0), (0, -1), 0.8, colors.black), ("LINEAFTER", (-1, 0), (-1, -1), 0.8, colors.black),
+                           ("LINEABOVE", (0, 0), (0, 0), 0.8, colors.black), ("LINEBELOW", (0, -1), (0, -1), 0.8, colors.black),
+                           ("LINEABOVE", (-1, 0), (-1, 0), 0.8, colors.black), ("LINEBELOW", (-1, -1), (-1, -1), 0.8, colors.black),
+                           ("TOPPADDING", (0, 0), (-1, -1), 1), ("BOTTOMPADDING", (0, 0), (-1, -1), 1), ("LEFTPADDING", (0, 0), (-1, -1), 2),
+                           ("RIGHTPADDING", (0, 0), (-1, -1), 2), ("VALIGN", (0, 0), (-1, -1), "MIDDLE")]))
+    t._w = w * ncol  # noqa: SLF001 - remembered for line wrapping below
+    return t
+
+
+def _lines(latex: str) -> list[str]:
+    """Split a display formula at its top-level '\\\\' line breaks (never inside a matrix)."""
+    out, depth, start, i = [], 0, 0, 0
+    while i < len(latex):
+        if latex.startswith("\\begin{", i):
+            depth += 1
+        elif latex.startswith("\\end{", i):
+            depth -= 1
+        elif latex.startswith("\\\\", i) and depth == 0:
+            out.append(latex[start:i])
+            start = i + 2
+            i += 2
+            continue
+        i += 1
+    out.append(latex[start:])
+    return out
+
+
+def _math(latex: str, st: dict[str, ParagraphStyle], width: float) -> list[Any]:
+    """A display formula: one line per '\\\\'-separated step; matrices drawn as grids, wrapped onto new rows when wide."""
+    out: list[Any] = []
+    for line in _lines(latex):
+        if not line.strip():
+            continue
+        parts = texplain.split_matrices(line)
+        if not any(k == "matrix" for k, _v in parts):
+            out.append(Paragraph(_txt("$" + line + "$"), st["body"]))
+            continue
+        rows, cur, used = [], [], 0.0
+        for k, v in parts:
+            if k == "matrix":
+                cell = _matrix(v, st)  # type: ignore[arg-type]
+                w = cell._w + 4 * mm  # noqa: SLF001
+            else:
+                txt_ = str(v).strip().strip(",").strip()
+                if not txt_:
+                    continue
+                w = max(10 * mm, len(txt_) * 2.3 * mm + 4 * mm)
+                cell = Paragraph(escape(txt_), st["body"])
+            if cur and used + w > width:
+                rows.append(cur)
+                cur, used = [], 0.0
+            cur.append((cell, w))
+            used += w
+        if cur:
+            rows.append(cur)
+        for r in rows:
+            t = Table([[c for c, _w in r]], colWidths=[w for _c, w in r], hAlign="LEFT")
+            t.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("LEFTPADDING", (0, 0), (-1, -1), 1), ("RIGHTPADDING", (0, 0), (-1, -1), 3)]))
+            out += [t, Spacer(1, 2)]
     return out
 
 

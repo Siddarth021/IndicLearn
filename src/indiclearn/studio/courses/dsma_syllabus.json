@@ -1,0 +1,1095 @@
+{
+ "subject": "dsma",
+ "title": "Discrete Structures and Matrix Algebra",
+ "short": "DSMA",
+ "sources": "IIIT Sri City DSMA syllabus (6 units); text books Rosen 7e and Strang 3e; references Liu 2e and Lovász-Pelikán-Vesztergombi; cross-checked with the GATE CSE engineering-mathematics syllabus",
+ "books": [
+  {
+   "key": "Rosen 7e",
+   "title": "Kenneth H. Rosen, Discrete Mathematics and Its Applications, 7th ed., McGraw-Hill, 2012",
+   "kind": "text"
+  },
+  {
+   "key": "Strang 3e",
+   "title": "Gilbert Strang, Introduction to Linear Algebra, 3rd ed., Wellesley-Cambridge Press, 2003",
+   "kind": "text"
+  },
+  {
+   "key": "Liu",
+   "title": "C. L. Liu, Elements of Discrete Mathematics, 2nd ed., McGraw-Hill, 1985",
+   "kind": "reference"
+  },
+  {
+   "key": "Lovász",
+   "title": "L. Lovász, J. Pelikán, K. Vesztergombi, Discrete Mathematics: Elementary and Beyond, Springer, 2003",
+   "kind": "reference"
+  }
+ ],
+ "links": [
+  {
+   "title": "MIT OCW 18.06 Linear Algebra (Strang's own video lectures)",
+   "url": "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/video_galleries/video-lectures/"
+  },
+  {
+   "title": "NPTEL Discrete Mathematics",
+   "url": "https://onlinecourses.nptel.ac.in/noc21_cs36/preview"
+  }
+ ],
+ "units": [
+  {
+   "id": "u1",
+   "title": "Mathematical Logic",
+   "hours": 10,
+   "topics": [
+    {
+     "id": "propositions",
+     "label": "Propositions and logical connectives",
+     "keywords": [
+      "proposition",
+      "logical connective",
+      "conjunction",
+      "disjunction",
+      "negation",
+      "biconditional",
+      "implication",
+      "truth table"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §1.1",
+      "Liu ch.1"
+     ],
+     "numerical": "truth"
+    },
+    {
+     "id": "conditionals",
+     "label": "Conditional statements: converse, contrapositive, inverse",
+     "keywords": [
+      "converse",
+      "contrapositive",
+      "inverse",
+      "conditional statement",
+      "if then",
+      "only if",
+      "sufficient",
+      "necessary"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §1.1"
+     ],
+     "numerical": "conditional",
+     "prereq": [
+      "propositions"
+     ]
+    },
+    {
+     "id": "equivalence",
+     "label": "Logical equivalence and laws of logic",
+     "keywords": [
+      "logically equivalent",
+      "logical equivalence",
+      "de morgan",
+      "distributive law",
+      "absorption",
+      "equivalent statements"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §1.3"
+     ],
+     "numerical": "equiv",
+     "prereq": [
+      "propositions"
+     ]
+    },
+    {
+     "id": "tautology",
+     "label": "Tautology, contradiction and contingency",
+     "keywords": [
+      "tautology",
+      "contradiction",
+      "contingency",
+      "satisfiable",
+      "valid formula"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §1.3"
+     ],
+     "numerical": "taut",
+     "prereq": [
+      "propositions"
+     ]
+    },
+    {
+     "id": "predicates",
+     "label": "Predicates and quantifiers (nested quantifiers, negation)",
+     "keywords": [
+      "predicate",
+      "quantifier",
+      "universal quantifier",
+      "existential quantifier",
+      "nested quantifier",
+      "for all",
+      "there exists",
+      "domain of discourse"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §1.4",
+      "Rosen 7e §1.5"
+     ],
+     "numerical": "quant",
+     "prereq": [
+      "propositions"
+     ]
+    },
+    {
+     "id": "inference",
+     "label": "Rules of inference and valid arguments",
+     "keywords": [
+      "rules of inference",
+      "modus ponens",
+      "modus tollens",
+      "hypothetical syllogism",
+      "disjunctive syllogism",
+      "resolution",
+      "valid argument",
+      "fallacy"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §1.6"
+     ],
+     "numerical": "argument",
+     "prereq": [
+      "equivalence",
+      "tautology"
+     ]
+    },
+    {
+     "id": "proofs",
+     "label": "Proof strategies: direct, contrapositive, contradiction, cases; disproof by counterexample",
+     "keywords": [
+      "direct proof",
+      "proof by contradiction",
+      "proof by contrapositive",
+      "counterexample",
+      "proof by cases",
+      "existence proof",
+      "disprove"
+     ],
+     "gate": false,
+     "refs": [
+      "Rosen 7e §1.7",
+      "Rosen 7e §1.8"
+     ],
+     "prereq": [
+      "inference"
+     ]
+    },
+    {
+     "id": "normal-forms",
+     "label": "Normal forms (DNF, CNF, PDNF, PCNF)",
+     "keywords": [
+      "normal form",
+      "disjunctive normal form",
+      "conjunctive normal form",
+      "dnf",
+      "cnf",
+      "pdnf",
+      "pcnf",
+      "minterm",
+      "maxterm"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §1.3 (ex.)",
+      "Rosen 7e §12.2",
+      "Liu ch.12"
+     ],
+     "numerical": "nf",
+     "prereq": [
+      "equivalence"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u2",
+   "title": "Sets, Functions, Induction and Recursion",
+   "hours": 8,
+   "topics": [
+    {
+     "id": "sets",
+     "label": "Sets and set operations (power set, Cartesian product, Venn diagrams)",
+     "keywords": [
+      "set",
+      "subset",
+      "power set",
+      "union",
+      "intersection",
+      "complement",
+      "cartesian product",
+      "venn diagram",
+      "symmetric difference"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §2.1",
+      "Rosen 7e §2.2",
+      "Liu ch.1",
+      "Lovász ch.1"
+     ],
+     "numerical": "sets"
+    },
+    {
+     "id": "functions",
+     "label": "Functions: one-to-one, onto, bijection, inverse, composition",
+     "keywords": [
+      "function",
+      "injective",
+      "surjective",
+      "bijective",
+      "one-to-one",
+      "onto",
+      "inverse function",
+      "composition",
+      "floor",
+      "ceiling"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §2.3",
+      "Liu ch.4"
+     ],
+     "numerical": "func",
+     "prereq": [
+      "sets"
+     ]
+    },
+    {
+     "id": "cardinality",
+     "label": "Cardinality: countable and uncountable sets",
+     "keywords": [
+      "cardinality",
+      "countable",
+      "uncountable",
+      "countably infinite",
+      "diagonal argument",
+      "cantor",
+      "schroder-bernstein"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §2.5"
+     ],
+     "prereq": [
+      "functions"
+     ]
+    },
+    {
+     "id": "sums",
+     "label": "Sequences and summations",
+     "keywords": [
+      "sequence",
+      "summation",
+      "arithmetic progression",
+      "geometric progression",
+      "closed form",
+      "sigma notation"
+     ],
+     "gate": false,
+     "refs": [
+      "Rosen 7e §2.4"
+     ],
+     "numerical": "sum"
+    },
+    {
+     "id": "induction",
+     "label": "Mathematical induction and strong induction",
+     "keywords": [
+      "mathematical induction",
+      "strong induction",
+      "inductive step",
+      "basis step",
+      "well-ordering",
+      "inductive hypothesis"
+     ],
+     "gate": false,
+     "refs": [
+      "Rosen 7e §5.1",
+      "Rosen 7e §5.2",
+      "Lovász ch.2"
+     ],
+     "prereq": [
+      "sums",
+      "proofs"
+     ]
+    },
+    {
+     "id": "recursion",
+     "label": "Recursive definitions, recursive algorithms and structural induction",
+     "keywords": [
+      "recursive definition",
+      "recursively defined",
+      "recursive algorithm",
+      "structural induction",
+      "recursion",
+      "fibonacci"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §5.3",
+      "Rosen 7e §5.4",
+      "Liu ch.10"
+     ],
+     "numerical": "receval",
+     "prereq": [
+      "induction"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u3",
+   "title": "Counting Techniques and Recurrences",
+   "hours": 7,
+   "topics": [
+    {
+     "id": "basic-counting",
+     "label": "Sum rule and product rule",
+     "keywords": [
+      "sum rule",
+      "product rule",
+      "counting principle",
+      "number of strings",
+      "bit strings"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §6.1",
+      "Lovász ch.1"
+     ],
+     "numerical": "count",
+     "prereq": [
+      "sets"
+     ]
+    },
+    {
+     "id": "incl-excl",
+     "label": "Principle of inclusion and exclusion",
+     "keywords": [
+      "inclusion exclusion",
+      "inclusion-exclusion",
+      "principle of inclusion",
+      "derangement",
+      "onto functions"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §8.5",
+      "Rosen 7e §8.6",
+      "Lovász ch.2"
+     ],
+     "numerical": "inclexcl",
+     "prereq": [
+      "basic-counting"
+     ]
+    },
+    {
+     "id": "pigeonhole",
+     "label": "Pigeonhole principle and generalized pigeonhole principle",
+     "keywords": [
+      "pigeonhole",
+      "generalized pigeonhole",
+      "pigeon hole"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §6.2",
+      "Lovász ch.2"
+     ],
+     "numerical": "pigeon",
+     "prereq": [
+      "basic-counting"
+     ]
+    },
+    {
+     "id": "perm-comb",
+     "label": "Permutations and combinations (with and without repetition)",
+     "keywords": [
+      "permutation",
+      "combination",
+      "with repetition",
+      "arrangement",
+      "selection",
+      "multiset",
+      "stars and bars",
+      "npr",
+      "ncr"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §6.3",
+      "Rosen 7e §6.5",
+      "Liu ch.3",
+      "Lovász ch.1"
+     ],
+     "numerical": "permcomb",
+     "prereq": [
+      "basic-counting"
+     ]
+    },
+    {
+     "id": "binomial",
+     "label": "Binomial coefficients and identities",
+     "keywords": [
+      "binomial theorem",
+      "binomial coefficient",
+      "pascal",
+      "pascal's identity",
+      "vandermonde",
+      "binomial identity"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §6.4",
+      "Lovász ch.3"
+     ],
+     "numerical": "binom",
+     "prereq": [
+      "perm-comb"
+     ]
+    },
+    {
+     "id": "recurrence-model",
+     "label": "Recurrence relations: modelling with recurrences",
+     "keywords": [
+      "recurrence relation",
+      "tower of hanoi",
+      "modelling",
+      "initial condition"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §8.1",
+      "Liu ch.10"
+     ],
+     "numerical": "receval",
+     "prereq": [
+      "recursion",
+      "basic-counting"
+     ]
+    },
+    {
+     "id": "recurrence-homog",
+     "label": "Solving linear homogeneous recurrence relations",
+     "keywords": [
+      "homogeneous recurrence",
+      "characteristic equation",
+      "characteristic root",
+      "linear homogeneous",
+      "repeated root"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §8.2",
+      "Liu ch.10",
+      "Lovász ch.4"
+     ],
+     "numerical": "recur",
+     "prereq": [
+      "recurrence-model"
+     ]
+    },
+    {
+     "id": "recurrence-nonhomog",
+     "label": "Solving linear non-homogeneous recurrence relations",
+     "keywords": [
+      "non-homogeneous",
+      "nonhomogeneous",
+      "particular solution",
+      "associated homogeneous"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §8.2",
+      "Liu ch.10"
+     ],
+     "numerical": "recurnh",
+     "prereq": [
+      "recurrence-homog"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u4",
+   "title": "Relations, Posets and Lattices",
+   "hours": 7,
+   "topics": [
+    {
+     "id": "relations",
+     "label": "Relations and their properties (reflexive, symmetric, antisymmetric, transitive)",
+     "keywords": [
+      "relation",
+      "reflexive",
+      "symmetric",
+      "antisymmetric",
+      "transitive",
+      "irreflexive",
+      "asymmetric",
+      "binary relation"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §9.1",
+      "Liu ch.4"
+     ],
+     "numerical": "relprop",
+     "prereq": [
+      "sets"
+     ]
+    },
+    {
+     "id": "rel-repr",
+     "label": "Representing relations (matrices, digraphs) and operations on relations",
+     "keywords": [
+      "relation matrix",
+      "zero-one matrix",
+      "digraph",
+      "composition of relations",
+      "inverse relation",
+      "boolean product"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §9.3",
+      "Rosen 7e §9.1"
+     ],
+     "numerical": "relcomp",
+     "prereq": [
+      "relations"
+     ]
+    },
+    {
+     "id": "closures",
+     "label": "Closures of relations (reflexive, symmetric, transitive; Warshall's algorithm)",
+     "keywords": [
+      "closure",
+      "transitive closure",
+      "reflexive closure",
+      "symmetric closure",
+      "warshall",
+      "connectivity relation"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §9.4"
+     ],
+     "numerical": "closure",
+     "prereq": [
+      "rel-repr"
+     ]
+    },
+    {
+     "id": "equiv-rel",
+     "label": "Equivalence relations, equivalence classes and partitions",
+     "keywords": [
+      "equivalence relation",
+      "equivalence class",
+      "partition",
+      "congruence modulo",
+      "quotient set"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §9.5",
+      "Liu ch.4"
+     ],
+     "numerical": "equivrel",
+     "prereq": [
+      "relations"
+     ]
+    },
+    {
+     "id": "posets",
+     "label": "Partial orders, posets and Hasse diagrams; totally and well-ordered sets",
+     "keywords": [
+      "partial order",
+      "poset",
+      "hasse diagram",
+      "totally ordered",
+      "chain",
+      "antichain",
+      "well-ordered",
+      "lexicographic order",
+      "comparable"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §9.6",
+      "Liu ch.4"
+     ],
+     "numerical": "poset",
+     "prereq": [
+      "relations"
+     ]
+    },
+    {
+     "id": "extremal",
+     "label": "Maximal, minimal, greatest, least elements; upper and lower bounds, LUB and GLB",
+     "keywords": [
+      "maximal element",
+      "minimal element",
+      "greatest element",
+      "least element",
+      "upper bound",
+      "lower bound",
+      "least upper bound",
+      "greatest lower bound",
+      "supremum",
+      "infimum",
+      "lub",
+      "glb"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §9.6"
+     ],
+     "numerical": "poset",
+     "prereq": [
+      "posets"
+     ]
+    },
+    {
+     "id": "lattices",
+     "label": "Lattices",
+     "keywords": [
+      "lattice",
+      "join",
+      "meet",
+      "bounded lattice",
+      "distributive lattice",
+      "complemented lattice",
+      "sublattice"
+     ],
+     "gate": true,
+     "refs": [
+      "Rosen 7e §9.6",
+      "Liu ch.12"
+     ],
+     "numerical": "lattice",
+     "prereq": [
+      "extremal"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u5",
+   "title": "Linear Equations and Vector Spaces",
+   "hours": 9,
+   "topics": [
+    {
+     "id": "linear-systems",
+     "label": "Vectors, linear combinations and solving Ax = b (row and column pictures)",
+     "keywords": [
+      "linear combination",
+      "row picture",
+      "column picture",
+      "system of linear equations",
+      "dot product",
+      "ax = b"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §1.1",
+      "Strang 3e §1.2",
+      "Strang 3e §2.1",
+      "MIT 18.06 L1"
+     ]
+    },
+    {
+     "id": "elimination",
+     "label": "Elimination with matrices (pivots, elimination matrices, breakdown)",
+     "keywords": [
+      "elimination",
+      "gaussian elimination",
+      "pivot",
+      "elimination matrix",
+      "upper triangular",
+      "back substitution",
+      "row exchange",
+      "singular"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §2.2",
+      "Strang 3e §2.3",
+      "MIT 18.06 L2"
+     ],
+     "numerical": "elim",
+     "prereq": [
+      "linear-systems"
+     ]
+    },
+    {
+     "id": "inverse",
+     "label": "Matrix multiplication and inverse matrices (Gauss-Jordan)",
+     "keywords": [
+      "matrix multiplication",
+      "inverse matrix",
+      "gauss-jordan",
+      "invertible",
+      "nonsingular",
+      "identity matrix"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §2.4",
+      "Strang 3e §2.5",
+      "MIT 18.06 L3"
+     ],
+     "numerical": "inverse",
+     "prereq": [
+      "elimination"
+     ]
+    },
+    {
+     "id": "lu",
+     "label": "Factorization A = LU",
+     "keywords": [
+      "lu decomposition",
+      "lu factorization",
+      "a = lu",
+      "lower triangular",
+      "multipliers",
+      "ldu"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §2.6",
+      "MIT 18.06 L4"
+     ],
+     "numerical": "lu",
+     "prereq": [
+      "elimination"
+     ]
+    },
+    {
+     "id": "transpose-perm",
+     "label": "Transposes, permutations and symmetric matrices (PA = LU)",
+     "keywords": [
+      "transpose",
+      "permutation matrix",
+      "symmetric matrix",
+      "pa = lu",
+      "a transpose"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §2.7",
+      "MIT 18.06 L5"
+     ],
+     "numerical": "transpose",
+     "prereq": [
+      "lu"
+     ]
+    },
+    {
+     "id": "vector-spaces",
+     "label": "Vector spaces and subspaces",
+     "keywords": [
+      "vector space",
+      "subspace",
+      "closed under addition",
+      "closed under scalar multiplication",
+      "span",
+      "zero vector"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §3.1",
+      "MIT 18.06 L5-L6"
+     ],
+     "prereq": [
+      "linear-systems"
+     ]
+    },
+    {
+     "id": "nullspace",
+     "label": "Column space and null space; solving Ax = 0 (special solutions, RREF)",
+     "keywords": [
+      "column space",
+      "null space",
+      "nullspace",
+      "special solution",
+      "reduced row echelon",
+      "rref",
+      "free variable",
+      "pivot variable"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §3.1",
+      "Strang 3e §3.2",
+      "Strang 3e §3.3",
+      "MIT 18.06 L6-L7"
+     ],
+     "numerical": "nullspace",
+     "prereq": [
+      "vector-spaces",
+      "elimination"
+     ]
+    },
+    {
+     "id": "rank",
+     "label": "Rank, row reduced form and the complete solution of Ax = b",
+     "keywords": [
+      "rank",
+      "row echelon",
+      "complete solution",
+      "particular solution",
+      "full column rank",
+      "full row rank",
+      "consistent",
+      "inconsistent"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §3.3",
+      "Strang 3e §3.4",
+      "MIT 18.06 L8"
+     ],
+     "numerical": "rank",
+     "prereq": [
+      "nullspace"
+     ]
+    },
+    {
+     "id": "basis",
+     "label": "Linear independence, basis and dimension",
+     "keywords": [
+      "linear independence",
+      "linearly independent",
+      "linearly dependent",
+      "basis",
+      "dimension",
+      "spanning set"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §3.5",
+      "MIT 18.06 L9"
+     ],
+     "numerical": "basis",
+     "prereq": [
+      "vector-spaces"
+     ]
+    },
+    {
+     "id": "four-subspaces",
+     "label": "The four fundamental subspaces (row space, left null space) and invertible matrices",
+     "keywords": [
+      "four fundamental subspaces",
+      "row space",
+      "left null space",
+      "left nullspace",
+      "fundamental theorem",
+      "invertible matrix theorem"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §3.6",
+      "MIT 18.06 L10"
+     ],
+     "numerical": "four",
+     "prereq": [
+      "rank",
+      "basis"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u6",
+   "title": "Orthogonality, Eigenvalues and SVD",
+   "hours": 7,
+   "topics": [
+    {
+     "id": "orthogonal",
+     "label": "Orthogonal vectors and orthogonal subspaces",
+     "keywords": [
+      "orthogonal",
+      "orthogonal complement",
+      "perpendicular",
+      "orthogonal subspaces",
+      "dot product zero"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §4.1",
+      "MIT 18.06 L14"
+     ],
+     "numerical": "ortho",
+     "prereq": [
+      "four-subspaces"
+     ]
+    },
+    {
+     "id": "projections",
+     "label": "Projections and least squares",
+     "keywords": [
+      "projection",
+      "projection matrix",
+      "least squares",
+      "normal equations",
+      "best fit line",
+      "error vector"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §4.2",
+      "Strang 3e §4.3",
+      "MIT 18.06 L15-L16"
+     ],
+     "numerical": "proj",
+     "prereq": [
+      "orthogonal"
+     ]
+    },
+    {
+     "id": "gram-schmidt",
+     "label": "Orthonormal bases and Gram-Schmidt (A = QR)",
+     "keywords": [
+      "orthonormal",
+      "gram-schmidt",
+      "gram schmidt",
+      "orthogonal matrix",
+      "qr decomposition",
+      "qr factorization"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §4.4",
+      "MIT 18.06 L17"
+     ],
+     "numerical": "gs",
+     "prereq": [
+      "projections"
+     ]
+    },
+    {
+     "id": "eigen",
+     "label": "Eigenvalues and eigenvectors",
+     "keywords": [
+      "eigenvalue",
+      "eigenvector",
+      "characteristic polynomial",
+      "characteristic equation",
+      "trace",
+      "determinant",
+      "eigenspace"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §6.1",
+      "MIT 18.06 L21"
+     ],
+     "numerical": "eig",
+     "prereq": [
+      "inverse"
+     ]
+    },
+    {
+     "id": "diagonalization",
+     "label": "Diagonalization (A = SΛS⁻¹) and powers of a matrix",
+     "keywords": [
+      "diagonalization",
+      "diagonalizable",
+      "diagonalize",
+      "similar matrices",
+      "powers of a matrix",
+      "algebraic multiplicity",
+      "geometric multiplicity"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §6.2",
+      "MIT 18.06 L22"
+     ],
+     "numerical": "diag",
+     "prereq": [
+      "eigen"
+     ]
+    },
+    {
+     "id": "symmetric",
+     "label": "Symmetric matrices and the spectral decomposition",
+     "keywords": [
+      "symmetric matrix",
+      "spectral theorem",
+      "spectral decomposition",
+      "orthogonal diagonalization",
+      "real eigenvalues"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §6.4",
+      "MIT 18.06 L25"
+     ],
+     "numerical": "spectral",
+     "prereq": [
+      "diagonalization",
+      "gram-schmidt"
+     ]
+    },
+    {
+     "id": "posdef",
+     "label": "Positive definite matrices",
+     "keywords": [
+      "positive definite",
+      "positive semidefinite",
+      "leading principal minor",
+      "quadratic form",
+      "energy test",
+      "cholesky"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §6.5",
+      "MIT 18.06 L27"
+     ],
+     "numerical": "posdef",
+     "prereq": [
+      "symmetric"
+     ]
+    },
+    {
+     "id": "svd",
+     "label": "Singular value decomposition (SVD)",
+     "keywords": [
+      "singular value decomposition",
+      "svd",
+      "singular value",
+      "singular vectors",
+      "a = u sigma v transpose"
+     ],
+     "gate": true,
+     "refs": [
+      "Strang 3e §6.7",
+      "MIT 18.06 L29"
+     ],
+     "numerical": "svd",
+     "prereq": [
+      "symmetric",
+      "four-subspaces"
+     ]
+    }
+   ]
+  }
+ ]
+}
