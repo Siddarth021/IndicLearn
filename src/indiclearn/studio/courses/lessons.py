@@ -351,6 +351,7 @@ Return ONLY JSON with exactly the same keys."""
 
 
 def _te_ok(src: str, out: str) -> bool:
+    out = re.sub(r"\$[^$]*\$", " ", out)  # formulas are kept as they are and say nothing about the language
     te = len(re.findall(r"[\u0C00-\u0C7F]", out))
     letters = len(re.findall(r"[A-Za-z\u0C00-\u0C7F]", out)) or 1
     return te / letters >= 0.2 or len(src) < 25  # technical Telugu is English-term heavy; short labels may stay English
@@ -389,6 +390,8 @@ def translate(brain: Any, lesson: dict, lang: str) -> dict | None:
         else:
             one = _one(brain, src, heading)
             if one is None:
-                return None
+                if len(src) > 120:
+                    return None
+                one = got.get(k) or src  # a one-line definition that stays mostly English must not sink the whole lesson
             out[k] = one
     return unflatten(lesson, out)

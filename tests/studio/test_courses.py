@@ -139,6 +139,11 @@ def test_telugu_never_blocks_the_lesson(client, auth, monkeypatch):
     """No online engine: the lesson opens in English at once (no waiting on a slow laptop model)."""
     import time
 
+    from indiclearn.studio.courses import lessons
+
+    real = lessons.lessons
+    monkeypatch.setattr(lessons, "lessons", lambda subject="os": {k: ({**v, "te": None} if (subject, k) == ("dsma", "eigen") else v) for k, v in real(subject).items()})
+
     t = time.time()
     r = client.get("/api/courses/dsma/lessons/eigen?lang=te", headers=auth).json()
     assert time.time() - t < 5 and r["lang"] == "en" and r["te_pending"] is False

@@ -20,10 +20,12 @@ def test_course_index_lesson_and_progress(client, auth):
     assert client.get("/api/courses/os/lessons/nope", headers=auth).status_code == 404
 
 
-def test_telugu_falls_back_to_english_without_ai(client, auth):
+def test_telugu_falls_back_to_english_without_ai(client, auth, monkeypatch):
     from indiclearn.studio.courses import lessons
 
-    missing = next(t for t, d in lessons.lessons().items() if not d.get("te"))
+    real = lessons.lessons
+    missing = "paging"
+    monkeypatch.setattr(lessons, "lessons", lambda subject="os": {k: ({**v, "te": None} if k == missing else v) for k, v in real(subject).items()})
     r = client.get(f"/api/courses/os/lessons/{missing}?lang=te", headers=auth).json()
     assert r["lang"] == "en" and r["lesson"]["summary"]  # no AI engine in tests: English, never an error
     done = next((t for t, d in lessons.lessons().items() if d.get("te")), None)

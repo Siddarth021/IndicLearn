@@ -1,0 +1,20 @@
+{
+ "questions": 490,
+ "by_type": {
+  "fill": 81,
+  "mcq": 61,
+  "short": 141,
+  "medium": 94,
+  "long": 47,
+  "msq": 66
+ },
+ "by_unit": {
+  "u1": 83,
+  "u2": 63,
+  "u3": 79,
+  "u4": 69,
+  "u5": 110,
+  "u6": 86
+ },
+ "fixed_by_checker": 0
+}
