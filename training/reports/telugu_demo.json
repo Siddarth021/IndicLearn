@@ -1,0 +1,50 @@
+[
+ {
+  "course": "OS",
+  "term": "Resource Manager",
+  "m2_english": "A component of the system that manages the resources available to the system, such as memory, storage, and network resources.",
+  "telugu_definition": "Memory, storage మరియు network resources వంటి system కు అందుబాటులో ఉన్న resources ను నిర్వహించే system భాగం.",
+  "m4_english": "Q: What is the primary purpose of a resource manager in an OS? A) To manage the CPU, memory, I/O devices, and storage. B) To store data in a secure location. C) To manage memory and storage. D) To manage software and hardware resources. ANSWER: A",
+  "telugu_quiz": "ప్రశ్న: OS లో resource manager యొక్క ప్రధాన ఉద్దేశ్యం ఏమిటి? A) CPU, memory, I/O devices మరియు storage ను నిర్వహించడం. B) Data ను secure location లో store చేయడం. C) Memory మరియు storage ని నిర్వహించడం. D) Software మరియు hardware resources ను manage చేయడం. జవాబు: A"
+ },
+ {
+  "course": "OS",
+  "term": "Priority Scheduling",
+  "m2_english": "Priority scheduling is a scheduling method where each process is assigned a specific priority value.",
+  "telugu_definition": "Priority scheduling అనేది ప్రతి process కు ఒక నిర్దిష్ట priority value కేటాయించే scheduling పద్ధతి.",
+  "m4_english": "Q: What is the primary cause of starvation in priority scheduling? A) Starvation occurs when a process is permanently denied the CPU because other processes with higher priorities are always available. B) Starvation occurs when processes with higher priority are permanently denied. C) Starvatation occurs when processes are permanently denied by other processes. D) Starvaation occurs when processes have higher priority than other processes. ANSWER: A",
+  "telugu_quiz": "ప్రశ్న: Priority scheduling లో starvation కి ప్రధాన కారణం ఏమిటి? A) ఎక్కువ priorities ఉన్న ఇతర processes ఎప్పుడూ అందుబాటులో ఉన్నందున ఒక process శాశ్వతంగా CPU కి denied అవుతుంది. B) ఎక్కువ priority ఉన్న processes శాశ్వతంగా denied అవ్వినప్పుడు starvation జరుగుతుంది. C) Processes శాశ్వతంగా మరొక processes ద్వారా denied అయినప్పుడు. D) Processes కి మరింత priority ఉన్నప్పుడు. జవాబు: A"
+ },
+ {
+  "course": "OS",
+  "term": "Page",
+  "m2_english": "A fixed-size block of memory in a processor that serves as the temporary address space for the process's logical address space.",
+  "telugu_definition": "Process యొక్క logical address space కి temporary address space గా పనిచేసే processor లోని fixed-size block.",
+  "m4_english": "Q: What is the primary purpose of using a page in demand paging? A) To convert a logical address into a physical address. B) To increase the speed of the process. C) To reduce the total number of pages in a process. D) To convert physical memory into virtual memory. ANSWER: A",
+  "telugu_quiz": "ప్రశ్న: Demand paging లో page ను వాడడం యొక్క ప్రధాన ఉద్దేశ్యం ఏమిటి? A) Logical address ను physical address గా మార్చడం. B) Process speed ని పెంచడం. C) Process లోని మొత్తం pages సంఖ్యను తగ్గించడం. D) Physical memory ను virtual memory గా మార్చడానికి. జవాబు: A"
+ },
+ {
+  "course": "DSMA",
+  "term": "Logical Equivalence",
+  "m2_english": "A logical equivalence criterion proving that a mathematical condition is logically equivalent to a real-world mathematical condition.",
+  "telugu_definition": "ఒక mathematical condition, real-world mathematical conditions కు logically సమానంగా ఉందని నిరూపించే logical equivalence criterion.",
+  "m4_english": "Q: What is the primary purpose of proving logical equivalence in digital logic design? A) To simplify complex logical conditions without altering their truth outcomes. B) To eliminate the need for a tautology. C) To reduce the number of possible propositional variables. D) To ensure the propositional variables are identical. ANSWER: A",
+  "telugu_quiz": "ప్రశ్న: Digital logic design లో logical equivalence ని verify చేయడం యొక్క ప్రధాన ఉద్దేశ్యం ఏమిటి? A) Complex logical conditions ని మార్చకుండా సరళీకరించడం. B) Tautology అవసరాన్ని తొలగించడం. C) సాధ్యమైన propositional variables సంఖ్యను తగ్గించడం. D) Proposal variables ఒకేలా ఉండేలా చూడటం. జవాబు: A"
+ },
+ {
+  "course": "DSMA",
+  "term": "Pigeonhole Principle",
+  "m2_english": "A principle stating that if at least one box contains two or more objects, then at least one must contain at least one.",
+  "telugu_definition": "కనీసం ఒక box లో రెండు లేదా అంతకంటే ఎక్కువ objects ఉంటే, తర్వాత కనీసం one ఉండాలి.",
+  "m4_english": "Q: What is the primary purpose of the Pigeonhole Principle in Discrete Mathematics? A) To determine the number of objects in a box. B) To ensure that all objects are placed in a single box. C) To determine how many objects are in the same box. D) To determine if objects must be placed in multiple boxes. ANSWER: B",
+  "telugu_quiz": "ప్రశ్న: Discrete Mathematics లో Pigeonhole Principle యొక్క ప్రధాన ఉద్దేశ్యం ఏమిటి? A) ఒక box లోని అన్ని objects సంఖ్యను నిర్ణయించడం. B) అన్ని Objects ఒకే box లో ఉంచబడేలా చూడటం. C) ఒకే box లోని ఎన్ని objects ఉంటాయో నిర్ణయించడం. D) Objectes ను అనేక boxes లో ఉంచాలని నిర్ణయించడం. జవాబు: B"
+ },
+ {
+  "course": "DSMA",
+  "term": "Pivot",
+  "m2_english": "The first non-zero entry in the current working column used to eliminate all entries below it.",
+  "telugu_definition": "ప్రస్తుత working column లోని అన్ని entries ను తొలగించడానికి ఉపయోగించే మొదటి non-zero entry.",
+  "m4_english": "Q: What is the primary purpose of using a pivot in a multi-tier database? A) To increase the total number of resources in the database B) To reduce the number of variables in the database C) To eliminate non-zero off-diagonal entries in the database D) To eliminate the need for an upper triangular matrix ANSWER: D",
+  "telugu_quiz": "ప్రశ్న: Multi-tier database లో pivot ను వాడడం యొక్క ప్రధాన ఉద్దేశ్యం ఏమిటి? A) Database లోని మొత్తం resources సంఖ్యను పెంచడం B) Database లోని variables సంఖ్యను తగ్గించడం C) Database లోని non-zero off-diagonal entries ను తొలగించడం D) Upper triangular matrix అవసరాన్ని తొలగించడం జవాబు: D"
+ }
+]

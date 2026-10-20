@@ -31,7 +31,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 DATASET_SLUG = "indiclearn-train"
 KERNELS = {"train": "indiclearn-train-m1-m4", "gemma": "indiclearn-gemma-bench",
-           "finetune": os.environ.get("KAGGLE_FT_SLUG", "indiclearn-gemma-finetune")}
+           "finetune": os.environ.get("KAGGLE_FT_SLUG", "indiclearn-gemma-finetune"), "indic": "indiclearn-indic-m2-m4"}
 
 
 def setup_token() -> str:
@@ -61,7 +61,7 @@ def push_dataset(user: str) -> None:
     with tempfile.TemporaryDirectory() as td:
         d = Path(td)
         shutil.copytree(HERE / "datasets", d / "datasets")
-        for f in ("train.py", "gemma_bench.py", "gemma_finetune.py"):
+        for f in ("train.py", "gemma_bench.py", "gemma_finetune.py", "train_indic.py"):
             if (HERE / f).exists():
                 shutil.copy(HERE / f, d / f)
         shutil.copy(ROOT / "src" / "indiclearn" / "studio" / "brain.py", d / "brain.py")  # the app's real prompts
@@ -116,6 +116,21 @@ for name, text in CODE.items():
 subprocess.run([sys.executable, f"{src}/gemma_finetune.py", "--src", src, "--out", "/kaggle/working"], check=True)
 '''
 
+# Telugu students (M2-te / M4-te) on mT5-base and IndicBART; the script is embedded (always current).
+KERNEL_INDIC = r'''
+import base64, json, os, shutil, subprocess, sys
+CODE = json.loads(base64.b64decode("__CODE__").decode())
+def find_src():
+    for root, dirs, files in os.walk("/kaggle/input"):
+        if "train.py" in files and "brain.py" in files:
+            return root
+    raise SystemExit("dataset not mounted")
+data = find_src()
+open("/tmp/train_indic.py", "w", encoding="utf-8").write(CODE["train_indic.py"])
+subprocess.run([sys.executable, "-m", "pip", "install", "-q", "sentencepiece", "protobuf"], check=False)
+subprocess.run([sys.executable, "/tmp/train_indic.py", "--data", f"{data}/datasets", "--out", "/kaggle/working/trained"] + (["--tasks", "__ONLY__", "--bases", "mt5,indicbart"] if "__ONLY__" != "all" else []), check=True)
+'''
+
 KERNEL_GEMMA = r'''
 import os, subprocess, glob, shutil, sys
 def find_src():
@@ -132,13 +147,14 @@ def push_kernel(user: str, kind: str, only: str) -> str:
     slug = KERNELS[kind]
     with tempfile.TemporaryDirectory() as td:
         d = Path(td)
-        embedded = {n: (HERE / n).read_text(encoding="utf-8") for n in ("gemma_finetune.py", "gemma_bench.py")}
+        embedded = {n: (HERE / n).read_text(encoding="utf-8") for n in ("gemma_finetune.py", "gemma_bench.py", "train_indic.py")}
         embedded["brain.py"] = (ROOT / "src" / "indiclearn" / "studio" / "brain.py").read_text(encoding="utf-8")
         for n, t in embedded.items():
             print("embedding", n, hashlib.md5(t.encode()).hexdigest()[:8])
         b64 = base64.b64encode(json.dumps(embedded).encode()).decode()
         code = {"train": KERNEL_TRAIN.replace("__ONLY__", only), "gemma": KERNEL_GEMMA,
-                "finetune": KERNEL_FINETUNE.replace("__CODE__", b64)}[kind]
+                "finetune": KERNEL_FINETUNE.replace("__CODE__", b64),
+                "indic": KERNEL_INDIC.replace("__CODE__", base64.b64encode(json.dumps({"train_indic.py": embedded["train_indic.py"]}).encode()).decode()).replace("__ONLY__", only)}[kind]
         (d / "run.py").write_text(code)
         (d / "kernel-metadata.json").write_text(json.dumps({
             "id": f"{user}/{slug}", "title": slug, "code_file": "run.py", "language": "python", "kernel_type": "script",
@@ -167,6 +183,19 @@ def fetch(ref: str, kind: str) -> None:
         reports.mkdir(exist_ok=True)
         for f in list(out.rglob("*.log")) + list(out.rglob("reports/*.json")) + list(out.rglob("gemma_*.json")):
             shutil.copy(f, reports / f.name)
+        if kind == "indic":  # Telugu students: reports + the best model per task
+            for f in out.rglob("reports/*.json"):
+                shutil.copy(f, reports / f.name)
+            for task in ("m2_te", "m4_te", "te_style"):
+                src = next((p for p in out.rglob(task) if (p / "config.json").exists()), None)
+                if src:
+                    dest = ROOT / "models" / "trained" / {"m2_te": "m2_describe_te", "m4_te": "m4_quiz_te", "te_style": "te_style_translator"}[task]
+                    if dest.exists():
+                        old = ROOT / "old_useful_trash" / "models" / "trained" / (dest.name + time.strftime("_%Y%m%d_%H%M"))
+                        old.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.move(str(dest), str(old))
+                    shutil.copytree(src, dest)
+                    print("installed", dest)
         trained = next(out.rglob("trained"), None) if kind == "train" else None
         if trained:
             dest = ROOT / "models" / "trained"
@@ -190,7 +219,7 @@ def fetch(ref: str, kind: str) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("action", choices=["train", "gemma", "finetune", "status", "fetch"])
+    ap.add_argument("action", choices=["train", "gemma", "finetune", "indic", "status", "fetch"])
     ap.add_argument("--kind", default="train", choices=list(KERNELS))
     ap.add_argument("--only", default="all")
     ap.add_argument("--no-wait", action="store_true")

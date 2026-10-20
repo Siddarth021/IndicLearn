@@ -1,0 +1,1252 @@
+{
+ "n_test": 199,
+ "chrF": 21.15,
+ "telugu_script_ratio": 0.354,
+ "empty_or_short": 0.0,
+ "samples": [
+  {
+   "input": "define in Telugu: PDA | context: For many non-regular PDAs, any equivalent DPDA would require an unbounded number of states.",
+   "gold_te": "Finite-state machine కు stack memory ని జోడించి, context-free languages ను గుర్తించగలిగేలా చేసే ఒక సైద్ధాంతిక computation model.",
+   "gold_en": "A theoretical model of computation that enhances a finite-state machine with a stack memory, allowing it to recognize context-free languages.",
+   "model": "DPDA అనేది ఒక నిర్దిష్ట రకమైన రకమైన DPDA; ఇది సాధారణంగా non-linear data transmission కోసం ఉపయోగపడుతుంది."
+  },
+  {
+   "input": "define in Telugu: Tensor form | context:",
+   "gold_te": "Anisotropic materials లో దిశపై ఆధారపడే లక్షణాలను పరిగణనలోకి తీసుకోవడానికి multi-dimensional arrays ఉపయోగించి physical laws ను సూచించే సాధారణీకృత రూపం.",
+   "gold_en": "The generalized representation of physical laws using multi-dimensional arrays to account for directional dependencies in anisotropic materials.",
+   "model": "Tensor form అనేది transistors మధ్య సంబంధాన్ని నిర్వచించే mathematical representation."
+  },
+  {
+   "input": "define in Telugu: Speed of light | context: The speed calculated for electromagnetic waves, which could be predicted from experiments on charges and currents, matches the speed of light; indeed, light is one form of electromagnetic radiation (as are X-rays, radio waves, and others).",
+   "gold_te": "Vacuum లో electromagnetic waves ప్రయాణించే వేగాన్ని సూచించే సార్వత్రిక physical constant.",
+   "gold_en": "The universal physical constant representing the speed at which electromagnetic waves propagate through a vacuum.",
+   "model": "ఒకే దిశలో ప్రవహించే దిశ."
+  },
+  {
+   "input": "define in Telugu: Hebbian learning | context: In the late 1940s, D. O. Hebb proposed a learning hypothesis based on neural plasticity that became known as Hebbian learning.",
+   "gold_te": "Neurons తరచుగా కలిసి activate అయినప్పుడు వాటి మధ్య connections బలపడతాయని చెప్పే, neuroscience మరియు machine learning లోని ఒక learning hypothesis.",
+   "gold_en": "A learning hypothesis in neuroscience and machine learning suggesting that connections between neurons strengthen when they are frequently activated together.",
+   "model": "ఒక రకమైన neural plasticity ని కనుగొనడానికి ఉపయోగించే mathematical framework."
+  },
+  {
+   "input": "define in Telugu: Positive sentiment | context: In another study, positive sentiment accounted for an overwhelming figure of 85% in knowledge sharing of construction safety and health via Instagram.",
+   "gold_te": "Positive sentiment అంటే అనుకూలమైన, ఆమోదించే లేదా ఆశావహమైన అభిప్రాయాన్ని వ్యక్తపరిచే text ను వర్గీకరించడం.",
+   "gold_en": "Positive sentiment is the classification of text expressing a favorable, approving, or optimistic opinion.",
+   "model": "Positive sentiment అంటే ఒక నిర్దిష్ట వ్యక్తిగత వ్యక్తిగత భావన, దీనిని ప్రభావితం చేయడానికి ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Purely resistive circuits | context: In the case of purely resistive circuits, the two concepts are identical.",
+   "gold_te": "Energy ని నిల్వ చేసే capacitive లేదా inductive elements ఏవీ లేకుండా కేవలం resistors మాత్రమే ఉండే electrical networks.",
+   "gold_en": "Electrical networks containing only resistors without any energy-storing capacitive or inductive elements.",
+   "model": "ఒకే దిశలో ఉండే electrical circuits; ఇవి రెండు దిశల మధ్య ఉన్న resistance ను సూచిస్తాయి."
+  },
+  {
+   "input": "define in Telugu: Service data unit (SDU) | context: Each PDU contains a payload, called the service data unit (SDU), along with protocol-related headers or footers.",
+   "gold_te": "ఒక Protocol Data Unit (PDU) లో క్రింది layer కు input గా పంపబడే payload భాగం.",
+   "gold_en": "The payload portion of a Protocol Data Unit (PDU) that is passed as input to a lower layer.",
+   "model": "Instructions ను execute చేయడానికి ప్రత్యేకంగా రూపొందించిన data unit; దీన్ని తరచుగా header మరియు footers గా ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Reliability | context: The transport layer also controls the reliability of a given link between a source and destination host through flow control, error control, and acknowledgments of sequence and existence.",
+   "gold_te": "Data మొత్తం destination host కు సరిగ్గా మరియు క్రమంలో చేరేలా transport layer హామీ ఇచ్చే service quality.",
+   "gold_en": "A service quality where the transport layer ensures all data arrives correctly and in order at the destination host.",
+   "model": "ఒక నిర్దిష్ట source మరియు destination host మధ్య సంబంధాన్ని నియంత్రించే physical property."
+  },
+  {
+   "input": "define in Telugu: Desired output | context: There are several ways in which the standard supervised learning problem can be generalized: Semi-supervised learning or weak supervision: the desired output values are provided only for a subset of the training data.",
+   "gold_te": "Input data నుండి model predict చేయడానికి train చేయబడే target లేదా సరైన output values.",
+   "gold_en": "The target or correct output values that the model is trained to predict from the input data.",
+   "model": "ఒక training data యొక్క నిర్దిష్ట subset; ఇది సాధారణంగా training data కోసం ఉపయోగపడుతుంది."
+  },
+  {
+   "input": "define in Telugu: Polarized light | context: If linearly polarized light passes through a birefringent material, its state of polarization will generally change, unless its polarization direction is identical to one of those basis polarizations.",
+   "gold_te": "Electric field vectors యాదృచ్ఛికంగా కాకుండా ఊహించదగిన ఒక spatial orientation pattern లో oscillate అయ్యే కాంతి.",
+   "gold_en": "Light in which electric field vectors oscillate in a predictable, non-random spatial orientation pattern.",
+   "model": "ఒక material చుట్టూ ఉండే light, దీనిని ప్రభావితం చేయడానికి ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Database system | context: Database system refers collectively to the database model, database management system, and database.",
+   "gold_te": "Information processing ను నిర్వహించడానికి కలిసి పనిచేసే database, management software మరియు సంబంధిత applications తో కూడిన సంయుక్త వాతావరణం.",
+   "gold_en": "A composite environment comprising the database, the management software, and the associated applications that work together to handle information processing.",
+   "model": "Database system అనేది ఒక నిర్దిష్ట entity లేదా entity యొక్క ప్రత్యేక representation."
+  },
+  {
+   "input": "define in Telugu: Transfer function | context: Given a transfer function in the form ∏ − − where are constants, >, and is the transfer function: At every value of s where (a zero), increase the slope of the line by per decade.",
+   "gold_te": "Zero initial conditions తో output యొక్క Laplace transform కు input యొక్క Laplace transform కు మధ్య ఉన్న నిష్పత్తిని సూచించే గణిత సంబంధం.",
+   "gold_en": "The mathematical relationship representing the ratio of the Laplace transform of output to input with zero initial conditions.",
+   "model": "Transfer function అంటే slope మరియు slope మధ్య తేడాను సూచించే mathematical function."
+  },
+  {
+   "input": "define in Telugu: Harmonic frequencies | context: When the input data sequence -periodic, Eq.2 can be computationally reduced to a discrete Fourier transform (DFT), because: All the available information is contained within samples. converges to zero everywhere except at integer multiples of known a",
+   "gold_te": "ఒక periodic signal యొక్క power కేంద్రీకృతమై ఉండే నిర్దిష్ట frequencies, ఇవి తరచుగా ఒక fundamental frequency యొక్క integer multiples ను సూచిస్తాయి.",
+   "gold_en": "Specific frequencies at which a periodic signal's power is concentrated, often representing integer multiples of a fundamental frequency.",
+   "model": "Signal యొక్క frequency spectrum ను సూచించే frequencies; వీటిని తరచుగా Fourier transform లో ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Memory management | context: In computer operating systems, memory paging is a memory management scheme that introduces a level of indirection between physical and logical addresses and allows the physical memory used by a program to be non-contiguous.",
+   "gold_te": "వివిధ processes system resources ను సమర్థవంతంగా ఉపయోగించుకునేలా memory regions ను allocate చేసే, track చేసే మరియు రక్షించే operating system యొక్క function.",
+   "gold_en": "The function of the operating system that allocates, tracks, and protects memory regions to ensure efficient use of system resources by various processes.",
+   "model": "Memory management scheme అంటే physical మరియు logical addresses మధ్య సమాచారాన్ని నిల్వ చేసే ప్రక్రియ."
+  },
+  {
+   "input": "define in Telugu: Stack automaton | context: A stack automaton is called nonerasing if it never pops from the stack.",
+   "gold_te": "కేవలం top మాత్రమే కాకుండా stack లోపల లోతుగా ఉన్న elements ను access చేయడానికి మరియు మార్చడానికి అనుమతించే pushdown automaton యొక్క అధునాతన రూపం.",
+   "gold_en": "An advanced version of a pushdown automaton that permits access to and modification of elements deep within the stack, beyond just the top.",
+   "model": "Stack automaton అంటే ఒక నిర్దిష్ట stack ను execute చేయడానికి ఉపయోగించే non-erasing పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Continuous uniform random variable (CURV) | context: More formally, given any interval ∈ ≤ ≤ {\\textstyle I=[a,b]=\\{x\\in \\mathbb {R}:a\\leq x\\leq b\\}}, a random variable ∼ ⁡ ⁡ is called a \"continuous uniform random variable\" (CURV) if the probability that it takes a value in a subint",
+   "gold_te": "ఒక నిర్దిష్ట finite interval పై సమానమైన probability density కలిగి ఉండే continuous random variable.",
+   "gold_en": "A continuous random variable that has an equal probability density over a specified finite interval.",
+   "model": "Continuous uniform random variable (CURV) అనేది ఒక నిర్దిష్ట subinterval ను సూచించే random variable."
+  },
+  {
+   "input": "define in Telugu: Conducting loop | context: When such field acts on a conducting loop, it drives a current around the loop.",
+   "gold_te": "Conducting loop అంటే electric current ప్రవహించడానికి అనుమతించే పదార్థంతో చేసిన ఒక closed path.",
+   "gold_en": "A conducting loop is a closed path made of a material that allows electric current to flow.",
+   "model": "Current ప్రవహించే క్రమం, దీనిని వల్ల current ప్రవహించే ప్రక్రియ."
+  },
+  {
+   "input": "define in Telugu: Routh test | context: The Routh test is an efficient recursive algorithm that English mathematician Edward John Routh proposed in 1876 to determine whether all the roots of the characteristic polynomial of a linear system have negative real parts.",
+   "gold_te": "ఒక characteristic polynomial యొక్క ఎన్ని roots complex plane యొక్క కుడి సగంలో ఉన్నాయో నిర్ణయించడానికి ఉపయోగించే recursive tabular పద్ధతి.",
+   "gold_en": "A recursive tabular method used to determine the number of roots of a characteristic polynomial that lie in the right half of the complex plane.",
+   "model": "ఒక linear system యొక్క roots ను సూచించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Hurwitz theorem | context: The criterion is related to Routh–Hurwitz theorem.",
+   "gold_te": "Complex plane యొక్క ఎడమ మరియు కుడి సగాల్లో ఉన్న polynomial roots సంఖ్యను ఒక generalized Sturm chain తో సంబంధం కలిపే ప్రాథమిక theorem.",
+   "gold_en": "A fundamental theorem relating the number of polynomial roots in the left and right halves of the complex plane to a generalized Sturm chain.",
+   "model": "ఒక నిర్దిష్ట equilibrium state ను సూచించే theorem; ఇది ఒక equilibrium equilibrium system ను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Third-order polynomial | context: Indeed, some coefficients being positive is not independent with principal minors being positive, like > check can be removed for third-order polynomial.",
+   "gold_te": "Variable యొక్క అత్యధిక power మూడు ఉండే గణిత equation, దీని coefficients పై నిర్దిష్ట stability constraints ఉంటాయి.",
+   "gold_en": "A mathematical equation where the highest power of the variable is three, having specific stability constraints on its coefficients.",
+   "model": "రెండు boundaries మధ్య తేడాను సూచించే polynomial."
+  },
+  {
+   "input": "define in Telugu: Apodization function | context: In signal processing and statistics, a window function (also known as an apodization function or tapering function) is a mathematical function that is zero-valued outside of some chosen interval.",
+   "gold_te": "ఒక signal యొక్క amplitude profile ఆకారాన్ని మార్చడం ద్వారా అవాంఛిత ప్రభావాలను తగ్గించే techniques కోసం optics మరియు signal processing లో ఉపయోగించే పర్యాయపదం.",
+   "gold_en": "A synonym used in optics and signal processing for techniques that reduce unwanted effects by altering the shape of a signal's amplitude profile.",
+   "model": "Signal processing మరియు statistics లో ఉపయోగించే mathematical function."
+  },
+  {
+   "input": "define in Telugu: Link-local address | context: Addresses starting with fe80::, called link-local addresses, are assigned to interfaces for communication on the attached link.",
+   "gold_te": "ఒకే link పై communication కోసం ఉపయోగించే IPv6 address, ఇది private address లాంటిది.",
+   "gold_en": "An IPv6 address used for communication on a single link, similar to a private address.",
+   "model": "ఒక నిర్దిష్ట physical address లేదా physical address యొక్క నిర్దిష్ట address; ఇది physical address గా పనిచేస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Probability mass function (PMF) | context: Another random variable may be the person's number of children; this is a discrete random variable with non-negative integer values. It allows the computation of probabilities for individual integer values – the probability mass function (",
+   "gold_te": "ఒక discrete random variable సరిగ్గా ఒక నిర్దిష్ట విలువకు సమానంగా ఉండే probability ని ఇచ్చే function.",
+   "gold_en": "A function giving the probability that a discrete random variable is exactly equal to a specific value.",
+   "model": "Probability mass function (PMF) అనేది ఒక నిర్దిష్ట integer యొక్క integer values ను సూచించే mathematical function."
+  },
+  {
+   "input": "define in Telugu: Microscopic equations | context: Maxwell's equations have two major variants: The microscopic equations have universal applicability but are unwieldy for common calculations.",
+   "gold_te": "Vacuum లోని మొత్తం microscopic charges మరియు currents రూపంలో field interactions ను నేరుగా వ్యక్తపరిచే Maxwell's equations యొక్క రూపం.",
+   "gold_en": "Form of Maxwell's equations that express field interactions directly in terms of total microscopic charges and currents in vacuum.",
+   "model": "Microscopic equations అంటే ఒక రకమైన mathematical algebraic representation; ఇది mathematical equations యొక్క ఒక ప్రత్యేక combination."
+  },
+  {
+   "input": "define in Telugu: Loss function | context: In order to measure how well a function fits the training data, a loss function × → ≥ is defined.",
+   "gold_te": "ఒక model యొక్క predictions లోని error ను కొలిచే function, ఇది optimization కు దిశానిర్దేశం చేయడానికి ఉపయోగపడుతుంది.",
+   "gold_en": "A function that quantifies the error of a model's predictions, used to guide optimization.",
+   "model": "Loss function అనేది training data యొక్క ఒక నిర్దిష్ట దిశను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Poincaré sphere | context: The angle χ is also significant in that the latitude (angle from the equator) of the polarization state as represented on the Poincaré sphere (see below) is equal to ±2χ.",
+   "gold_te": "ఉపరితలంపై ఉన్న ప్రతి ప్రత్యేక point ఒక వేర్వేరు polarization state కు map అయ్యే గోళాకార geometric రూపం.",
+   "gold_en": "Spherical geometric representation where every unique point on the surface maps to a distinct state of polarization.",
+   "model": "రెండు దిశల మధ్య ఉన్న దిశను సూచించే geometric representation; దీని వల్ల దాని radius మరియు radius మధ్య తేడాను సూచిస్తాయి."
+  },
+  {
+   "input": "define in Telugu: Internet Protocol | context: Two versions of the Internet Protocol are in common use on the Internet today.",
+   "gold_te": "Devices internet ద్వారా ఎలా communicate చేస్తాయో నియంత్రించే, packet structures మరియు addressing ను నిర్వచించే నియమాల సమితి.",
+   "gold_en": "A set of rules governing how devices communicate over the internet, defining packet structures and addressing.",
+   "model": "Internet Protocol అనేది ఒక నిర్దిష్ట computing device కు విస్తృతంగా విస్తృతంగా ఉపయోగపడుతుంది."
+  },
+  {
+   "input": "define in Telugu: Row reduction | context:",
+   "gold_te": "ఒక matrix ను echelon లేదా canonical form లోకి మార్చడానికి elementary row operations ను క్రమబద్ధంగా అమలు చేసే ప్రక్రియ.",
+   "gold_en": "The systematic process of applying elementary row operations to transform a matrix into an echelon or canonical form.",
+   "model": "Row reduction అంటే ఒక నిర్దిష్ట row ను తొలగించే ప్రక్రియ."
+  },
+  {
+   "input": "define in Telugu: External node | context: In this case, the node always replaces a NULL reference (left or right) of an external node in the tree i.e., the node is either made a left-child or a right-child of the external node.",
+   "gold_te": "External node అంటే binary search tree లో తన children లో ఒకదానికి లేదా రెండింటికీ NULL reference ఉన్న leaf node.",
+   "gold_en": "An external node is a leaf node in a binary search tree that has a NULL reference for one or both of its children.",
+   "model": "External node అనేది ఒక నిర్దిష్ట node లేదా node యొక్క primary node."
+  },
+  {
+   "input": "define in Telugu: Artificial neurons | context: A neural network consists of connected units or nodes called artificial neurons, which loosely model the neurons in the brain.",
+   "gold_te": "Input signals ను స్వీకరించి, weights ఉపయోగించి లెక్కలు చేసి, outputs ను ఇతర units కు పంపే neural network లోని ప్రాథమిక processing units.",
+   "gold_en": "The fundamental processing units in a neural network that receive input signals, perform calculations using weights, and pass outputs to other units.",
+   "model": "Neurons అంటే connected units లేదా nodes మధ్య సంబంధాన్ని సూచించే neurons; వీటిని తరచుగా clusters లేదా neurons గా ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Digital relay | context: The digital relay can emulate functions of many discrete electromechanical relays in one device, simplifying protection design and maintenance.",
+   "gold_te": "Electrical quantities ను పర్యవేక్షించడానికి మరియు అనేక సాంప్రదాయ relay functions ను అనుకరించడానికి software algorithms మరియు hardware microprocessors పై ఆధారపడే protective పరికరం.",
+   "gold_en": "A protective device that relies on software algorithms and hardware microprocessors to monitor electrical quantities and emulate multiple traditional relay functions.",
+   "model": "Digital relay అంటే ఒక discrete electromechanical device యొక్క electrical functions ను సూచించే electromechanical relay."
+  },
+  {
+   "input": "define in Telugu: Software defined radio (SDR) | context: One then usually plots the changing spectra as a function of time, known as a spectrogram or waterfall plot, such as commonly used in software defined radio (SDR) based spectrum displays.",
+   "gold_te": "Filters మరియు mixers వంటి సాధారణ hardware components ను digital signals ను process చేయడానికి computer పై software ద్వారా అమలు చేసే communication system.",
+   "gold_en": "A communication system where typical hardware components like filters and mixers are implemented using software on a computer to process digital signals.",
+   "model": "Software defined radio (SDR) అనేది ఒక నిర్దిష్ట రకమైన spectrum representation."
+  },
+  {
+   "input": "define in Telugu: TCP IP versions | context: Transmission Control Protocol (the protocol suite later referred to as TCP/IP) versions 1 and 2 were published in 1974 and 1977.",
+   "gold_te": "Internet లో network devices ను పరస్పరం కలపడానికి ఉపయోగించే communication protocols యొక్క suite.",
+   "gold_en": "The suite of communication protocols used to interconnect network devices on the internet.",
+   "model": "TCP మరియు I2C మధ్య సంబంధాన్ని వివరించే రెండు ప్రత్యేక TCP/IP operating systems యొక్క ప్రస్తుత operating systems; వీటిని తరచుగా IEEE 802.11 standards లో ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Magnetic field | context: The original law of Ampère states that magnetic fields relate to electric current.",
+   "gold_te": "కదిలే electric charges లేదా మారుతున్న electric fields ద్వారా ఉత్పత్తి అయి, ఇతర కదిలే charges పై బలాలను ప్రయోగించే vector field.",
+   "gold_en": "A vector field produced by moving electric charges or changing electric fields that exerts forces on other moving charges.",
+   "model": "Magnetic field అంటే magnetic field యొక్క magnetic field; ఇది magnetic field గా పనిచేస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Trip | context: In electrical engineering, a protective relay is a relay device designed to trip a circuit breaker when a fault is detected.",
+   "gold_te": "ఒక protective relay fault ను గుర్తించినప్పుడు electrical equipment ను disconnect చేయడానికి circuit breaker తెరుచుకునే చర్య.",
+   "gold_en": "The action of a circuit breaker opening to disconnect electrical equipment when a protective relay detects a fault.",
+   "model": "Circuit breaker వద్ద fault detected అయినప్పుడు దాని fault detection కోసం ఉపయోగించే protective device."
+  },
+  {
+   "input": "define in Telugu: Gauss law | context: Gauss's law describes the relationship between an electric field and electric charges: an electric field points away from positive charges and towards negative charges, and the net outflow of the electric field through a closed surface is proportional to the en",
+   "gold_te": "ఏ closed surface గుండానైనా బయటకు వెళ్ళే electric flux, లోపల ఉన్న electric charge కు అనులోమానుపాతంలో ఉంటుందని చెప్పే ప్రాథమిక నియమం.",
+   "gold_en": "A fundamental law stating that the outward electric flux through any closed surface is proportional to enclosed electric charge.",
+   "model": "ఒకే closed surface చుట్టూ ఉండే electric field, ఇది boundary వద్ద positive charges మరియు negative charges మధ్య సంబంధాన్ని సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Medium access control (MAC) | context: IEEE 802 divides the data link layer into two sublayers: Medium access control (MAC) layer – responsible for controlling how devices in a network gain access to a medium and permission to transmit data.",
+   "gold_te": "ఒక shared transmission medium పై data పంపడానికి devices అనుమతి ఎలా పొందుతాయో నియంత్రించే data link layer sublayer.",
+   "gold_en": "A data link layer sublayer that controls how devices gain permission to transmit data over a shared transmission medium.",
+   "model": "ఒక medium మరియు medium మధ్య data transmission కోసం ఉపయోగించే ఒక నిర్దిష్ట layer."
+  },
+  {
+   "input": "define in Telugu: deterministic pushdown automaton DPDA | context: If, in every situation, at most one such transition action is possible, then the automaton is called a deterministic pushdown automaton (DPDA).",
+   "gold_te": "ప్రతి step లో ఒకే ఒక ఎంపిక చేసే పరిమిత రకమైన pushdown automaton, దీన్ని ప్రత్యేకంగా deterministic context-free languages ను గుర్తించడానికి ఉపయోగిస్తారు.",
+   "gold_en": "A restricted type of pushdown automaton that makes only one choice at each step, used specifically to recognize deterministic context-free languages.",
+   "model": "ఒక నిర్దిష్ట transition సమయంలో transition actions ను deterministic pushdown automaton గా విభజించే automaton."
+  },
+  {
+   "input": "define in Telugu: Discrete cosine transform (DCT) | context: The basis for JPEG's lossy compression algorithm is the discrete cosine transform (DCT), which was first proposed by Nasir Ahmed as an image compression technique in 1972.",
+   "gold_te": "సమర్థవంతమైన compression కోసం image data ను spatial domain నుండి frequency domain లోకి మార్చడానికి image processing లో ఉపయోగించే గణిత technique.",
+   "gold_en": "A mathematical technique used in image processing to transform image data from the spatial domain into the frequency domain to facilitate efficient compression.",
+   "model": "Discrete cosine transform (DCT) అనేది ఒక lossy compression technique, దీనిని తరచుగా JPEG కోసం ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Disk regardless | context: mass storage, commonly referred to as disk regardless of the actual mass storage technology used).",
+   "gold_te": "Mass storage కోసం ఉపయోగించే storage technology, ఇది ఉపయోగించిన నిర్దిష్ట underlying technology తో సంబంధం లేని ఒక సాధారణ పదం.",
+   "gold_en": "The storage technology used for mass storage, which is a generic term regardless of the specific underlying technology used.",
+   "model": "ఒక నిర్దిష్ట సమయంలో data ను క్రమబద్ధంగా లేదా సమర్థవంతంగా కనుగొనడానికి ప్రత్యేకంగా ఉపయోగించే storage technology."
+  },
+  {
+   "input": "define in Telugu: Two-phase locking | context: In databases and transaction processing, two-phase locking (2PL) is a pessimistic concurrency control method that guarantees conflict-serializability.",
+   "gold_te": "ఏ lock release చేయడానికి ముందే అన్ని lock acquisitions పూర్తి చేయాలని transactions ను నిర్బంధించడం ద్వారా conflict-serializability ని నిర్ధారించే concurrency control పద్ధతి.",
+   "gold_en": "A concurrency control method that ensures conflict-serializability by requiring transactions to perform all lock acquisitions before any lock releases.",
+   "model": "రెండు phase lines మధ్య తేడాను సూచించే concurrency control technique; దీని వల్ల conflicts మరియు conflicts సమర్థవంతంగా ఉంటాయి."
+  },
+  {
+   "input": "define in Telugu: Red black (RB) | context: Both AVL trees and red–black (RB) trees are self-balancing binary search trees and they are related mathematically.",
+   "gold_te": "Red black trees అనేవి self-balancing binary search trees, ఇవి AVL trees తో పోలిస్తే basic operations కు కొంచెం ఎక్కువ సమయం తీసుకుంటాయి.",
+   "gold_en": "Red black trees are self-balancing binary search trees that take slightly more time for basic operations compared to AVL trees.",
+   "model": "Red-black (RB) trees అంటే binary search trees యొక్క ఒకే రకమైన combination; ఇది binary search tree గా పనిచేస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Rated torque | context: Suitable for most low performance loads such as centrifugal pumps and fans, Design B motors are constrained by the following typical torque ranges: Breakdown torque (peak torque), 175–300% of rated torque Locked-rotor torque (torque at 100% slip), 75–275% of",
+   "gold_te": "Overheat కాకుండా ఒక motor నిరవధికంగా అందించగల continuous torque output, దీన్ని motor యొక్క rated capacity గా ఉపయోగిస్తారు.",
+   "gold_en": "The continuous torque output a motor can deliver indefinitely without overheating, used as the motor's rated capacity.",
+   "model": "ఒకే దిశలో పనిచేసే torque, దీనిని తరచుగా high-voltage loads గా ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Overfitting | context: Attempting to fit the data too carefully leads to overfitting.",
+   "gold_te": "ఒక function training data కు మరీ దగ్గరగా fit అయి, generalize చేయడంలో విఫలమయ్యే modeling error.",
+   "gold_en": "A modeling error where a function fits the training data too closely, failing to generalize.",
+   "model": "ఒక నిర్దిష్ట data కు సరిగ్గా fit అయ్యే ప్రక్రియ."
+  },
+  {
+   "input": "define in Telugu: Maxwell equations | context: Heaviside's version from 1890s is the form recognized today in the group of equations known as Maxwell's equations.",
+   "gold_te": "Maxwell equations అనేవి classical electromagnetism ను వివరించే నాలుగు ప్రాథమిక equations సమితి.",
+   "gold_en": "The Maxwell equations are a set of four fundamental equations describing classical electromagnetism.",
+   "model": "Maxwell's equations అంటే algebraic equations యొక్క ఒక రకమైన combination; ఇందులో mathematical equations మధ్య సంబంధాన్ని వివరిస్తాయి."
+  },
+  {
+   "input": "define in Telugu: Digital image | context: JPEG ( JAY-peg, short for Joint Photographic Experts Group and sometimes retroactively referred to as JPEG 1) is a commonly used method of lossy compression for digital images, particularly for those images produced by digital photography.",
+   "gold_te": "Photograph లేదా graphic వంటి information యొక్క దృశ్య రూపం, ఇది electronically process చేసి display చేయగలిగేలా binary format లో store చేయబడుతుంది.",
+   "gold_en": "A visual representation of information, such as a photograph or graphic, stored in a binary format that can be processed and displayed electronically.",
+   "model": "Digital image అంటే JPEG అంటే digital image యొక్క lossy compression, compression మరియు compression కోసం ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Error matrix | context: A confusion matrix, also known as error matrix, is a specific table layout that allows visualization of the performance of a person or an algorithm on a specific task.",
+   "gold_te": "ఒక వ్యక్తి లేదా algorithm ఒక నిర్దిష్ట task లో ఎలా పనిచేస్తుందో కొలవడానికి ఉపయోగించే confusion matrix కి మరో పేరు.",
+   "gold_en": "An alternative name for a confusion matrix used to measure how a person or algorithm performs on a specific task.",
+   "model": "Error matrix అంటే ఒక నిర్దిష్ట algorithm యొక్క performance ను విశ్లేషించడానికి ఉపయోగించే table లోని ఒక ప్రత్యేక representation."
+  },
+  {
+   "input": "define in Telugu: Probability distribution | context: Supervised learning is commonly used for tasks such as classification (predicting a category, e.g., spam or not spam), regression (predicting a numerical value, e.g., a house price), and conditional density estimation (predicting the probability ",
+   "gold_te": "ఇచ్చిన పరిస్థితిలో వేర్వేరు outcomes యొక్క probability ని వివరించే అంతర్లీన statistical distribution.",
+   "gold_en": "The underlying statistical distribution that describes the probability of different outcomes in a given scenario.",
+   "model": "ఒక నిర్దిష్ట variable యొక్క probability distribution ను నిర్ణయించడానికి ఉపయోగించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Paging | context: The (h,k)-paging problem is a generalization of the model of paging problem: Let h,k be positive integers such that ≤.",
+   "gold_te": "Physical memory తో సంబంధం లేని logical address space ను processes ఉపయోగించుకోవడానికి వీలు కల్పించే memory management scheme.",
+   "gold_en": "A memory management scheme that allows processes to use a logical address space that is independent of physical memory.",
+   "model": "ఇచ్చిన integers వద్ద positive integers కంటే ఎక్కువగా ఉండే mathematical problem."
+  },
+  {
+   "input": "define in Telugu: Tree rotations | context: Insertions and deletions may require the tree to be rebalanced by one or more tree rotations.",
+   "gold_te": "ఒక node యొక్క balance factor -2 లేదా +2 అయినప్పుడు AVL tree ను మళ్ళీ balance చేయడానికి ఉపయోగించే structural operations.",
+   "gold_en": "The structural operations used to rebalance an AVL tree when a node's balance factor becomes -2 or +2.",
+   "model": "Tree rotations అంటే ఒక నిర్దిష్ట tree యొక్క rotations."
+  },
+  {
+   "input": "define in Telugu: Recognition rate | context: The overall accuracy would be 95%, but in more detail the classifier would have a 100% recognition rate (sensitivity) for the cancer class but a 0% recognition rate for the non-cancer class.",
+   "gold_te": "సరైన predictions యొక్క నిష్పత్తి, ఇది unbalanced datasets లో తప్పుదారి పట్టించవచ్చు.",
+   "gold_en": "The proportion of correct predictions, which can be misleading in unbalanced datasets.",
+   "model": "ఒక నిర్దిష్ట classifier యొక్క accuracy ని మెరుగుపరచడానికి ఉపయోగించే గరిష్ట accuracy."
+  },
+  {
+   "input": "define in Telugu: TCM | context: TCM enables clearer comparison between predictions and labels in complex classification tasks, while maintaining a consistent matrix format across settings.",
+   "gold_te": "Optimal transport మరియు maximum entropy theory పై ఆధారపడిన confusion matrix యొక్క విస్తరణ.",
+   "gold_en": "An extension of the confusion matrix based on optimal transport and maximum entropy theory.",
+   "model": "TCM అనేది ఒక నిర్దిష్ట matrix format ను సూచించే mathematical framework."
+  },
+  {
+   "input": "define in Telugu: Amplitude modulation (AM) | context: In amplitude modulation, the angle term is held constant and the first term, A(t), of the equation has a functional relationship to the modulating message signal.",
+   "gold_te": "Message signal కు అనులోమానుపాతంలో carrier wave యొక్క తక్షణ amplitude ను మార్చే modulation technique.",
+   "gold_en": "A modulation technique where the instantaneous amplitude of a carrier wave is varied in proportion to the message signal.",
+   "model": "Amplitude modulation (AM) అనేది ఒక message signal యొక్క frequency మరియు amplitude మధ్య తేడాను సూచించే equation."
+  },
+  {
+   "input": "define in Telugu: Unicast address | context: Usually, a unicast address is associated with a single device or host, but a device or host may have more than one unicast address.",
+   "gold_te": "నేరుగా communication కోసం network లో ఒకే ఒక నిర్దిష్ట host ను గుర్తించే address.",
+   "gold_en": "An address that identifies a single specific host on a network for direct communication.",
+   "model": "ఒక నిర్దిష్ట device లేదా host కు ఒకే ప్రత్యేకమైన ప్రత్యేక address; ఇది సాధారణంగా ఒక single device కు కేటాయించబడుతుంది."
+  },
+  {
+   "input": "define in Telugu: Absolute zero | context: The third law of thermodynamics can be stated as: A system's entropy approaches a constant value as its temperature approaches absolute zero.",
+   "gold_te": "ఒక system యొక్క thermal energy దాని ground state కు తగ్గే సైద్ధాంతిక కనిష్ఠ temperature.",
+   "gold_en": "The theoretical minimum temperature at which a system's thermal energy is reduced to its ground state.",
+   "model": "Absolute zero అనేది system యొక్క constant value, ఇది system యొక్క absolute zero గా ఉంటుంది."
+  },
+  {
+   "input": "define in Telugu: Santhosh's table of confusion | context: In predictive analytics, a table of confusion or Santhosh's table of confusion (sometimes also called a confusion matrix) is a table with two rows and two columns that reports the number of true positives, false negatives, false positives, a",
+   "gold_te": "True positives, false negatives, false positives మరియు true negatives ను చూపించే రెండు rows, రెండు columns ఉన్న table.",
+   "gold_en": "A two-row, two-column table that reports true positives, false negatives, false positives, and true negatives.",
+   "model": "ఒక table లోని అన్ని columns మధ్య తేడాను సూచించే mathematical table."
+  },
+  {
+   "input": "define in Telugu: Received signal | context: The demodulator, which is designed specifically for the symbol-set used by the modulator, determines the phase of the received signal and maps it back to the symbol it represents, thus recovering the original data.",
+   "gold_te": "Receiver అందుకునే electromagnetic wave, దీన్ని process చేసి పంపిన అసలు digital symbol కు తిరిగి map చేయాలి.",
+   "gold_en": "The electromagnetic wave intercepted by a receiver, which must be processed and mapped back to the original digital symbol transmitted.",
+   "model": "Signal యొక్క phase మరియు phase మధ్య తేడాను సూచించే mathematical representation."
+  },
+  {
+   "input": "define in Telugu: Bartlett window | context: The first one is also known as Bartlett window or Fejér window.",
+   "gold_te": "Center నుండి అంచుల వరకు amplitude సరళరేఖీయంగా తగ్గే ఒక నిర్దిష్ట window function, ఇది second-order B-spline window కు సమానం.",
+   "gold_en": "A specific window function defined by a linear tapering of amplitude from the center to the edges, equivalent to the second-order B-spline window.",
+   "model": "ఒక నిర్దిష్ట closed-loop window; దీని వల్ల ఒకే closed loop ను కనుగొనవచ్చు."
+  },
+  {
+   "input": "define in Telugu: Evaluation of sentiment analysis | context: To better fit market needs, evaluation of sentiment analysis has moved to more task-based measures, formulated together with representatives from PR agencies and market research professionals.",
+   "gold_te": "Evaluation of sentiment analysis అంటే ఒక system యొక్క output ను metrics ఉపయోగించి మనుషుల తీర్పులతో పోల్చడం ద్వారా దాని పనితీరు యొక్క accuracy ని కొలవడం.",
+   "gold_en": "Evaluation of sentiment analysis measures the accuracy of a system's performance by comparing its output to human judgments using metrics.",
+   "model": "ఒక నిర్దిష్ట రకమైన predictions ను విశ్లేషించడానికి మరియు దాని ప్రభావితం చేయడానికి మార్గనిర్దేశం చేయడానికి అవసరమైన మార్గదర్శకత్వం."
+  },
+  {
+   "input": "define in Telugu: Respiratory sinus arrhythmia (RSA) | context: Activity in this range is associated with the respiratory sinus arrhythmia (RSA), a vagally mediated modulation of heart rate (which increases during inspiration and decreases during expiration).",
+   "gold_te": "Respiratory sinus arrhythmia (RSA) అనేది central respiratory rhythm వల్ల కలిగే, vagal గా నియంత్రించబడే heart rate మార్పు, ఇది heart rate variability కి దారితీస్తుంది.",
+   "gold_en": "Respiratory sinus arrhythmia (RSA) is a vagally mediated modulation of heart rate caused by the central respiratory rhythm, leading to heart rate variability.",
+   "model": "ఇచ్చిన frequency మరియు intensity మధ్య సంబంధాన్ని వ్యక్తపరిచే cardiac arithmetic."
+  },
+  {
+   "input": "define in Telugu: Flux theorem | context: Both effects are captured by the three-dimensional version of the Leibniz integral rule, sometimes referred to as the \"flux theorem\": ∬ ⋅ ∬ ∂ ∂ ∇ ⋅ ⋅ − ∮ ∂ × ⋅ Here, ⁠ ∂ ⁠ is the moving boundary of the surface and is the local velocity of the boundary at eac",
+   "gold_te": "Flux theorem, లేదా Kelvin-Stokes theorem, ఒక curl యొక్క surface integral ను ఒక line integral తో సంబంధం కలుపుతుంది.",
+   "gold_en": "The flux theorem, or Kelvin-Stokes theorem, relates the surface integral of a curl to a line integral.",
+   "model": "ఒకే point నుండి ఒకే point వరకు దూరంలో ఉండే mathematical representation."
+  },
+  {
+   "input": "define in Telugu: Memory segmentation | context:",
+   "gold_te": "ఒక program యొక్క memory ని వేర్వేరు segments గా విభజించే memory management technique, ఇందులో ప్రతి segment కి దాని సొంత base address ఉంటుంది.",
+   "gold_en": "A memory management technique where a program's memory is divided into separate segments, each with its own base address.",
+   "model": "Memory frequency మరియు frequency మధ్య తేడాను సూచించే mathematical operation."
+  },
+  {
+   "input": "define in Telugu: Lorentz force | context: The four Maxwell's equations, together with the Lorentz force law, form a complete foundation for classical electromagnetism.",
+   "gold_te": "Lorentz force అంటే electric మరియు magnetic field గుండా కదిలే charged particle అనుభవించే బలం.",
+   "gold_en": "The Lorentz force is the force experienced by a charged particle moving through an electric and magnetic field.",
+   "model": "Electromagnetism లో ఒకే దిశలో ప్రవహించే electric current యొక్క గరిష్ట దిశ, దీనిని Maxwell's equations లో ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: additive white Gaussian noise (AWGN) | context: For determining error-rates mathematically, some definitions will be needed:, energy per bit, energy per symbol with n bits, bit duration, symbol duration, noise power spectral density (W/Hz), probability of bit-error, probability of ",
+   "gold_te": "Interference యాదృచ్ఛికంగా ఉండి, frequencies అంతటా సమానంగా విస్తరించి, Gaussian probability distribution ను అనుసరించే ఒక సైద్ధాంతిక noise model, దీన్ని system పనితీరును benchmark చేయడానికి ఉపయోగిస్తారు.",
+   "gold_en": "A theoretical noise model where interference is random, uniformly distributed across frequencies, and follows a Gaussian probability distribution, used to benchmark system performance.",
+   "model": "Input signal యొక్క frequency మరియు frequency మధ్య తేడాను సూచించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Negative feedback configuration | context: An ideal op amp is usually considered to have the following characteristics: Arbitrarily high open-loop gain G = vout / vin Infinite input impedance Rin, and thus zero input current Zero input offset voltage Unbounded output voltage range ",
+   "gold_te": "Output లో కొంత భాగాన్ని inverting input terminal కు తిరిగి పంపే circuit అమరిక.",
+   "gold_en": "A circuit setup where a portion of the output is returned to the inverting input terminal.",
+   "model": "Negative feedback signal యొక్క గరిష్ట frequency మరియు గరిష్ట amplitude మధ్య తేడాను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Knowledge representation (KR) | context: Knowledge-representation is a field of artificial intelligence that focuses on designing computer representations that capture information about the world that can be used for solving complex problems.",
+   "gold_te": "Computer system లో information ను knowledge గా formal గా సూచించడానికి దాన్ని structured పద్ధతిలో model చేసే ప్రక్రియ.",
+   "gold_en": "The process of modeling information in a structured manner to formally represent it as knowledge within a computer system.",
+   "model": "Computer representations అంటే సమాచారం లేదా సమాచారాన్ని వ్యక్తపరచడం ద్వారా complex problems ను solve చేసే ప్రక్రియ."
+  },
+  {
+   "input": "define in Telugu: Quasi-polynomial time algorithms | context: Quasi-polynomial time algorithms are algorithms whose running time exhibits quasi-polynomial growth, a type of behavior that may be slower than polynomial time but yet is significantly faster than exponential time.",
+   "gold_te": "Input size యొక్క logarithm లో polynomial అయిన function ద్వారా runtime పరిమితం చేయబడే algorithms.",
+   "gold_en": "Algorithms whose runtime is bounded by a function that is polynomial in the logarithm of the input size.",
+   "model": "ఒక రకమైన polynomial time వద్ద ఒక నిర్దిష్ట polynomial cycle ను execute చేసే algorithms."
+  },
+  {
+   "input": "define in Telugu: Finite impulse response (FIR) | context: Windows are sometimes used in the design of digital filters, in particular to convert an \"ideal\" impulse response of infinite duration, such as a sinc function, to a finite impulse response (FIR) filter design.",
+   "gold_te": "ఒక impulse కు response నిర్దిష్ట సంఖ్యలో samples తర్వాత సరిగ్గా సున్నా అయ్యే ఒక రకమైన digital filter, ఇది stable మరియు linear phase implementation కు వీలు కల్పిస్తుంది.",
+   "gold_en": "A type of digital filter where the response to an impulse is exactly zero after a finite number of samples, allowing for stable and linear phase implementation.",
+   "model": "Finite impulse response (FIR) అనేది infinite impulse response యొక్క infinite frequency ను సూచించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Column vector | context: Indeed, since the column vectors of A are the row vectors of the transpose of A, the statement that the column rank of a matrix equals its row rank is equivalent to the statement that the rank of a matrix is equal to the rank of its transpose, i.e., rank(A)",
+   "gold_te": "Elements యొక్క ఒకే నిలువు column తో కూడిన matrix, ఇది coordinate space లో ఒక vector ను సూచిస్తుంది.",
+   "gold_en": "A matrix consisting of a single vertical column of elements, representing a vector in coordinate space.",
+   "model": "ఒక నిర్దిష్ట row యొక్క rank ను సూచించే mathematical representation."
+  },
+  {
+   "input": "define in Telugu: Electromagnetic waves | context: Maxwell understood the connection between electromagnetic waves and light in 1861, thereby unifying the theories of electromagnetism and optics.",
+   "gold_te": "Electromagnetic radiant energy ని తీసుకుంటూ space గుండా ప్రయాణించే electric మరియు magnetic fields యొక్క సమకాలిక oscillations.",
+   "gold_en": "Synchronized oscillations of electric and magnetic fields that propagate through space carrying electromagnetic radiant energy.",
+   "model": "Electromagnetic waves అంటే magnetic fields మరియు light మధ్య సంబంధాన్ని వివరించే electromagnetic waves."
+  },
+  {
+   "input": "define in Telugu: discrete Fourier transform (DFT) | context: The sequence − ≤ ≤ is symmetric, of length ≤ ≤ − is DFT-symmetric, of length The parameter B displayed on each spectral plot is the function's noise equivalent bandwidth metric, in units of DFT bins.",
+   "gold_te": "ఒక function యొక్క సమాన దూరాల్లో తీసుకున్న finite samples sequence ను, దాని spectrum యొక్క సమాన దూరాల samples sequence గా మార్చే గణిత ప్రక్రియ.",
+   "gold_en": "A mathematical process that converts a finite sequence of equally spaced samples of a function into a sequence of equally spaced samples of its spectrum.",
+   "model": "ఒక function యొక్క length వద్ద noise equivalent bandwidth metric ను సూచించే Fourier transform."
+  },
+  {
+   "input": "define in Telugu: Service Definition | context: Service definitions, like the OSI model, abstractly describe the functionality provided to a layer N by a layer N−1, where N is one of the seven layers of protocols operating in the local host (with N=1 being the most basic layer, often represented at ",
+   "gold_te": "Protocol stack లో ఒక layer కు దాని కింద ఉన్న layer అందించే functionality యొక్క abstract వివరణ.",
+   "gold_en": "An abstract description of the functionality provided to a layer by the layer immediately below it in a protocol stack.",
+   "model": "ఒక నిర్దిష్ట layer యొక్క functionality ను వివరించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Vacuum tube | context: Before the development of silicon semiconductor rectifiers, vacuum tube thermionic diodes and copper oxide- or selenium-based metal rectifier stacks were used.",
+   "gold_te": "Semiconductor diodes విస్తృతంగా వాడకంలోకి రాకముందు rectification కోసం ఉపయోగించిన ఒక తొలి electronic పరికరం.",
+   "gold_en": "An early electronic device used for rectification before the widespread adoption of semiconductor diodes.",
+   "model": "ఒకే semiconductor semiconductor యొక్క దిశను మార్చడానికి ఉపయోగించే electromagnetic semiconductor device; ఇది electromagnetic fields ను ఉత్పత్తి చేస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Bit Error Rate (BER) | context: With four phases, QPSK can encode two bits per symbol, shown in the diagram with Gray coding to minimize the bit error rate (BER) – sometimes misperceived as twice the BER of BPSK.",
+   "gold_te": "తప్పుగా అందుకున్న bits సంఖ్యకు మరియు పంపిన మొత్తం bits సంఖ్యకు మధ్య నిష్పత్తి, ఇది ఒక digital link యొక్క reliability ని కొలవడానికి ఉపయోగపడుతుంది.",
+   "gold_en": "The ratio of the number of bits incorrectly received to the total number of bits transmitted, used to measure the reliability of a digital link.",
+   "model": "Bit Error rate (BER) అనేది ఒక signal యొక్క గరిష్ట error rate."
+  },
+  {
+   "input": "define in Telugu: Secure Network Programming (SNP) | context: Simon Lam was inducted into the Internet Hall of Fame for \"inventing secure sockets in 1991 and implementing the first secure sockets layer, named SNP, in 1993.\"",
+   "gold_te": "ఇప్పటికే ఉన్న network applications కు security చర్యలను జోడించడంలో సహాయపడటానికి అభివృద్ధి చేసిన ఒక చారిత్రక application programming interface.",
+   "gold_en": "is a historical application programming interface developed to help retrofit existing network applications with security measures.",
+   "model": "ఒకే secure networking layer ను సృష్టించడానికి ఉపయోగించే ప్రత్యేక framework; దీన్ని తరచుగా networking కోసం ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Modulated signal | context: With m = 0.5 the amplitude modulated signal y(t) thus corresponds to the top graph (labelled \"50% Modulation\") in figure 4.",
+   "gold_te": "Modulation ప్రక్రియ carrier wave మరియు message signal ను కలిపిన తర్వాత ఏర్పడే waveform.",
+   "gold_en": "The resulting waveform produced after the modulation process combines the carrier wave and the message signal.",
+   "model": "ఒక signal యొక్క amplitude ను మెరుగుపరచడానికి దాని amplitude ను modulate చేసే signal."
+  },
+  {
+   "input": "define in Telugu: Residual entropy | context: The constant value (not necessarily zero) of entropy at this point is called the residual entropy of the system.",
+   "gold_te": "Temperature absolute zero కు దగ్గరవుతున్నప్పుడు system లో మిగిలి ఉండే entropy, ఇది తరచుగా non-crystalline atomic configurations వల్ల కలుగుతుంది.",
+   "gold_en": "The entropy remaining in a system as its temperature approaches absolute zero, often due to non-crystalline atomic configurations.",
+   "model": "Residual entropy అనేది ఒక system యొక్క residual value; ఇది system యొక్క constant value ను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Tiered storage | context: The lower levels of the hierarchy – from mass storage downwards – are also known as tiered storage.",
+   "gold_te": "Performance ఆధారంగా data ను వేర్వేరు storage స్థాయిల్లో అమర్చే system, దీన్ని తరచుగా mass storage లేదా memory tiers ను manage చేయడానికి ఉపయోగిస్తారు.",
+   "gold_en": "A system of organizing data across different storage levels based on performance, often used to manage mass storage or memory tiers.",
+   "model": "ఒక నిర్దిష్ట hierarchy నుండి mass storage కు దగ్గరగా ఉండే physical storage."
+  },
+  {
+   "input": "define in Telugu: Periodic | context: Case: When a symmetric, -length window function () is truncated by 1 coefficient it is called periodic or DFT-even.",
+   "gold_te": "ఒక నిర్దిష్ట domain పై క్రమమైన intervals లో తన values ను పునరావృతం చేసే signal లేదా function యొక్క లక్షణం.",
+   "gold_en": "A property describing a signal or function that repeats its values at regular intervals over a specific domain.",
+   "model": "Periodic function యొక్క periodic frequency, ఇది periodic function యొక్క ఒక నిర్దిష్ట frequency."
+  },
+  {
+   "input": "define in Telugu: saturation | context: Thus, even small microvolts of difference between V+ and V− may drive the amplifier into clipping or saturation.",
+   "gold_te": "Output voltage, supplies అనుమతించే గరిష్ఠ లేదా కనిష్ఠ విలువకు చేరుకునే స్థితి.",
+   "gold_en": "A state where the output voltage reaches its maximum or minimum possible value allowed by supplies.",
+   "model": "Clipping లేదా sturation అంటే amplifier యొక్క voltage మరియు voltage మధ్య తేడాను తగ్గించే ప్రక్రియ."
+  },
+  {
+   "input": "define in Telugu: Radio waves | context: However, the practical development of this technology is identified with the period between 1900 and 1920 of radiotelephone transmission, that is, the effort to send audio signals by radio waves.",
+   "gold_te": "3 kHz నుండి 300 GHz వరకు frequencies ఉన్న electromagnetic waves, వీటిని దూర ప్రాంతాల communication కోసం ఉపయోగిస్తారు.",
+   "gold_en": "Electromagnetic waves with frequencies ranging from 3 kHz to 300 GHz, used for long-distance communication.",
+   "model": "Radio waves అంటే ఒక రకమైన frequency spectrum లో ఉండే radio waves; వీటిని తరచుగా radio waves గా ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Shrinking phase | context: Shrinking phase: locks are released and no locks are acquired.",
+   "gold_te": "ఒక transaction execution లో అది ఉన్న locks ను release మాత్రమే చేయగలిగి, కొత్తవి ఏవీ acquire చేయలేని భాగం.",
+   "gold_en": "The portion of a transaction's execution during which it may only release existing locks and cannot acquire any new ones.",
+   "model": "ఒక నిర్దిష్ట క్షణం నుండి తొలగించిన తర్వాత క్రమం తప్పకుండా తొలగించే phase."
+  },
+  {
+   "input": "define in Telugu: Hurwitz matrix | context: German mathematician Adolf Hurwitz independently proposed in 1895 to arrange the coefficients of the polynomial into a square matrix, called the Hurwitz matrix, and showed that the polynomial is stable if and only if the sequence of determinants of its pri",
+   "gold_te": "ఒక polynomial యొక్క coefficients నుండి ఏర్పడే structured square matrix, దాని determinants ఆధారంగా system stability ని నిర్ణయించడానికి ఉపయోగిస్తారు.",
+   "gold_en": "A structured square matrix formed from the coefficients of a polynomial, used to determine system stability based on its determinants.",
+   "model": "ఒక polynomial యొక్క stable equilibrium state ను సూచించే mathematical representation."
+  },
+  {
+   "input": "define in Telugu: Edge-triggered flip-flops | context: More complicated designs that use clock signals and that change only on a rising or falling edge of the clock are called edge-triggered \"flip-flops\".",
+   "gold_te": "Clock signal యొక్క నిర్దిష్ట rising లేదా falling edge వద్ద మాత్రమే తన state ను మార్చుకునే ఒక రకమైన flip-flop.",
+   "gold_en": "A type of flip-flop that changes its state only at the specific rising or falling edge of a clock signal.",
+   "model": "Edge triggered flip flops అంటే clock signals ను స్థిరంగా ఉంచే flip-flops."
+  },
+  {
+   "input": "define in Telugu: Swapping | context: For historical reasons, this technique is sometimes referred to as swapping.",
+   "gold_te": "Resource పరిమితులను manage చేయడానికి మొత్తం process ను లేదా పెద్ద segments ను main memory మరియు disk storage మధ్య తరలించే ఒక తొలి memory management mechanism.",
+   "gold_en": "An early memory management mechanism where an entire process or large segments are moved between main memory and disk storage to manage resource limitations.",
+   "model": "ఒకే దిశలో ఒక నిర్దిష్ట particle నుండి ఒకే particle కు మరో పేరు."
+  },
+  {
+   "input": "define in Telugu: Inheritance | context: Instead, they encourage \"composition over inheritance\", where objects are built using smaller parts instead of parent-child relationships.",
+   "gold_te": "ఒక subclass తన parent super-class నుండి variables మరియు methods ను పొందడానికి అనుమతించే mechanism.",
+   "gold_en": "A mechanism allowing a subclass to derive variables and methods from a parent super-class.",
+   "model": "Inheritance అంటే ఒకే parent లేదా dependent relationships ను ఏర్పరిచే ప్రక్రియ, దీనిని తరచుగా parent లేదా child relationships గా ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Point-to-Point Protocol (PPP) | context: The Point-to-Point Protocol (PPP) is a data link layer protocol that can operate over several different physical layers, such as synchronous and asynchronous serial lines.",
+   "gold_te": "నేరుగా point-to-point links ఏర్పాటు చేయడానికి వివిధ physical layers పై పనిచేయగల data link layer protocol.",
+   "gold_en": "A data link layer protocol that can operate over various physical layers to establish direct point-to-point links.",
+   "model": "ఒక నిర్దిష్ట data link layer ను సూచించే data link layer protocol; దీని వల్ల physical layers మరియు layers మధ్య తేడాను సూచిస్తాయి."
+  },
+  {
+   "input": "define in Telugu: Marking algorithm | context: Marking algorithms is a general class of paging algorithms.",
+   "gold_te": "Page references ను track చేయడానికి mark bit ను ఉపయోగించి, ఇటీవల వాడిన pages ను evict చేయకుండా ఉండే page replacement algorithms యొక్క class.",
+   "gold_en": "A class of page replacement algorithms that use a mark bit to track page references and avoid evicting recently used pages.",
+   "model": "MapReduce algorithms అంటే ఒక నిర్దిష్ట రకమైన algorithms యొక్క ఒక class."
+  },
+  {
+   "input": "define in Telugu: Bits wide | context: All internal registers, as well as internal and external data buses, are 16 bits wide, which firmly established the \"16-bit microprocessor\" identity of the 8086.",
+   "gold_te": "Bits wide అంటే ఒక data path యొక్క వెడల్పు, ఇది ఏకకాలంలో ఎన్ని bits బదిలీ అవుతాయో సూచిస్తుంది.",
+   "gold_en": "Bits wide describes the width of a data path, indicating how many bits are transferred simultaneously.",
+   "model": "రెండు bits మధ్య ఉండే physical bits; వీటిని తరచుగా microprocessors మరియు microprocessors గా ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Write-lock | context: For 2PL, the only used data-access locks are read-locks (shared locks) and write-locks (exclusive locks).",
+   "gold_te": "ఒక నిర్దిష్ట database object పై modification operations చేయడానికి transaction కు అవసరమయ్యే data access lock.",
+   "gold_en": "A data access lock required by a transaction to perform modification operations on a specific database object.",
+   "model": "Data access కోసం shared data access కోసం ఉపయోగించే ప్రత్యేక data access locks; వీటిని తరచుగా read-only లేదా write-only locks గా ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Electromotive force | context: It is possible to find out the direction of the electromotive force (emf) directly from Faraday's law, without invoking Lenz's law.",
+   "gold_te": "Electromotive force అంటే మారుతున్న magnetic field వంటి ఒక source ఉత్పత్తి చేసే voltage.",
+   "gold_en": "Electromotive force is the voltage generated by a source, such as a changing magnetic field.",
+   "model": "Electromagnetic field లో ప్రవహించే electrical force, ఇది magnetic field ను ఉత్పత్తి చేస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Non-inverting amplifier | context: In the non-inverting amplifier on the right, the presence of negative feedback via the voltage divider Rf, Rg determines the closed-loop gain ACL = Vout / Vin.",
+   "gold_te": "Input signal తో అదే phase ఉన్న output voltage ను ఇచ్చే circuit configuration.",
+   "gold_en": "A circuit configuration that produces an output voltage with the same phase as the input signal.",
+   "model": "Non-inverting amplifier అనేది amplifier యొక్క negative feedback ను సూచించే amplifier రకం."
+  },
+  {
+   "input": "define in Telugu: Artificial intelligence | context: Artificial neural networks were identified as a promising direction for artificial intelligence research in the 1955 proposal for the Dartmouth Summer Research Project on Artificial Intelligence.",
+   "gold_te": "సాధారణంగా మనిషి తెలివితేటలు అవసరమయ్యే పనులను చేయగల systems ను సృష్టించడానికి అంకితమైన computer science యొక్క విస్తృత రంగం.",
+   "gold_en": "The broad field of computer science dedicated to creating systems capable of performing tasks that typically require human intelligence.",
+   "model": "Artificial neural networks అంటే artificial neural networks ను అభివృద్ధి చేయడం ద్వారా algorithms మరియు algorithms అభివృద్ధికి విస్తృతంగా ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: symmetric cipher | context: The protocols use a handshake with an asymmetric cipher to establish not only cipher settings but also a session-specific shared key with which further communication is encrypted using a symmetric cipher.",
+   "gold_te": "Shared session key ఏర్పడిన తర్వాత తదుపరి communication ను encrypt చేయడానికి TLS లో ఉపయోగించే ఒక రకమైన cryptography.",
+   "gold_en": "is a type of cryptography used in TLS to encrypt further communication once a shared session key is established.",
+   "model": "ఒకే cipher యొక్క shared key ను encrypt చేయడానికి ఉపయోగించే cipher."
+  },
+  {
+   "input": "define in Telugu: Law of conservation of energy | context: The first law of thermodynamics is a version of the law of conservation of energy, adapted for thermodynamic processes.",
+   "gold_te": "ఒక isolated system లోని energy స్థిరంగా ఉంటుంది, అది కేవలం రూపం మారుతుంది కానీ ఎప్పుడూ సృష్టించబడదు లేదా నాశనం కాదు అనే సూత్రం.",
+   "gold_en": "The principle that energy within an isolated system is constant, changing only in form, never created or destroyed.",
+   "model": "Thermodynamic processes యొక్క efficiency ని మెరుగుపరచడానికి ఉపయోగించే law."
+  },
+  {
+   "input": "define in Telugu: Source voltage | context: In the simplified model of powering a load with resistance RL by a source with voltage VS and source resistance RS, then by Ohm's law the resulting current I is simply the source voltage divided by the total circuit resistance: The power PL dissipated in t",
+   "gold_te": "ఒక power supply అంతర్గతంగా ఉత్పత్తి చేసే electromotive force లేదా potential difference.",
+   "gold_en": "The electromotive force or potential difference generated internally by a power supply.",
+   "model": "Source voltage అంటే ఒకే దిశలో ఉండే electrical current; దీని వల్ల resistance మరియు resistance మధ్య తేడాను సూచిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Neutral | context: A basic task in sentiment analysis is classifying the polarity of a given text at the document, sentence, or feature/aspect level—whether the expressed opinion in a document, a sentence or an entity feature/aspect is positive, negative, or neutral.",
+   "gold_te": "Neutral అంటే text లో వ్యక్తపరిచిన అభిప్రాయం positive గానీ negative గానీ కాని sentiment classification.",
+   "gold_en": "Neutral refers to a sentiment classification where the expressed opinion in a text is neither positive nor negative.",
+   "model": "ఒక నిర్దిష్ట feature లేదా feature యొక్క polarity ను సూచించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Locality of reference | context: Memory hierarchy affects performance in computer architectural design, algorithm predictions, and lower level programming constructs involving locality of reference.",
+   "gold_te": "తక్కువ సమయంలో సాపేక్షంగా కొన్ని memory addresses ను మళ్ళీ మళ్ళీ access చేసే processor యొక్క ధోరణి.",
+   "gold_en": "The tendency of a processor to access a relatively small amount of memory addresses repeatedly over a short period of time.",
+   "model": "Memory hierarchy అనేది ఒక నిర్దిష్ట representation లేదా representation ను సూచించే mathematical representation; దీని వల్ల algorithm predictions మరియు predictions కోసం ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Neural network (NN) | context: In machine learning, a neural network (NN) or artificial neural network (ANN) is a computational model inspired by the structure and functions of biological neural networks.",
+   "gold_te": "జీవ సంబంధమైన brain structures స్ఫూర్తితో రూపొందించిన computational system, ఇది interconnected nodes ద్వారా signals ను పంపుతూ information ను process చేసేలా రూపొందించబడింది.",
+   "gold_en": "A computational system inspired by biological brain structures, designed to process information by passing signals through interconnected nodes.",
+   "model": "Non-linear neural networks (NN) అంటే physical neural networks యొక్క ఒక రకమైన రకమైన structure మరియు functions ను కనుగొనడానికి రూపొందించిన ఒక artificial neural network."
+  },
+  {
+   "input": "define in Telugu: Internet Engineering Task Force (IETF) | context: While attempting to provide a comprehensive description of networking, the model failed to garner reliance during the design of the Internet, which is reflected in the less prescriptive Internet Protocol Suite, principally sponsored",
+   "gold_te": "తక్కువ నిర్బంధాత్మకమైన Internet Protocol Suite అభివృద్ధికి ప్రధానంగా sponsor చేసే సంస్థ.",
+   "gold_en": "The organization that primarily sponsors the development of the less prescriptive Internet Protocol Suite.",
+   "model": "Internet Protocols యొక్క విస్తృతంగా ఉపయోగించే ఒక నిర్దిష్ట వర్గం, ఇది విస్తృతంగా ఉపయోగపడుతుంది."
+  },
+  {
+   "input": "define in Telugu: Supervised learning (SL) | context: Supervised learning is commonly used for tasks such as classification (predicting a category, e.g., spam or not spam), regression (predicting a numerical value, e.g., a house price), and conditional density estimation (predicting the probability ",
+   "gold_te": "Labeled example pairs ను ఉపయోగించి input data ను నిర్దిష్ట outputs కు map చేయడం algorithm నేర్చుకునే machine learning paradigm.",
+   "gold_en": "A machine learning paradigm where an algorithm learns to map input data to specific outputs using labeled example pairs.",
+   "model": "ఒక నిర్దిష్ట classification కోసం ఉపయోగించే mathematical పద్ధతి, దీనిని తరచుగా predictions మరియు predictions కోసం ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Nearest neighbor | context: Many algorithms, including support-vector machines, linear regression, logistic regression, neural networks, and nearest neighbor methods, require that the input features be numerical and scaled to similar ranges (e.g., to the [-1,1] interval).",
+   "gold_te": "దగ్గరి neighbors యొక్క majority vote ఆధారంగా class label ను కేటాయించే classification algorithm.",
+   "gold_en": "A classification algorithm that assigns a class label based on the majority vote of its nearest neighbors.",
+   "model": "ఒక నిర్దిష్ట algorithm యొక్క గరిష్ట దిశలో ఉండే neighbor; దీని వల్ల algorithms మరియు algorithms మధ్య తేడాను సూచిస్తాయి."
+  },
+  {
+   "input": "define in Telugu: CMOS 4000 series | context: For small-scale logic, designers now use prefabricated logic gates from families of devices such as the TTL 7400 series by Texas Instruments, the CMOS 4000 series by RCA, and their more recent descendants.",
+   "gold_te": "తక్కువ power consumption కోసం complementary MOS technology తో నిర్మించిన integrated circuits యొక్క series.",
+   "gold_en": "A series of integrated circuits built using complementary MOS technology for low power consumption.",
+   "model": "CMOS series అనేది ఒక నిర్దిష్ట రకమైన logic gate, దీనిని తరచుగా integrated circuits గా ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Angular displacement | context: The torsional analog of Hooke's law applies to torsional springs. It states that the torque (τ) required to rotate an object is directly proportional to the angular displacement (θ) from the equilibrium position.",
+   "gold_te": "ఒక వస్తువు లేదా దాని భాగం తన equilibrium state నుండి ఒక axis చుట్టూ తిరిగిన కోణం.",
+   "gold_en": "The angle through which an object or part of an object has been rotated about an axis from its equilibrium state.",
+   "model": "Angular displacement అంటే ఒక object యొక్క angular displacement ను సూచించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Data model | context: The two main early navigational data models were the hierarchical model and the CODASYL model (network model).",
+   "gold_te": "Database లో data ఎలా organize చేయబడుతుందో, ఎలా structure చేయబడుతుందో, ఎలా సంబంధం కలిగి ఉంటుందో నిర్వచించి, information ను access చేసే పద్ధతులను నిర్ణయించే conceptual framework.",
+   "gold_en": "A conceptual framework that defines how data is organized, structured, and related within a database, determining the methods used to access information.",
+   "model": "CODASYL model అనేది ఒక hierarchical data model యొక్క ఒక నిర్దిష్ట hierarchical model."
+  },
+  {
+   "input": "define in Telugu: Principal minor | context: Compute each principal minor of that matrix.",
+   "gold_te": "పెద్ద matrix నుండి నిర్దిష్ట rows మరియు columns ను తొలగించడం ద్వారా పొందిన square sub-matrix యొక్క determinant.",
+   "gold_en": "The determinant of a square sub-matrix obtained by removing specified rows and columns from a larger matrix.",
+   "model": "ఒక నిర్దిష్ట matrix యొక్క principal component; ఇది matrix లోని principal component ను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Artificial neural network (ANN) | context: In machine learning, a neural network (NN) or artificial neural network (ANN) is a computational model inspired by the structure and functions of biological neural networks.",
+   "gold_te": "Artificial intelligence లో ఉపయోగించే computational neural network కి మరో పదం, ఇది జీవ సంబంధమైనది కాకుండా కృత్రిమమైనది అని నొక్కి చెబుతుంది.",
+   "gold_en": "Another term for a computational neural network used in artificial intelligence, emphasizing its synthetic rather than biological nature.",
+   "model": "Artificial neural network (NN) అనేది ఒక రకమైన computational model, దీనిని తరచుగా computational models గా ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Digital modulation | context: Phase-shift keying (PSK) is a digital modulation process which conveys data by changing (modulating) the phase of a constant frequency carrier wave.",
+   "gold_te": "Information పంపడానికి ఒక waveform యొక్క ఒకటి లేదా అంతకంటే ఎక్కువ లక్షణాలను మార్చే ప్రక్రియ, ఇది ప్రత్యేకంగా analog signals కాకుండా discrete data signals పై దృష్టి పెడుతుంది.",
+   "gold_en": "The process of varying one or more properties of a waveform to transmit information, specifically focusing on discrete data signals rather than analog signals.",
+   "model": "Digital modulation అంటే ఒక frequency carrier wave లో data ను మార్చడానికి మరియు దాని frequency phase ను మార్చడానికి ఉపయోగించే ప్రక్రియ."
+  },
+  {
+   "input": "define in Telugu: Reflection coefficient | context: The generally smaller reflection coefficient of the p-polarization is also the basis of polarized sunglasses; by blocking the s- (horizontal) polarization, most of the glare due to reflection from a wet street, for instance, is removed.",
+   "gold_te": "Reflected wave యొక్క electric field amplitude కు incident wave యొక్క electric field amplitude కు మధ్య ఉన్న complex నిష్పత్తి.",
+   "gold_en": "Complex ratio of the electric field amplitude of a reflected wave to that of the incident wave.",
+   "model": "Beam మీద reflection చేసినప్పుడు, reflection వల్ల ultraviolet light ప్రభావితం అయ్యే గరిష్ట reflection coefficient."
+  },
+  {
+   "input": "define in Telugu: Single-sideband suppressed-carrier transmission | context: Even with the carrier eliminated in double-sideband suppressed-carrier transmission, carrier regeneration is possible using a Costas phase-locked loop. This does not work for single-sideband suppressed-carrier transmission ",
+   "gold_te": "Energy ని ఆదా చేయడానికి carrier wave మరియు ఒక sideband రెండింటినీ తొలగించే, అత్యంత power-efficient అయిన transmission technique.",
+   "gold_en": "A highly power-efficient transmission technique that eliminates both the carrier wave and one sideband to conserve energy.",
+   "model": "Single-sided band carrier transmission కోసం ఉపయోగించే ఒక రకమైన carrier రకం, ఇది carrier regeneration కోసం ఉపయోగపడుతుంది."
+  },
+  {
+   "input": "define in Telugu: asymmetric cipher | context: The protocols use a handshake with an asymmetric cipher to establish not only cipher settings but also a session-specific shared key with which further communication is encrypted using a symmetric cipher.",
+   "gold_te": "Cipher settings మరియు shared session keys ను ఏర్పాటు చేయడానికి TLS handshake సమయంలో ఉపయోగించే ఒక రకమైన cryptography.",
+   "gold_en": "is a type of cryptography used during the TLS handshake to establish cipher settings and shared session keys.",
+   "model": "ఒక shared key ను encrypt చేయడానికి ఉపయోగించే symmetric cipher."
+  },
+  {
+   "input": "define in Telugu: Probability space | context: If a random variable → defined on the probability space is given, we can ask questions like \"How likely is it that the value of is equal to 2?\".",
+   "gold_te": "ఒక sample space, events యొక్క ఒక sigma-algebra మరియు ఒక probability measure తో కూడిన measure-theoretic పునాది.",
+   "gold_en": "A measure-theoretic foundation consisting of a sample space, a sigma-algebra of events, and a probability measure.",
+   "model": "Random variable యొక్క probability distribution ను సూచించే mathematical representation; ఇది probability distribution యొక్క approximation ను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: continuous wave CW operation | context: On–off keying is likewise used by radio amateurs to transmit Morse code where it is known as continuous wave (CW) operation, even though the transmission is not strictly \"continuous\".",
+   "gold_te": "తరచుగా Morse code లేదా data transmission కోసం, స్థిరమైన amplitude ఉన్న signals ను ఉపయోగించడం, ఇందులో signal ఉండటమే data ను సూచిస్తుంది.",
+   "gold_en": "The use of constant-amplitude signals, often for Morse code or data transmission, where the presence of the signal represents data.",
+   "model": "Continuous wave అంటే ఒక నిర్దిష్ట frequency మరియు frequency మధ్య తేడాను సూచించే radio operation."
+  },
+  {
+   "input": "define in Telugu: Trade-off | context: A similar theorem stating the trade-off between consistency and availability in distributed systems had been published by Birman and Friedman in 1996.",
+   "gold_te": "Network failures సమయంలో availability ని కాపాడటానికి consistency ని త్యాగం చేయడం వంటి, పరస్పర విరుద్ధమైన requirements మధ్య system architect చేయవలసిన ప్రాథమిక రాజీ.",
+   "gold_en": "The fundamental compromise a system architect must make between conflicting requirements, such as sacrificing consistency to maintain availability during network failures.",
+   "model": "ఒక distributed system యొక్క consistency మరియు consistency మధ్య సంబంధాన్ని సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Rank-deficient | context: A matrix is said to be rank-deficient if it does not have full rank.",
+   "gold_te": "Rank దాని rows మరియు columns సంఖ్యల్లో కనిష్ఠమైన దాని కంటే ఖచ్చితంగా తక్కువగా ఉన్న matrix ను వివరించే పదం.",
+   "gold_en": "Describing a matrix whose rank is strictly less than the minimum of its number of rows and columns.",
+   "model": "ఒక నిర్దిష్ట matrix యొక్క full rank; ఇది matrix boundaries ను మాత్రమే గుర్తించగలదు."
+  },
+  {
+   "input": "define in Telugu: ITU-T | context: On the ITU-T side, ITU-T SG16 is the respective body.",
+   "gold_te": "Image coding standardization తో సహా information మరియు communication technologies కు సంబంధించిన విషయాలకు బాధ్యత వహించే United Nations యొక్క ప్రత్యేక సంస్థ.",
+   "gold_en": "The specialized agency of the United Nations responsible for matters related to information and communication technologies, including standardization of image coding.",
+   "model": "ఒక నిర్దిష్ట entity యొక్క physical identity ను సూచించే IEEE 802.11 standard, ఇది IEEE 802.11 standards ను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Slew rate | context: Slew rate limiting The amplifier's output voltage reaches its maximum rate of change, the slew rate, usually specified in volts per microsecond (V/μs).",
+   "gold_te": "ఒక amplifier యొక్క output voltage మారగల గరిష్ఠ రేటు, దీన్ని సాధారణంగా V/μs లో వ్యక్తపరుస్తారు.",
+   "gold_en": "The maximum rate at which an amplifier's output voltage can change, typically expressed in V/μs.",
+   "model": "Slew rate అంటే amplifier output voltage కు మధ్య ఉన్న తేడా, ఇది amplifier యొక్క గరిష్ట output voltage ను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Incremental waterfall model | context: Other software development model combinations such as \"incremental waterfall model\" also exist.",
+   "gold_te": "Project ను అనేక చిన్న, వరుస segments గా విభజించి వాటిని ఒక్కొక్కటిగా deliver చేసే waterfall process యొక్క ఒక రూపాంతరం.",
+   "gold_en": "A variation of the waterfall process where the project is divided into several smaller, sequential segments that are delivered one by one.",
+   "model": "Incremental waterfall model అనేది ఒక నిర్దిష్ట రకమైన software development model."
+  },
+  {
+   "input": "define in Telugu: Circular convolution | context: The convolution theorem for sequences is: ∗ − ⋅ An important special case is the circular convolution of sequences s and y defined by ∗ where is a periodic summation.",
+   "gold_te": "రెండు periodic sequences పై చేసే ఒక రకమైన convolution operation, దీని ఫలితం మరొక periodic sequence.",
+   "gold_en": "A type of convolution operation on two periodic sequences that results in another periodic sequence.",
+   "model": "Circular convolution అంటే sequences యొక్క periodic summation ను సూచించే mathematical theorem."
+  },
+  {
+   "input": "define in Telugu: Autonomous differential equation | context:",
+   "gold_te": "Independent variable పై స్పష్టంగా ఆధారపడని ordinary differential equation.",
+   "gold_en": "An ordinary differential equation that does not explicitly depend on the independent variable.",
+   "model": "ఒక differential equation యొక్క equilibrium state ను సూచించే differential equations set."
+  },
+  {
+   "input": "define in Telugu: Network interface | context: IP addresses serve two main functions: network interface identification, and location addressing.",
+   "gold_te": "ఒక device ను network కు కలిపే దాని hardware లేదా software component.",
+   "gold_en": "The hardware or software component of a device that connects it to a network.",
+   "model": "Network interface అంటే ఒక నిర్దిష్ట physical device లేదా device ను గుర్తించడానికి ఉపయోగించే ఒక ప్రత్యేక physical device."
+  },
+  {
+   "input": "define in Telugu: Lisp Object System | context: In 1986, the first Conference on Object-Oriented Programming, Systems, Languages, and Applications (OOPSLA) was attended by 1,000 people. This conference marked the start of efforts to consolidate Lisp object systems, eventually resulting in the Common",
+   "gold_te": "LISP language కు object-oriented లక్షణాలను జోడించిన ఒక standard extension.",
+   "gold_en": "A standard extension to LISP that added object-oriented features to the language.",
+   "model": "ఒక నిర్దిష్ట framework ను నిర్మించడానికి రూపొందించిన ఒక ప్రత్యేక framework."
+  },
+  {
+   "input": "define in Telugu: Partial differential equations (PDEs) | context: The theory of singular solutions of ordinary and partial differential equations was a subject of research from the time of Leibniz, but only since the middle of the nineteenth century has it received special attention.",
+   "gold_te": "తెలియని ఒక multivariable function మరియు అనేక independent variables కు సంబంధించిన దాని partial derivatives ఉండే differential equation.",
+   "gold_en": "A differential equation involving an unknown multivariable function and its partial derivatives with respect to multiple independent variables.",
+   "model": "రెండు partial differential equations మధ్య తేడాను విశ్లేషించడానికి ఉపయోగించే mathematical framework."
+  },
+  {
+   "input": "define in Telugu: Function | context: The function is an element of some space of possible functions, usually called the hypothesis space.",
+   "gold_te": "ఇచ్చిన learning problem కోసం inputs ను outputs కు map చేసే గణిత సంబంధం.",
+   "gold_en": "A mathematical relationship that maps inputs to outputs for a given learning problem.",
+   "model": "ఒక function యొక్క ఒక నిర్దిష్ట దిశలో ఉండే mathematical representation; ఇది mathematical function ను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Equilibrium position | context: The torsional analog of Hooke's law applies to torsional springs. It states that the torque (τ) required to rotate an object is directly proportional to the angular displacement (θ) from the equilibrium position.",
+   "gold_te": "Net forces లేదా torques సున్నాగా ఉండి, system తన configuration ను మార్చుకునే ధోరణి లేని స్థితి.",
+   "gold_en": "The state of a system where net forces or torques are zero, and there is no tendency for the system to change its configuration.",
+   "model": "Equilibrium position అంటే ఒక object యొక్క angular displacement కు సమానంగా ఉండే equilibrium position."
+  },
+  {
+   "input": "define in Telugu: Non-linear | context: Given the complexity of the mechanisms regulating heart rate, it is reasonable to assume that applying HRV analysis based on methods of non-linear dynamics will yield valuable information.",
+   "gold_te": "Heart rate variability యొక్క complexity ని విశ్లేషించడానికి time-domain మరియు frequency-domain పద్ధతులకు ప్రత్యామ్నాయంగా ప్రతిపాదించిన పద్ధతులే Non-linear methods.",
+   "gold_en": "Non-linear methods are proposed alternatives to time-domain and frequency-domain methods for analyzing the complexity of heart rate variability.",
+   "model": "Nonlinear dynamics అంటే heart rate మరియు heart rate మధ్య తేడాను విశ్లేషించడానికి ఉపయోగించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Digital protective relay | context: Digital protective relays were in their infancy during the late 1960s.",
+   "gold_te": "Analog voltage మరియు current కొలతలను అంతర్గత microprocessors process చేయడానికి digital format లోకి మార్చే ఆధునిక protection పరికరాలు.",
+   "gold_en": "Modern protection devices that convert analog voltage and current measurements into a digital format for processing by internal microprocessors.",
+   "model": "Digital protective relays అంటే digital protective devices యొక్క ప్రత్యేక రూపం."
+  },
+  {
+   "input": "define in Telugu: Fourier transform | context: We also note that − is the Fourier transform of − Therefore, an alternative definition of DTFT is: The modulated Dirac comb function is a mathematical abstraction sometimes referred to as impulse sampling.",
+   "gold_te": "ఒక signal ను దాని అసలు time domain రూపం నుండి frequency domain రూపంలోకి మార్చే ప్రాథమిక గణిత transform.",
+   "gold_en": "A foundational mathematical transform that converts a signal from its original time domain representation into a frequency domain representation.",
+   "model": "Fourier transform అనేది ఒక mathematical abstraction యొక్క integral ను సూచించే mathematical representation."
+  },
+  {
+   "input": "define in Telugu: Message signal | context: At the receiving station, the message signal is extracted from the modulated carrier by demodulation.",
+   "gold_te": "ఒక communication channel ద్వారా పంపడానికి ఉద్దేశించిన voice లేదా data వంటి అసలు information కలిగిన waveform.",
+   "gold_en": "The original information-bearing waveform, such as voice or data, intended for transmission over a communication channel.",
+   "model": "Message signal అనేది ఒక నిర్దిష్ట carrier ద్వారా పంపబడే message signal."
+  },
+  {
+   "input": "define in Telugu: Probability measure | context: In the formal mathematical language of measure theory, a random variable is defined as a measurable function from a probability measure space (called the sample space) to a measurable space.",
+   "gold_te": "మొత్తం sample space కు probability ఒకటిని కేటాయించే, ఒక sigma-algebra పై నిర్వచించిన real-valued measure.",
+   "gold_en": "A real-valued measure defined on a sigma-algebra that assigns a probability of one to the entire sample space.",
+   "model": "Probability measure అనేది ఒక నిర్దిష్ట mathematical పద్ధతి, దీనిని తరచుగా mathematical mathematical language లో ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Gabor transform | context: When we use it, the short-time Fourier transform is called the \"Gabor transform\".",
+   "gold_te": "Optimal time-frequency localization అందించడానికి Gaussian function ను windowing function గా ఉపయోగించే ఒక ప్రత్యేక రకమైన short-time Fourier transform.",
+   "gold_en": "A specific type of short-time Fourier transform that utilizes a Gaussian function as the windowing function to provide optimal time-frequency localization.",
+   "model": "Fourier transform అంటే ఒక రకమైన Fourier transform ను ఉపయోగించి, దాని frequency మరియు frequency మధ్య తేడాను సూచించే Fourier transform."
+  },
+  {
+   "input": "define in Telugu: TLS handshake protocol | context: It runs in the presentation layer and is itself composed of two layers: the TLS record and the TLS handshake protocols.",
+   "gold_te": "Settings ను negotiate చేయడానికి మరియు shared session key ను ఏర్పాటు చేయడానికి asymmetric ciphers ను ఉపయోగించే TLS protocol లోని ఒక భాగం.",
+   "gold_en": "is a part of the TLS protocol that uses asymmetric ciphers to negotiate settings and establish a shared session key.",
+   "model": "TLS record అనేది ఒక నిర్దిష్ట layer లోని రెండు layers మధ్య తేడాను సూచించే protocol."
+  },
+  {
+   "input": "define in Telugu: Photons | context: According to quantum mechanics, electromagnetic waves can also be viewed as streams of particles called photons.",
+   "gold_te": "Wave frequency కు అనులోమానుపాతంలో energy ని తీసుకువెళ్ళే electromagnetic radiation యొక్క ప్రాథమిక quantum particles.",
+   "gold_en": "Elementary quantum particles of electromagnetic radiation carrying energy proportional to wave frequency.",
+   "model": "Electromagnetic fields లేదా electromagnetic fields ద్వారా ఏర్పడే magnetic fields, దీనిని magnetic field లో ప్రభావితం చేస్తాయి."
+  },
+  {
+   "input": "define in Telugu: Magnetic field | context: Faraday's law of induction, also known as the flux rule, flux law, and Faraday–Lenz law, states that the electromotive force (emf) around a closed circuit is equal to the negative rate of change of the magnetic flux through the circuit. This rule holds for",
+   "gold_te": "Magnetic field అంటే కదిలే electric charges పై magnetic ప్రభావాన్ని వివరించే vector field.",
+   "gold_en": "A magnetic field is a vector field that describes the magnetic influence on moving electric charges.",
+   "model": "Magnetic field అంటే ఒక closed circuit చుట్టూ magnetic field ను ప్రవహింపజేయడానికి ఉపయోగించే ఒక నిర్దిష్ట magnetic field."
+  },
+  {
+   "input": "define in Telugu: Memory access | context: Most modern CPUs are so fast that, for most program workloads, the bottleneck is the locality of reference of memory accesses and the efficiency of the caching and memory transfer between different levels of the hierarchy.",
+   "gold_te": "CPU ఒక memory location కు data ను read లేదా write చేసే ప్రక్రియ, దీనిపై memory hierarchy ఎక్కువగా ప్రభావం చూపుతుంది.",
+   "gold_en": "The process by which a CPU reads or writes data to a memory location, which is heavily influenced by the memory hierarchy.",
+   "model": "Memory access అంటే ఒక నిర్దిష్ట hierarchical capacity ని నిర్ధారించే ప్రక్రియ, దీనిని తరచుగా shared memory నుండి shared memory కు map చేస్తారు."
+  },
+  {
+   "input": "define in Telugu: displacement current | context: Maxwell's addition states that magnetic fields also relate to changing electric fields, which Maxwell called displacement current.",
+   "gold_te": "Magnetic field కు source గా పనిచేసే, electric displacement field యొక్క మార్పు రేటును సూచించే రాశి.",
+   "gold_en": "A quantity representing the rate of change of electric displacement field that acts as a source of magnetic field.",
+   "model": "Magnetic fields మధ్య ఉన్న magnetic fields లో magnetic field యొక్క దిశను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Stream Control Transmission Protocol (SCTP) | context: Because DTLS uses UDP or SCTP rather than TCP, it avoids the TCP meltdown problem, when being used to create a VPN tunnel.",
+   "gold_te": "DTLS protocol తో కలిపి ఉపయోగించినప్పుడు secure communications ను support చేసే transport layer protocol.",
+   "gold_en": "is a transport layer protocol that supports secure communications when used in conjunction with the DTLS protocol.",
+   "model": "ఒక నిర్దిష్ట TCP packet ను పంపడానికి ఉపయోగించే TCP protocol; ఇది సాధారణంగా packet packets ను పంపడానికి ఉపయోగపడుతుంది."
+  },
+  {
+   "input": "define in Telugu: Minimum thermal energy | context: At absolute zero temperature, the system is in the state with the minimum thermal energy, the ground state.",
+   "gold_te": "Atomic లేదా molecular కదలిక సాధ్యమైనంత కనిష్ఠ స్థాయిలో ఉండే absolute zero వద్ద system యొక్క energy state.",
+   "gold_en": "The energy state of a system at absolute zero where atomic or molecular movement is at its lowest possible level.",
+   "model": "Minimum thermal energy అంటే ఒక నిర్దిష్ట thermal energy యొక్క absolute zero."
+  },
+  {
+   "input": "define in Telugu: inverse DTFT | context: An operation that recovers the discrete data sequence from the DTFT function is called an inverse DTFT.",
+   "gold_te": "Frequency-domain DTFT రూపం నుండి అసలు discrete time-domain sequence ను తిరిగి నిర్మించే గణిత operation.",
+   "gold_en": "A mathematical operation that reconstructs the original discrete time-domain sequence from its frequency-domain DTFT representation.",
+   "model": "రెండు discrete data sequences మధ్య తేడాను సూచించే mathematical operation."
+  },
+  {
+   "input": "define in Telugu: LeNet | context: In 1989, Yann LeCun et al. created a CNN called LeNet for recognizing handwritten ZIP codes on mail.",
+   "gold_te": "చేతితో రాసిన digits ను classify చేయడానికి అభివృద్ధి చేసిన ఒక మార్గదర్శక convolutional neural network architecture, దీన్ని bank checks process చేయడం వంటి తొలి applications లో తరచుగా ఉపయోగించారు.",
+   "gold_en": "A pioneering convolutional neural network architecture developed to classify handwritten digits, often used in early applications like processing bank checks.",
+   "model": "ఒక నిర్దిష్ట పార్టీ లేదా పార్టీ నుండి పంపిన codes ను గుర్తించడానికి ప్రత్యేకంగా రూపొందించిన networking agency."
+  },
+  {
+   "input": "define in Telugu: Open-loop gain | context: The first, labeled here as f180, is the frequency where the open-loop gain flips sign.",
+   "gold_te": "System చుట్టూ ఎలాంటి feedback loop కనెక్ట్ చేయకుండా కొలిచిన amplifier యొక్క amplification factor.",
+   "gold_en": "The amplification factor of an amplifier measured without any feedback loop connected around the system.",
+   "model": "Open-loop gain అనేది ఒక నిర్దిష్ట frequency వద్ద స్థిరంగా ఉండే గరిష్ట frequency."
+  },
+  {
+   "input": "define in Telugu: RMSSD | context: RMSSD (root mean square of successive differences), the square root of the mean of the squares of the successive differences between adjacent NNs.",
+   "gold_te": "RMSSD అంటే పక్కపక్కన ఉన్న NN intervals మధ్య వరుస తేడాల root mean square, ఇది short-term variability యొక్క time-domain కొలత.",
+   "gold_en": "RMSSD is the root mean square of successive differences between adjacent NN intervals, a time-domain measure of short-term variability.",
+   "model": "ఒక నిర్దిష్ట NN యొక్క square root ను సూచించే mathematical representation."
+  },
+  {
+   "input": "define in Telugu: Transform domain | context: In the transform domain, the process of reducing information is called quantization.",
+   "gold_te": "ముఖ్యమైన దృశ్య information ను తక్కువ ప్రాముఖ్యత ఉన్న detail నుండి వేరు చేయడానికి image data ను process చేసే frequency domain representation వంటి గణిత space.",
+   "gold_en": "A mathematical space, such as frequency domain representation, where image data is processed to separate important visual information from less significant detail.",
+   "model": "ఒక నిర్దిష్ట దిశలో information ను తొలగించడానికి మరియు దాని వల్ల errors ను గుర్తించడానికి ఉపయోగించే ప్రక్రియ."
+  },
+  {
+   "input": "define in Telugu: Subjectivity/objectivity identification | context:",
+   "gold_te": "ఇచ్చిన text ను factual information ఉన్న objective గా లేదా వ్యక్తిగత అభిప్రాయాలు మరియు తీర్పులు ఉన్న subjective గా classify చేసే task.",
+   "gold_en": "The task of classifying a given text into either objective, containing factual information, or subjective, containing personal opinions and judgments.",
+   "model": "ఒక నిర్దిష్ట entity యొక్క identity ను గుర్తించడానికి ఉపయోగించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Term supervised | context: The term \"supervised\" refers to the role of a teacher or supervisor who provides this training data, guiding the algorithm towards correct predictions.",
+   "gold_te": "ఇచ్చిన input కు సరైన output ఏమిటో సూచిస్తూ training సమయంలో అందించే label లేదా మార్గదర్శనం.",
+   "gold_en": "The label or guidance provided during training that indicates the correct output for a given input.",
+   "model": "Algorithms ను execute చేయడానికి, predictions కు మార్గనిర్దేశం చేయడానికి, మరియు predictions చేయడానికి అవసరమైన మార్గదర్శకత్వం ఇచ్చే teacher లేదా supervisor."
+  },
+  {
+   "input": "define in Telugu: SDLC methodology | context: The waterfall model is the earliest SDLC methodology.",
+   "gold_te": "Software products నిర్మాణంలోని వివిధ దశల గుండా development team కు దిశానిర్దేశం చేసే నియమాలు, పద్ధతులు మరియు procedures యొక్క నిర్వచించిన సమితి.",
+   "gold_en": "A defined set of rules, practices, and procedures that guide the development team through the various stages of building software products.",
+   "model": "SDLC methodology అనేది ఒక నిర్దిష్ట iterative iterative పద్ధతి, దీనిని తరచుగా SDLC algorithms గా ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Activation function | context: Aside from their empirical performance, activation functions also have different mathematical properties: Nonlinear When the activation function is non-linear, then a two-layer neural network can be proven to be a universal function approximator.",
+   "gold_te": "Activation function ఒక node యొక్క inputs మరియు weights ఆధారంగా దాని output ను లెక్కిస్తుంది, దీని వల్ల network సంక్లిష్టమైన, nonlinear problems ను పరిష్కరించగలుగుతుంది.",
+   "gold_en": "An activation function calculates a node's output based on its inputs and weights, enabling the network to solve complex, nonlinear problems.",
+   "model": "ఒక function యొక్క mathematical properties ను వివరించే mathematical function."
+  },
+  {
+   "input": "define in Telugu: Double-sideband amplitude modulation (DSBAM) | context: It was developed during the first quarter of the 20th century, beginning with Roberto Landell de Moura and Reginald Fessenden's radiotelephone experiments in 1900. This original form of AM is sometimes called double-sideband a",
+   "gold_te": "Carrier frequency కి పైన మరియు కింద రెండు వైపులా sidebands ను ఉత్పత్తి చేసే amplitude modulation రూపం.",
+   "gold_en": "A form of amplitude modulation that produces sidebands on both the upper and lower sides of the carrier frequency.",
+   "model": "రెండు bands మధ్య ఉండే amplitude modulation technique; దీని వల్ల frequency మరియు amplitude మధ్య తేడాను సూచిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Internet Engineering Task Force (IETF) | context: By the early 1990s, the rapid exhaustion of IPv4 address space available for assignment to Internet service providers and end-user organizations prompted the Internet Engineering Task Force (IETF) to explore new technologies to expa",
+   "gold_te": "IP addressing specifications తో సహా Internet standards ను అభివృద్ధి చేసి ప్రోత్సహించే సంస్థ.",
+   "gold_en": "The organization that develops and promotes Internet standards, including IP addressing specifications.",
+   "model": "Internet protocols మరియు networking technologies ను విస్తృతంగా ఉపయోగించే ఒక నిర్దిష్ట task force."
+  },
+  {
+   "input": "define in Telugu: Query language | context: In the 2000s, non-relational databases became popular, collectively referred to as NoSQL, because they use different query languages.",
+   "gold_te": "Data పై operations చేయడానికి ఉపయోగించే ప్రత్యేక syntax లేదా interface, ఇది system లో store చేసిన information ను అడగడానికి, filter చేయడానికి లేదా మార్చడానికి users కు వీలు కల్పిస్తుంది.",
+   "gold_en": "A specialized syntax or interface used to perform operations on data, allowing users to request, filter, or manipulate information stored within a system.",
+   "model": "Non-relational databases లో ఒక నిర్దిష్ట query language; ఇది query patterns ను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Thermal equilibrium | context: The zeroth law of thermodynamics provides the foundation for temperature as an empirical parameter in thermodynamic systems and establishes the transitive relation between the temperatures of multiple bodies in thermal equilibrium.",
+   "gold_te": "ఒకదానితో ఒకటి తాకుతున్న రెండు systems యొక్క temperatures ఒకేలా ఉండటం వల్ల అవి heat మార్పిడి ఆపేసినప్పుడు ఏర్పడే స్థితి.",
+   "gold_en": "A condition reached when two systems in contact cease to exchange heat because their temperatures are identical.",
+   "model": "Thermodynamic systems లో temperatures మరియు temperatures మధ్య తేడాను సూచించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: fast Fourier transform (FFT) | context: Compared to an -length DFT, the summation/overlap causes decimation in frequency, leaving only DTFT samples least affected by spectral leakage. That is usually a priority when implementing an FFT filter-bank (channelizer).",
+   "gold_te": "Discrete Fourier transform ను నేరుగా లెక్కించడం కంటే చాలా వేగంగా compute చేయడానికి ప్రత్యేకంగా రూపొందించిన సమర్థవంతమైన computational algorithm.",
+   "gold_en": "An efficient computational algorithm specifically designed to compute the discrete Fourier transform much faster than direct evaluation.",
+   "model": "Fourier transform యొక్క frequency మరియు frequency మధ్య తేడాను సూచించే Fourier transform."
+  },
+  {
+   "input": "define in Telugu: Nondeterministic pushdown automaton | context: A given input string may drive a nondeterministic pushdown automaton to one of several configuration sequences; if one of them leads to an accepting configuration after reading the complete input string, the latter is said to belong to",
+   "gold_te": "ఇచ్చిన state, input మరియు stack symbol కు అనేక transitions సాధ్యమయ్యే pushdown automaton, ఇది అన్ని context-free languages ను గుర్తించగలదు.",
+   "gold_en": "A pushdown automaton where multiple transitions are possible for a given state, input, and stack symbol, allowing it to recognize all context-free languages.",
+   "model": "Nondeterministic pushdown automaton అనేది ఒక నిర్దిష్ట sequence లో ఒకే language లో ఉండే automaton."
+  },
+  {
+   "input": "define in Telugu: Learned function | context: The accuracy of the learned function depends strongly on how the input object is represented.",
+   "gold_te": "Training ప్రక్రియలో ఒక machine learning model approximate చేసే function.",
+   "gold_en": "The function that a machine learning model approximates during the training process.",
+   "model": "Input object యొక్క accuracy మరియు accuracy ని నిర్ధారించే mathematical representation."
+  },
+  {
+   "input": "define in Telugu: Height difference | context: If during a modifying operation the height difference between two child subtrees changes, this may, as long as it is < 2, be reflected by an adaption of the balance information at the parent.",
+   "gold_te": "Balance factor అంటే binary tree లోని ఒక node యొక్క left మరియు right child sub-trees మధ్య ఉన్న height తేడా.",
+   "gold_en": "The balance factor is the height difference between the left and right child sub-trees of a node in a binary tree.",
+   "model": "ఒక నిర్దిష్ట subtree యొక్క height difference, ఇది దాని height difference ను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Neurovisceral integration model | context: The neurovisceral integration model describes how the prefrontal cortex regulates activity in limbic structures which act to suppress parasympathetic nervous system (PSNS) activity and activate sympathetic nervous system (SNS) circuits.",
+   "gold_te": "Neurovisceral integration model, central autonomic network ను భావోద్వేగ మరియు శారీరక నియంత్రణ కోసం నిర్ణయాలు తీసుకునేదిగా చూస్తుంది.",
+   "gold_en": "The neurovisceral integration model views the central autonomic network as a decision-maker for emotional and physiological regulation.",
+   "model": "Neurovisceral integration model అనేది muscles మరియు muscles మధ్య సంబంధాన్ని విశ్లేషించడానికి ఉపయోగించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Prototype-based language | context: Prototype-based languages also allow objects to have their own unique properties, so the apple object might have an attribute sugarcontent, while the orange or fruit objects do not.",
+   "gold_te": "Objects classes నుండి కాకుండా నేరుగా ఇతర objects నుండి inherit చేసుకునే programming paradigm.",
+   "gold_en": "A programming paradigm where objects inherit directly from other objects rather than from classes.",
+   "model": "Breadth లేదా leaf లాంటి objects యొక్క ప్రత్యేక identity ను వ్యక్తపరిచే language."
+  },
+  {
+   "input": "define in Telugu: Sigma-algebra | context: Because of various difficulties (e.g. the Banach–Tarski paradox) that arise if such sets are insufficiently constrained, it is necessary to introduce what is termed a sigma-algebra to constrain the possible sets over which probabilities can be defined.",
+   "gold_te": "Empty set ను కలిగి ఉండి, complementation మరియు countable unions కింద closed గా ఉండే ఒక sample space యొక్క subsets సమూహం.",
+   "gold_en": "A collection of subsets of a sample space containing the empty set and closed under complementation and countable unions.",
+   "model": "ఒక నిర్దిష్ట probability distribution ను సూచించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Dynamic Host Configuration Protocol (DHCP) | context: Dynamic Host Configuration Protocol (DHCP) is the most frequently used technology for assigning addresses.",
+   "gold_te": "Local network లోని devices కు IP addresses ను స్వయంచాలకంగా కేటాయించే network protocol.",
+   "gold_en": "A network protocol that automatically assigns IP addresses to devices on a local network.",
+   "model": "ఒక నిర్దిష్ట domain లో addresses ను సూచించే networking protocol; దీన్ని తరచుగా shared computers లేదా shared computers కోసం ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Measure | context: The measure is called the \"(probability) distribution of \" or the \"law of \".",
+   "gold_te": "ఇచ్చిన set యొక్క measurable subsets కు size లేదా volume ను సూచించే non-negative real number ను కేటాయించే క్రమబద్ధమైన function.",
+   "gold_en": "A systematic function that assigns a non-negative real number to measurable subsets of a given set, representing size or volume.",
+   "model": "ఒక నిర్దిష్ట probability distribution ను సూచించే mathematical representation; దీని వల్ల probability distribution మరియు probability distribution మధ్య తేడాను నిర్ణయించవచ్చు."
+  },
+  {
+   "input": "define in Telugu: Successive differences | context: RMSSD (root mean square of successive differences), the square root of the mean of the squares of the successive differences between adjacent NNs.",
+   "gold_te": "Successive differences అంటే పక్కపక్కన ఉన్న NN intervals మధ్య తేడాలు, వీటిని RMSSD మరియు SDSD వంటి కొలతలను లెక్కించడానికి ఉపయోగిస్తారు.",
+   "gold_en": "Successive differences are the differences between adjacent NN intervals, used to calculate measures like RMSSD and SDSD.",
+   "model": "ఒక నిర్దిష్ట NN యొక్క square root ను సూచించే statistical values యొక్క సంఖ్య, ఇవి సాధారణంగా NNs మరియు NNs మధ్య తేడాను సూచిస్తాయి."
+  },
+  {
+   "input": "define in Telugu: Pulse number | context: This type of rectifier is said to have a pulse number of three, since the output voltage on the DC side contains three distinct pulses per cycle of the grid frequency: The peak values of this three-pulse DC voltage are calculated from the RMS value of the in",
+   "gold_te": "Input AC యొక్క ప్రతి cycle కు DC output లో వచ్చే voltage pulses సంఖ్య.",
+   "gold_en": "The number of voltage pulses occurring in the DC output per cycle of the input AC.",
+   "model": "ఒకే దిశలో ఉండే ఒక నిర్దిష్ట frequency, ఇది గరిష్ట frequency spectrum ను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Online algorithm | context: Efficiency of randomized online algorithms for the paging problem is measured using amortized analysis.",
+   "gold_te": "భవిష్యత్ page requests గురించి తెలియకుండానే real-time లో replacement నిర్ణయాలు తీసుకోవలసిన algorithm.",
+   "gold_en": "An algorithm that must make replacement decisions without knowledge of future page requests, operating in real-time.",
+   "model": "ఒక నిర్దిష్ట algorithm యొక్క efficiency ని మెరుగుపరచడానికి ఉపయోగించే algorithm."
+  },
+  {
+   "input": "define in Telugu: Logical operation | context: A logic gate is a device that performs a Boolean function, a logical operation performed on one or more binary inputs that produces a single binary output.",
+   "gold_te": "ఒకటి లేదా అంతకంటే ఎక్కువ binary inputs పై చేసి, ఒకే binary output ను ఇచ్చే logical operation.",
+   "gold_en": "A logical operation performed on one or more binary inputs that produces a single binary output.",
+   "model": "Logical operation అంటే ఒక నిర్దిష్ట binary output ను సూచించే mathematical operation."
+  },
+  {
+   "input": "define in Telugu: Operating system | context: In computer operating systems, memory paging is a memory management scheme that introduces a level of indirection between physical and logical addresses and allows the physical memory used by a program to be non-contiguous.",
+   "gold_te": "Computer hardware మరియు software resources ను manage చేసే system software, ఇది user, hardware మరియు నడుస్తున్న applications మధ్య ప్రాథమిక interface గా పనిచేస్తుంది.",
+   "gold_en": "System software that manages computer hardware and software resources, serving as the fundamental interface between the user, hardware, and running applications.",
+   "model": "Operating system అంటే physical మరియు logical addresses మధ్య సంబంధాన్ని నిర్ధారించే computer architecture."
+  },
+  {
+   "input": "define in Telugu: Random variate | context: A random variate is a particular outcome or realization of a random variable.",
+   "gold_te": "ఒక random variable యొక్క probability distribution నుండి సాకారమైన ఒక నిర్దిష్ట సంఖ్యా విలువ.",
+   "gold_en": "A specific numerical value realized or instantiated from the probability distribution of a random variable.",
+   "model": "Random variable అనేది ఒక నిర్దిష్ట outcome లేదా result ను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: ANSI | context: There are two sets of symbols for elementary logic gates in common use, both defined in ANSI/IEEE Std 91-1984 and its supplement ANSI/IEEE Std 91a-1991.",
+   "gold_te": "Logic gate symbols మరియు engineering practices కోసం standards ప్రచురించే ఒక American national standards సంస్థ.",
+   "gold_en": "An American national standards organization that publishes standards for logic gate symbols and engineering practices.",
+   "model": "IEEE Std 91a-1991 అనేది ఒక ప్రత్యేక ANSI symbols set; ఇది IEEE standard గా పనిచేస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Vector control | context: Vector control allows independent control of the speed and torque of the motor, making it possible to maintain a constant rotation speed at varying load torque.",
+   "gold_te": "Vector mathematics ఉపయోగించి flux మరియు torque components ను వేరు చేసే AC motors కోసం ఒక ఆధునిక control పద్ధతి.",
+   "gold_en": "A modern control method for AC motors that decouples flux and torque components using vector mathematics.",
+   "model": "Vector control అంటే rotation speed మరియు torque మధ్య తేడాను సూచించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Root mean square (RMS) | context: The no-load output DC voltage of an ideal half-wave rectifier for a sinusoidal input voltage is: where: Vdc, Vav – the DC or average output voltage, Vpeak, the peak value of the phase input voltages, Vrms, the root mean square (RMS) value of output",
+   "gold_te": "Alternating current లేదా voltage యొక్క effective value, ఇది power లెక్కల కోసం దాని DC సమానమైన విలువను సూచిస్తుంది.",
+   "gold_en": "The effective value of an alternating current or voltage, representing its DC equivalent for power calculations.",
+   "model": "Root mean square (RMS) అనేది phase input voltage యొక్క average value."
+  },
+  {
+   "input": "define in Telugu: Carrier wave | context: In this sense, the carrier wave, which has a much higher frequency than the message signal, carries the information.",
+   "gold_te": "Message signal ద్వారా తన లక్షణాల్లో ఒకటి మార్చబడటం ద్వారా information ను తీసుకువెళ్ళే high-frequency waveform.",
+   "gold_en": "A high-frequency waveform that carries information by having one of its properties modified by a message signal.",
+   "model": "Message signal యొక్క frequency మరియు frequency మధ్య తేడాను సూచించే frequency."
+  },
+  {
+   "input": "define in Telugu: progressive JPEG | context: There is also an interlaced progressive JPEG format, in which data is compressed in multiple passes of progressively higher detail.",
+   "gold_te": "Image ను క్రమంగా పెరిగే detail తో అనేక passes లో చూపించే JPEG format యొక్క ఒక రూపాంతరం, దీని వల్ల తక్కువ quality preview త్వరగా load అవుతుంది.",
+   "gold_en": "A variation of the JPEG format that displays the image in multiple passes of increasing detail, allowing a low-quality preview to load quickly.",
+   "model": "JPEG అనేది ఒక నిర్దిష్ట JPEG format; దీన్ని తరచుగా compression మరియు compression కోసం ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: short-time Fourier transform (STFT) | context: The STFT is invertible, that is, the original signal can be recovered from the transform by the inverse STFT.",
+   "gold_te": "కాలంతో మారే signal యొక్క చిన్న, overlapping segments పై Fourier transform లెక్కించి, కాలక్రమంలో frequency content లో మార్పులను విశ్లేషించే గణిత technique.",
+   "gold_en": "A mathematical technique that calculates the Fourier transform over short, overlapping segments of a time-varying signal to analyze frequency content changes over time.",
+   "model": "Fourier transform అనేది ఒక signal యొక్క ప్రస్తుత స్థితికి దగ్గరగా ఉండే Fourier transform; దీనిని తరచుగా Fourier transform లో ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Maximum power theorem | context: A refinement of the maximum power theorem says that any reactive components of source and load should be of equal magnitude but opposite sign.",
+   "gold_te": "Load impedance, source impedance యొక్క complex conjugate కు సమానమైనప్పుడు గరిష్ఠ power transfer జరుగుతుందని చెప్పే theorem.",
+   "gold_en": "A theorem stating that maximum power transfer occurs when load impedance equals the complex conjugate of source impedance.",
+   "model": "Maximum power theorem అంటే reactive components యొక్క గరిష్ట magnitude ను సూచించే theorem."
+  },
+  {
+   "input": "define in Telugu: Electric field vector | context: Electromagnetic waves (such as light), traveling in free space or another homogeneous isotropic non-attenuating medium, are properly described as transverse waves, meaning that a plane wave's electric field vector E and magnetic field H are each in ",
+   "gold_te": "ఒక point వద్ద electric field యొక్క magnitude ను మరియు తక్షణ orientation దిశను సూచించే vector.",
+   "gold_en": "Vector representing the magnitude and instantaneous orientation direction of an electric field at a point.",
+   "model": "Electric field vector అంటే magnetic field యొక్క ఒక నిర్దిష్ట దిశలో ప్రవహించే దిశ."
+  },
+  {
+   "input": "define in Telugu: CAP theorem | context: In database theory, the CAP theorem, also named Brewer's theorem after computer scientist Eric Brewer, states that any distributed data store can provide at most two of the following three guarantees: Consistency Every read receives the most recent write or a",
+   "gold_te": "ఒక distributed data store consistency, availability మరియు partition tolerance అనే మూడు guarantees లో ఏకకాలంలో గరిష్ఠంగా రెండింటిని మాత్రమే అందించగలదని చెప్పే ప్రాథమిక సూత్రం.",
+   "gold_en": "A foundational principle stating that a distributed data store can simultaneously provide at most two out of three guarantees: consistency, availability, and partition tolerance.",
+   "model": "ఒక నిర్దిష్ట data store యొక్క గరిష్ట capacity ని నిర్ధారించే theorem."
+  },
+  {
+   "input": "define in Telugu: Circular birefringence | context: Circular birefringence is also termed optical activity, especially in chiral fluids, or Faraday rotation, when due to the presence of a magnetic field along the direction of propagation.",
+   "gold_te": "Left-handed మరియు right-handed circularly polarized light కు వేర్వేరు refractive indices ఉండే medium యొక్క optical లక్షణం.",
+   "gold_en": "Optical property of a medium having different refractive indices for left-handed and right-handed circularly polarized light.",
+   "model": "ఒకే దిశలో magnetic field ప్రవహించే ఒక రకమైన optical activity."
+  },
+  {
+   "input": "define in Telugu: Employee class | context: For example, instead of inheriting from class Person, the Employee class could simply contain a Person object. This lets the Employee class control how much of Person it exposes to other parts of the program.",
+   "gold_te": "ఒక subclass ఒక super-class నుండి ఎలా inherit చేసుకుంటుందో వివరించడానికి వ్యాసంలో ఉపయోగించిన ఒక ఉదాహరణ class.",
+   "gold_en": "An example class used in the article to illustrate how a subclass inherits from a super-class.",
+   "model": "Employee class అంటే ఒక నిర్దిష్ట వర్గం, దీనిని ప్రత్యేకంగా define చేయడానికి ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Source code | context: The following 8086 assembly source code is for a subroutine named strtolower that copies a null-terminated ASCIIZ character string from one location to another, converting all alphabetic characters to lower case.",
+   "gold_te": "Source code అంటే ఒక programming language లో రాసిన, మనుషులు చదవగల text, దీన్ని compiler machine code గా translate చేస్తుంది.",
+   "gold_en": "Source code is the human-readable text written in a programming language that a compiler translates into machine code.",
+   "model": "Source code అనేది ఒక నిర్దిష్ట alphabetic character string ను సూచించే source code."
+  },
+  {
+   "input": "define in Telugu: Carrier wave | context: Phase-shift keying (PSK) is a digital modulation process which conveys data by changing (modulating) the phase of a constant frequency carrier wave.",
+   "gold_te": "Communication systems లో information ను తీసుకువెళ్ళడానికి మార్చబడే పునాది signal గా పనిచేసే నిరంతరంగా oscillate అయ్యే sinusoidal wave.",
+   "gold_en": "A continuous oscillating sinusoidal wave that acts as the foundation signal which is modified to carry information in communication systems.",
+   "model": "Frequency shift keying అంటే digital modulation process లో ఒక నిర్దిష్ట frequency మరియు frequency మధ్య తేడాను సూచించే frequency."
+  },
+  {
+   "input": "define in Telugu: Helical spring | context: Consider a simple helical spring that has one end attached to some fixed object, while the free end is being pulled by a force whose magnitude is Fs.",
+   "gold_te": "Helix ఆకారంలో చుట్టిన wire తో తయారైన ఒక రకమైన spring, load ప్రయోగించినప్పుడు ఇది తన axis వెంబడి linear గా deform అవుతుంది.",
+   "gold_en": "A type of spring made from a wire coiled into a helix, which deforms linearly along its axis when a load is applied.",
+   "model": "ఒక fixed object యొక్క ఒకే దిశలో ప్రవహించే force, ఇది దాని magnitude మరియు magnitude ను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Constructor | context: An object is created via the constructor.",
+   "gold_te": "కొత్తగా సృష్టించిన object యొక్క attributes కు ప్రారంభ values ఇచ్చి initialize చేయడానికి ఉపయోగించే ప్రత్యేక method.",
+   "gold_en": "A special method used to initialize a newly created object with initial values for its attributes.",
+   "model": "ఒక నిర్దిష్ట entity లేదా entity యొక్క ప్రత్యేక identity ను సూచించే entity."
+  },
+  {
+   "input": "define in Telugu: Active high output | context: Use of these alternative symbols can make logic circuit diagrams much clearer and help to show accidental connection of an active high output to an active low input or vice versa.",
+   "gold_te": "Logical true condition ను సూచించడానికి high voltage state లో ఉండే output signal.",
+   "gold_en": "An output signal that is in a high voltage state to represent a logical true condition.",
+   "model": "ఒక నిర్దిష్ట logical circuit లో errors ను గుర్తించడానికి మరియు errors ను సరిచేయడానికి ఉపయోగించే symbols."
+  },
+  {
+   "input": "define in Telugu: Stator magnetic field | context: The induction motor's stator magnetic field is therefore changing or rotating relative to the rotor.",
+   "gold_te": "Rotor windings లో currents ను induce చేసే, stator windings ఉత్పత్తి చేసే తిరిగే magnetic flux.",
+   "gold_en": "The rotating magnetic flux generated by the stator windings that induces currents in the rotor windings.",
+   "model": "Induction motor యొక్క magnetic field యొక్క ఒక నిర్దిష్ట దిశ; ఇది rotor magnetic field గా పనిచేస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Classful network | context: Classful network design allowed for a larger number of individual network assignments and fine-grained subnetwork design.",
+   "gold_te": "IP address space ను స్థిర పరిమాణం గల classes A, B మరియు C గా విభజించే, ఇప్పుడు వాడుకలో లేని addressing scheme.",
+   "gold_en": "An obsolete addressing scheme that divides the IP address space into fixed-size classes A, B, and C.",
+   "model": "Classful network అంటే ఒక నిర్దిష్ట subnet కు సమానంగా ఉండే network architecture; దీని వల్ల తరచుగా assignments మరియు assignments సమర్థవంతంగా ఉంటుంది."
+  },
+  {
+   "input": "define in Telugu: Column rank | context: The column rank of A is the dimension of the column space of A, while the row rank of A is the dimension of the row space of A. A fundamental result in linear algebra is that the column rank and the row rank are always equal.",
+   "gold_te": "ఒక matrix లోని linearly independent columns యొక్క గరిష్ఠ సంఖ్య, ఇది దాని column space యొక్క dimension కు సమానం.",
+   "gold_en": "The maximum number of linearly independent columns in a matrix, equal to the dimension of its column space.",
+   "model": "ఒక column యొక్క row rank అనేది ఒక నిర్దిష్ట row rank; ఇది linear algebra లో ఉపయోగించబడుతుంది."
+  },
+  {
+   "input": "define in Telugu: Linear address space | context: The maximum linear address space is limited to 64 KB, simply because internal address/index registers are only 16 bits wide.",
+   "gold_te": "Segmentation అమలు చేయక ముందు, CPU తన అంతర్గత 16-bit registers ఉపయోగించి address చేయగల గరిష్ఠ memory.",
+   "gold_en": "The maximum memory addressable by the CPU using its internal 16-bit registers before segmentation is applied.",
+   "model": "Linear address space అంటే ఒక నిర్దిష్ట physical address యొక్క గరిష్ట పరిధి."
+  },
+  {
+   "input": "define in Telugu: Context-free grammar | context: Every context-free grammar can be transformed into an equivalent nondeterministic pushdown automaton.",
+   "gold_te": "ఒక formal language లో strings ను generate చేయడానికి ఉపయోగించే production rules తో కూడిన formal system, వీటిని సమానమైన pushdown automaton ద్వారా parse చేయవచ్చు.",
+   "gold_en": "A formal system consisting of production rules used to generate strings in a formal language, which can be parsed by an equivalent pushdown automaton.",
+   "model": "Context-free grammar అనేది ఒక grammatical framework ను సూచించే grammatical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Transition relation | context: The ∪ component of the transition relation is used to formalize that the PDA can either read a letter from the input, or proceed leaving the input untouched.",
+   "gold_te": "ప్రస్తుత state, input మరియు stack top ఆధారంగా ఒక automaton తన state ను ఎలా మార్చుకుంటుందో మరియు stack ను ఎలా మారుస్తుందో నిర్వచించే formal నియమాల సమితి.",
+   "gold_en": "A formal set of rules that defines how an automaton changes state and modifies its stack based on current state, input, and stack top.",
+   "model": "PDA యొక్క transition relation అనేది ఒక నిర్దిష్ట transition ను formalize చేయడానికి ఉపయోగించే ఒక formal relation."
+  },
+  {
+   "input": "define in Telugu: Breakdown torque | context: As the load torque increases beyond breakdown torque the motor stalls.",
+   "gold_te": "ఒక motor stall అయ్యే ముందు అభివృద్ధి చేయగల గరిష్ఠ torque, Design B motors కు ఇది సాధారణంగా rated torque లో 175-300% ఉంటుంది.",
+   "gold_en": "The maximum torque a motor can develop before stalling, typically 175-300% of rated torque for Design B motors.",
+   "model": "External load torque తో పోలిస్తే motor stalls వద్ద torque ప్రభావం చూపే torque."
+  },
+  {
+   "input": "define in Telugu: Algorithm | context: An algorithm is said to run in sub-linear time (often spelled sublinear time) if.",
+   "gold_te": "ఒక నిర్దిష్ట problem ను పరిష్కరించడానికి కొంత value ను input గా తీసుకుని ఒక value ను output గా ఇచ్చే స్పష్టంగా నిర్వచించిన computational procedure.",
+   "gold_en": "A well-defined computational procedure that takes some value as input and produces a value as output to solve a specific problem.",
+   "model": "ఒక నిర్దిష్ట sublinear time-invariant algorithm ను సూచించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: IP address | context: An Internet Protocol address (IP address) is a numerical label, such as 192.168.1.1 or 2001:0db8:0000:0000:0000:8a2e:0370:7334, that is assigned to a device connected to a computer network that uses the Internet Protocol for communication.",
+   "gold_te": "Identification మరియు location addressing కోసం network లోని ఒక device కు కేటాయించే సంఖ్యా label.",
+   "gold_en": "A numerical label assigned to a device on a network to enable identification and location addressing.",
+   "model": "Internet Protocol అనేది ఒక నిర్దిష్ట computer network కు కేటాయించే numerical label."
+  },
+  {
+   "input": "define in Telugu: NMOS | context: In 1957, Frosch and Derick were able to manufacture PMOS and NMOS planar gates.",
+   "gold_te": "Hole channel గా పనిచేసే ఒక రకమైన MOSFET, దీన్ని CMOS logic లో pull-up transistor గా ఉపయోగిస్తారు.",
+   "gold_en": "A type of MOSFET that acts as a hole channel, used as a pull-up transistor in CMOS logic.",
+   "model": "Integrated circuits ఉపయోగించి integrated circuits ను నిర్మించడానికి రూపొందించిన integrated circuit రకం."
+  },
+  {
+   "input": "define in Telugu: ISO | context: The \"Joint\" stood for ISO TC97 WG8 and CCITT SGVIII.",
+   "gold_te": "వివిధ technologies లో quality, safety మరియు efficiency ని నిర్ధారించడానికి technical standards ను అభివృద్ధి చేసి ప్రచురించే అంతర్జాతీయ standard-setting సంస్థ.",
+   "gold_en": "An international standard-setting body that develops and publishes technical standards to ensure quality, safety, and efficiency in various technologies.",
+   "model": "Integrated circuits యొక్క ఒక నిర్దిష్ట cluster; దీనిని ISO కోసం ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: Maskable interrupts | context: Non-maskable interrupts are higher priority than maskable interrupts.",
+   "gold_te": "Maskable interrupts అనేవి అంతరాయం కలగకుండా CPU disable చేయగల external hardware signals.",
+   "gold_en": "Maskable interrupts are external hardware signals that can be disabled by the CPU to prevent interruption.",
+   "model": "Non-maskable interrupts అంటే delay ను తగ్గించడానికి ఉపయోగించే interrupts."
+  },
+  {
+   "input": "define in Telugu: Basis polarizations | context: Well known manifestations of linear birefringence (that is, in which the basis polarizations are orthogonal linear polarizations) appear in optical wave plates/retarders and many crystals.",
+   "gold_te": "ఏదైనా polarization state ను సూచించడానికి reference basis గా ఉపయోగించే orthogonal polarization states సమితి.",
+   "gold_en": "Set of orthogonal polarization states used as a reference basis to represent any arbitrary state of polarization.",
+   "model": "Base polarizations అంటే optical wave structures లో ఒకే దిశలో ఉండే optical structures; వీటిని తరచుగా gradients లేదా gradients గా ఉపయోగిస్తారు."
+  },
+  {
+   "input": "define in Telugu: generalized Sturm chain | context: Using the Routh–Hurwitz theorem, we can replace the condition on p and q by a condition on the generalized Sturm chain, which will give in turn a condition on the coefficients of ƒ.",
+   "gold_te": "వరుస Euclidean divisions ద్వారా నిర్మించే polynomials sequence, దీన్ని roots పంపిణీని అంచనా వేయడానికి Routh-Hurwitz theorem లో ఉపయోగిస్తారు.",
+   "gold_en": "A sequence of polynomials constructed through successive Euclidean divisions, used in the Routh-Hurwitz theorem to evaluate root distribution.",
+   "model": "ఒకే దిశలో ఉండే ఒక నిర్దిష్ట దిశ, ఇది దాని coefficients ను సూచించడానికి ఉపయోగపడుతుంది."
+  },
+  {
+   "input": "define in Telugu: SDNN | context: Time-domain methods are based on the beat-to-beat or NN intervals (typically determined from RR intervals), which are analysed to give variables such as: SDNN (standard deviation of NN intervals).",
+   "gold_te": "SDNN (standard deviation of NN intervals) అనేది ఒక recording period లో heart rate variability యొక్క అన్ని cyclic components ను ప్రతిబింబించే time-domain కొలత.",
+   "gold_en": "SDNN (standard deviation of NN intervals) is a time-domain measure reflecting all cyclic components of heart rate variability over a recording period.",
+   "model": "NN intervals యొక్క standard deviation, ఇది NN మధ్య తేడాను సూచిస్తుంది."
+  },
+  {
+   "input": "define in Telugu: Magnetic flux | context: The magnetic flux is defined as the surface integral of the magnetic field B over a time-dependent surface Σ(t), whose boundary is the wire loop: ∬ ⋅ where dA is an infinitesimal area vector normal to the surface.",
+   "gold_te": "ఇచ్చిన area పై magnetic field యొక్క surface integral, ఇది దాని గుండా వెళ్ళే మొత్తం magnetic field ను సూచిస్తుంది.",
+   "gold_en": "The surface integral of the magnetic field over a given area, representing the total magnetic field passing through.",
+   "model": "ఒక నిర్దిష్ట magnetic field యొక్క boundary ను సూచించే mathematical పద్ధతి."
+  },
+  {
+   "input": "define in Telugu: Low-pass | context: To create a straight-line plot for a first-order (one-pole) low-pass filter, one considers the normalized form of the transfer function in terms of the angular frequency: The Bode plot is shown in Figure 1(b) above, and construction of the straight-line approxim",
+   "gold_te": "Low-frequency signals ను పంపించి, నిర్దేశించిన cutoff కంటే ఎక్కువ frequencies ఉన్న signals ను attenuate చేసే filter configuration.",
+   "gold_en": "A filter configuration that allows low-frequency signals to pass while attenuating signals with frequencies above a designated cutoff.",
+   "model": "రెండు poles మధ్య ఉన్న దూరంలో ఉండే ఒక నిర్దిష్ట approximation; దీని వల్ల angular frequency మరియు frequency మధ్య తేడాను సూచిస్తారు."
+  }
+ ],
+ "task": "m2_te",
+ "base": "google/mt5-base",
+ "params_m": 582,
+ "train_rows": 1283,
+ "best_val_loss": 2.9933,
+ "log": [
+  {
+   "epoch": 1,
+   "train_loss": 7.8035,
+   "val_loss": 3.4942,
+   "secs": 112
+  },
+  {
+   "epoch": 2,
+   "train_loss": 3.7348,
+   "val_loss": 3.1577,
+   "secs": 113
+  },
+  {
+   "epoch": 3,
+   "train_loss": 3.1154,
+   "val_loss": 3.0609,
+   "secs": 113
+  },
+  {
+   "epoch": 4,
+   "train_loss": 2.753,
+   "val_loss": 3.0487,
+   "secs": 113
+  },
+  {
+   "epoch": 5,
+   "train_loss": 2.5252,
+   "val_loss": 2.9933,
+   "secs": 113
+  },
+  {
+   "epoch": 6,
+   "train_loss": 2.3043,
+   "val_loss": 3.0795,
+   "secs": 113
+  },
+  {
+   "epoch": 7,
+   "train_loss": 2.1227,
+   "val_loss": 3.0771,
+   "secs": 113
+  }
+ ],
+ "minutes": 14.7
+}
