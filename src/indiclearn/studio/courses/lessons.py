@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import random
 import re
@@ -81,25 +82,58 @@ def index(db: Database, user_id: str, subject: str = "os") -> dict[str, Any]:
             "books": syl.get("books", []), "links": syl.get("links", [])}
 
 
-def _telugu(db: Database, d: dict, brain: Any, subject: str = "os") -> dict | None:
-    """Telugu lesson: built in at build time, else translated once (by whichever AI engine answers) and cached for everyone."""
+def _cached_te(db: Database, d: dict, subject: str) -> dict | None:
     if d.get("te"):
         return d["te"]
     r = db.one("SELECT payload_json FROM lesson_i18n WHERE subject=? AND topic=? AND lang='te'", (subject, d["topic"]))
-    if r:
-        return jload(r["payload_json"])
-    if brain is None or not getattr(brain, "available", False):
+    return normalize(jload(r["payload_json"])) if r else None
+
+
+def _hosted(brain: Any) -> Any:
+    """Only online engines translate a whole lesson: a laptop model would keep the student waiting for many minutes."""
+    if brain is None:
         return None
-    with _TE_LOCKS.setdefault(subject + "/" + d["topic"], threading.Lock()):  # two students opening it at once: translate once
-        r = db.one("SELECT payload_json FROM lesson_i18n WHERE subject=? AND topic=? AND lang='te'", (subject, d["topic"]))
-        if r:
-            return jload(r["payload_json"])
-        te = translate(brain, d["en"], "te")
-        if te:
-            db.run("INSERT OR REPLACE INTO lesson_i18n(subject,topic,lang,payload_json,created_at) VALUES (?,?,?,?,?)", (subject, d["topic"], "te", jdump(te), now()))
-        return te
+    hosted = [p for p in getattr(brain, "providers", []) if not p.local]
+    if not any(p.ok() for p in hosted):
+        return None
+    view = copy.copy(brain)
+    view.providers = hosted
+    return view
 
 
+def _telugu(db: Database, d: dict, brain: Any, subject: str = "os") -> tuple[dict | None, bool]:
+    """(Telugu lesson or None, being prepared). Never blocks the page: a missing translation is made in the background,
+    once, by whichever online engine answers, and cached for every student."""
+    te = _cached_te(db, d, subject)
+    if te:
+        return te, False
+    key = subject + "/" + d["topic"]
+    if key in _TE_RUNNING:
+        return None, True
+    view = _hosted(brain)
+    if view is None:
+        return None, False
+
+    def work() -> None:
+        try:
+            with _TE_LOCKS.setdefault(key, threading.Lock()):
+                if _cached_te(db, d, subject):
+                    return
+                out = translate(view, d["en"], "te")
+                if out:
+                    db.run("INSERT OR REPLACE INTO lesson_i18n(subject,topic,lang,payload_json,created_at) VALUES (?,?,?,?,?)",
+                           (subject, d["topic"], "te", jdump(out), now()))
+        except Exception:  # pragma: no cover - English stays available
+            pass
+        finally:
+            _TE_RUNNING.discard(key)
+
+    _TE_RUNNING.add(key)
+    threading.Thread(target=work, daemon=True).start()
+    return None, True
+
+
+_TE_RUNNING: set[str] = set()
 _TE_LOCKS: dict[str, threading.Lock] = {}
 
 
@@ -240,7 +274,7 @@ def lesson(db: Database, user_id: str, topic_id: str, lang: str = "en", seed: in
     d = lessons(subject).get(topic_id)
     if not d:
         raise P.PaperError("This lesson is not ready yet.")
-    te = _telugu(db, d, brain, subject) if lang == "te" else None
+    te, te_pending = _telugu(db, d, brain, subject) if lang == "te" else (None, False)
     body = _with_rules(te if te else d["en"], t.get("numerical"), "te" if te else "en", subject)
     rng = random.Random(seed)
     example = None
@@ -256,7 +290,7 @@ def lesson(db: Database, user_id: str, topic_id: str, lang: str = "en", seed: in
         db.run("INSERT OR IGNORE INTO lesson_progress(user_id,subject,topic,status,updated_at) VALUES (?,?,?,?,?)", (user_id, subject, topic_id, "opened", now()))
     nav = lambda i: {"id": order[i][1]["id"], "label": order[i][1]["label"]} if 0 <= i < len(order) else None  # noqa: E731
     return {"subject": subject, "topic": topic_id, "unit": {"id": u["id"], "title": u["title"]}, "label": t["label"], "lang": "te" if te else "en",
-            "has_telugu": bool(d.get("te")), "lesson": body, "example": example, "check": check, "status": (st["status"] if st else "opened"),
+            "has_telugu": bool(d.get("te")), "te_pending": te_pending, "lesson": body, "example": example, "check": check, "status": (st["status"] if st else "opened"),
             "refs": t.get("refs", []), "prereq": [{"id": x, "label": lbl} for x in t.get("prereq", []) for lbl in [_label(subject, x)] if lbl],
             "prev": nav(pos - 1), "next": nav(pos + 1)}
 

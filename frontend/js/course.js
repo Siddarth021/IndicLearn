@@ -19,7 +19,7 @@ const L = {
     terms: "Key terms", example: "Worked example", newex: "New example", show_sol: "Show solution", hide_sol: "Hide solution",
     draw: "Be able to draw", tips: "How to score full marks", mistakes: "Common mistakes", check: "Quick check",
     mark: "✓ Mark as learned", marked: "✓ Learned", paper: "Practice paper on this unit", prev: "← Previous", next: "Next →",
-    right: "Correct!", wrong: "Not quite.", soon: "Lesson coming soon", te_missing: "Telugu isn't available right now (the AI engines are busy) — showing English. Try తెలుగు again later.", translating: "Preparing this lesson in Telugu — first time only, about half a minute…",
+    right: "Correct!", wrong: "Not quite.", soon: "Lesson coming soon", te_missing: "Telugu isn't available right now (the AI engines are busy) — showing English. Try తెలుగు again later.", translating: "Preparing the Telugu version (first time only) — here is the English meanwhile; it switches to తెలుగు by itself when ready.",
     continue: "Continue", start: "Start", map: "Knowledge map", quiz: "Quiz me", progress: "My progress", papers: "Exam paper", ask: "Ask a doubt",
     ask_lesson: "✦ Ask a doubt about this lesson", read: "Read", before: "Learn first", books: "Text books and references", text: "Text book", ref: "Reference",
     links: "Free lectures and courses", numericals: "numericals", opening: "Opening the course…",
@@ -32,7 +32,7 @@ const L = {
     terms: "ముఖ్య పదాలు", example: "Solved example", newex: "కొత్త example", show_sol: "Solution చూపించు", hide_sol: "Solution దాచు",
     draw: "గీయగలగాల్సిన diagram", tips: "పూర్తి మార్కులు ఎలా", mistakes: "సాధారణ తప్పులు", check: "Quick check",
     mark: "✓ నేర్చుకున్నాను", marked: "✓ నేర్చుకున్నారు", paper: "ఈ unit పై practice paper", prev: "← ముందుది", next: "తర్వాతది →",
-    right: "సరైనది!", wrong: "సరైనది కాదు.", soon: "Lesson త్వరలో", te_missing: "ఇప్పుడు తెలుగు అందుబాటులో లేదు (AI engines బిజీ) — English చూపిస్తున్నాం. కాసేపటి తర్వాత మళ్ళీ ప్రయత్నించండి.", translating: "ఈ lesson ని తెలుగులో తయారుచేస్తున్నాం — మొదటిసారి మాత్రమే, సుమారు అర నిమిషం…",
+    right: "సరైనది!", wrong: "సరైనది కాదు.", soon: "Lesson త్వరలో", te_missing: "ఇప్పుడు తెలుగు అందుబాటులో లేదు (AI engines బిజీ) — English చూపిస్తున్నాం. కాసేపటి తర్వాత మళ్ళీ ప్రయత్నించండి.", translating: "తెలుగు version తయారవుతోంది (మొదటిసారి మాత్రమే) — అప్పటివరకు English చదవండి; సిద్ధం కాగానే తెలుగులోకి మారుతుంది.",
     continue: "కొనసాగించు", start: "మొదలుపెట్టు", map: "Knowledge map", quiz: "Quiz", progress: "నా progress", papers: "Exam paper", ask: "Doubt అడగండి",
     ask_lesson: "✦ ఈ lesson పై doubt అడగండి", read: "చదవండి", before: "ముందు నేర్చుకోండి", books: "Text books, references", text: "Text book", ref: "Reference",
     links: "ఉచిత lectures, courses", numericals: "numericals", opening: "కోర్సు తెరుస్తోంది…",
@@ -134,9 +134,8 @@ async function renderLesson(v, topic, seed = null) {
   current.topic = topic;
   if (!lessonLang) lessonLang = getLang() === "te" ? "te" : "en";
   let d;
-  const slow = lessonLang === "te" ? setTimeout(() => { v.innerHTML = ""; v.append(h("div", { class: "card empty" }, h("span", { class: "spin" }), " " + T("translating"))); }, 700) : null;
-  try { d = await api.lesson(current.subject, topic, lessonLang, seed); } catch (e) { clearTimeout(slow); toast(e.message, true); return renderCourse(v); }
-  clearTimeout(slow);
+  clearTimeout(tePoll);
+  try { d = await api.lesson(current.subject, topic, lessonLang, seed); } catch (e) { toast(e.message, true); return renderCourse(v); }
   if (current.topic !== topic) return; // the student moved on while it loaded
   v.innerHTML = "";
   S.focus = topic; emit("focus"); emit("layout-course");
@@ -151,7 +150,7 @@ async function renderLesson(v, topic, seed = null) {
       d.refs?.length || d.prereq?.length ? h("div", { class: "lmeta" },
         d.prereq?.length ? h("span", {}, T("before") + ": ", ...d.prereq.map((p) => h("button", { class: "chipbtn", onclick: () => renderLesson(v, p.id) }, p.label.split(" (")[0]))) : null,
         d.refs?.length ? h("span", { class: "lrefs" }, "📖 " + T("read") + ": " + d.refs.join(" · ")) : null) : null,
-      lessonLang === "te" && d.lang !== "te" ? h("p", { class: "notice" }, T("te_missing")) : null,
+      lessonLang === "te" && d.lang !== "te" ? h("p", { class: "notice" }, d.te_pending ? [h("span", { class: "spin" }), " ", T("translating")] : T("te_missing")) : null,
       h("div", { class: "lsum" }, h("b", {}, T("summary")), h("div", { html: md(les.summary) }), h("div", { class: "lsumbar" }, listen,
         h("button", { class: "btn ghost sm", onclick: () => { S.focus = topic; emit("ask", { focus: topic }); } }, T("ask_lesson")))),
       ...les.sections.map((s) => h("section", { class: s.exact ? "lrules" : "" }, h("h3", {}, s.heading), h("div", { html: md(steps(s.body)) }))),
@@ -164,6 +163,23 @@ async function renderLesson(v, topic, seed = null) {
       footer(d, v)));
   v.scrollTop = 0; v.closest?.("main")?.scrollTo?.(0, 0);
   mathify(v);
+  if (lessonLang === "te" && d.te_pending) watchTelugu(v, topic);
+}
+
+// while the Telugu version is being made in the background, check every few seconds and switch when it is ready
+let tePoll = null;
+function watchTelugu(v, topic, tries = 0) {
+  clearTimeout(tePoll);
+  if (tries > 30) return;
+  tePoll = setTimeout(async () => {
+    if (current.topic !== topic || lessonLang !== "te") return;
+    try {
+      const d = await api.lesson(current.subject, topic, "te", null, true);
+      if (current.topic !== topic || lessonLang !== "te") return;
+      if (d.lang === "te") { const y = window.scrollY; await renderLesson(v, topic); window.scrollTo(0, y); toast("తెలుగు ✓"); return; }
+      if (d.te_pending) watchTelugu(v, topic, tries + 1);
+    } catch (e) { /* try again */ watchTelugu(v, topic, tries + 1); }
+  }, 6000);
 }
 
 // "1. Put ... 2. Take ... 3. Repeat" written as one paragraph -> one step per line, so it renders as a list

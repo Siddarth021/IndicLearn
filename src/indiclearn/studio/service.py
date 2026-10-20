@@ -289,12 +289,13 @@ class StudioService:
             self.pool.submit(work)
         return self._doc_public(self._doc(user_id, doc_id))
 
-    def course_lesson(self, user_id: str, subject: str, topic: str, lang: str = "en", seed: int | None = None) -> dict[str, Any]:
+    def course_lesson(self, user_id: str, subject: str, topic: str, lang: str = "en", seed: int | None = None, poll: bool = False) -> dict[str, Any]:
         from indiclearn.studio.courses import lessons
 
         out = lessons.lesson(self.db, user_id, topic, lang, seed, getattr(self.models, "brain", None), subject)
         doc = self.course_doc(user_id, subject)
-        mastery.record_evidence(self.db, user_id, doc["id"], topic, "viewed", {"lesson": True})
+        if not poll and seed is None:  # a "New example" or a background check is not another visit
+            mastery.record_evidence(self.db, user_id, doc["id"], topic, "viewed", {"lesson": True})
         return {**out, "doc_id": doc["id"]}
 
     def course_mark(self, user_id: str, subject: str, topic: str, status: str) -> dict[str, Any]:

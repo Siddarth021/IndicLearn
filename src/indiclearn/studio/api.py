@@ -210,8 +210,8 @@ def build_router(svc: StudioService) -> APIRouter:
         return wrap(svc.course_doc, u["id"], subject)
 
     @r.get("/courses/{subject}/lessons/{topic}")
-    def lesson_get(subject: str, topic: str, lang: str = "en", seed: int | None = None, u: dict = Depends(current)) -> dict[str, Any]:
-        return wrap(svc.course_lesson, u["id"], subject, topic, lang, seed)
+    def lesson_get(subject: str, topic: str, lang: str = "en", seed: int | None = None, poll: int = 0, u: dict = Depends(current)) -> dict[str, Any]:
+        return wrap(svc.course_lesson, u["id"], subject, topic, lang, seed, bool(poll))
 
     @r.post("/courses/{subject}/lessons/{topic}/mark")
     def lesson_mark(subject: str, topic: str, status: str = "learned", u: dict = Depends(current)) -> dict[str, Any]:

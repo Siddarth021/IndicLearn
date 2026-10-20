@@ -133,3 +133,14 @@ def test_past_paper_subject_is_detected(client, auth):
     r = client.post("/api/papers/pattern", files={"file": ("mid.txt", text.encode(), "text/plain")}, headers=auth)
     assert r.status_code == 200, r.text
     assert r.json()["blueprint"]["subject"] == "dsma"
+
+
+def test_telugu_never_blocks_the_lesson(client, auth, monkeypatch):
+    """No online engine: the lesson opens in English at once (no waiting on a slow laptop model)."""
+    import time
+
+    t = time.time()
+    r = client.get("/api/courses/dsma/lessons/eigen?lang=te", headers=auth).json()
+    assert time.time() - t < 5 and r["lang"] == "en" and r["te_pending"] is False
+    r = client.get("/api/courses/os/lessons/round-robin?lang=te", headers=auth).json()
+    assert r["lang"] == "te"  # built-in Telugu
