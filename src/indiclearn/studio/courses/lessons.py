@@ -291,8 +291,14 @@ def lesson(db: Database, user_id: str, topic_id: str, lang: str = "en", seed: in
     nav = lambda i: {"id": order[i][1]["id"], "label": order[i][1]["label"]} if 0 <= i < len(order) else None  # noqa: E731
     return {"subject": subject, "topic": topic_id, "unit": {"id": u["id"], "title": u["title"]}, "label": t["label"], "lang": "te" if te else "en",
             "has_telugu": bool(d.get("te")), "te_pending": te_pending, "lesson": body, "example": example, "check": check, "status": (st["status"] if st else "opened"),
-            "refs": t.get("refs", []), "prereq": [{"id": x, "label": lbl} for x in t.get("prereq", []) for lbl in [_label(subject, x)] if lbl],
+            "refs": t.get("refs", []), "pyq": _pyq(subject, topic_id), "prereq": [{"id": x, "label": lbl} for x in t.get("prereq", []) for lbl in [_label(subject, x)] if lbl],
             "prev": nav(pos - 1), "next": nav(pos + 1)}
+
+
+def _pyq(subject: str, topic_id: str) -> list[dict]:
+    from indiclearn.studio.courses import pyq
+
+    return pyq.by_topic(subject, topic_id)
 
 
 def _label(subject: str, topic_id: str) -> str | None:

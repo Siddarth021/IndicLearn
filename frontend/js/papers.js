@@ -197,7 +197,7 @@ function showPaper(out, p) {
     const el = h("section", { class: "pq" }, h("div", { class: "pqn" }, q.n + "."), h("div", { class: "pqb" }, ...blocks(q.blocks),
       q.options ? h("ol", { class: "opts", type: "a" }, ...q.options.map((o) => h("li", { html: md(o).replace(/^<p>|<\/p>$/g, "") }))) : null,
       q.kind === "nat" ? h("div", { class: "natbox" }, T("nat_box")) : null,
-      h("div", { class: "pqfoot" }, bp.style === "gate" ? h("span", { class: "chip gold" }, KIND[q.kind] + (q.negative ? ` · −${q.negative}` : "")) : null, h("span", { class: "chip" }, q.topic_label), q.source === "notes" ? h("span", { class: "chip gold" }, "from your notes") : null, toggle), ans),
+      h("div", { class: "pqfoot" }, bp.style === "gate" ? h("span", { class: "chip gold" }, KIND[q.kind] + (q.negative ? ` · −${q.negative}` : "")) : null, h("span", { class: "chip" }, q.topic_label), q.source === "notes" ? h("span", { class: "chip gold" }, "from your notes") : null, q.source === "pyq" ? h("span", { class: "chip gold", title: "Asked in a previous IIIT Sri City exam" }, "★ " + q.paper_title) : null, toggle), ans),
       h("div", { class: "pqm" }, `[${q.marks}]`));
     qEls.push({ ans, toggle, q });
     sheet.append(el);
@@ -223,11 +223,11 @@ function fillAnswer(el, q) {
   if (!q) return;
   el.innerHTML = "";
   el.append(h("b", {}, T("answer")));
-  if (q.kind === "msq" && Array.isArray(q.correct)) el.append(h("p", {}, h("b", {}, q.correct.map((i) => `(${"abcd"[i]}) ${q.options[i]}`).join("   ·   "))));
-  else if (q.answer_blocks && q.options && q.correct !== null && q.correct !== undefined) el.append(h("p", {}, h("b", {}, `(${"abcd"[q.correct]}) ${q.options[q.correct]}`)));
+  if (q.kind === "msq" && Array.isArray(q.correct)) el.append(h("p", {}, h("b", {}, q.correct.map((i) => `(${"abcde"[i]}) ${q.options[i]}`).join("   ·   "))));
+  else if (q.answer_blocks && q.options && q.correct !== null && q.correct !== undefined) el.append(h("p", {}, h("b", {}, `(${"abcde"[q.correct]}) ${q.options[q.correct]}`)));
   if (q.answer_blocks) el.append(...blocks(q.answer_blocks));
   else {
-    if (q.options && q.correct !== null && q.correct !== undefined) el.append(h("p", {}, h("b", {}, `(${"abcd"[q.correct]}) ${q.options[q.correct]}`)));
+    if (q.options && q.correct !== null && q.correct !== undefined) el.append(h("p", {}, h("b", {}, `(${"abcde"[q.correct]}) ${q.options[q.correct]}`)));
     el.append(h("div", { html: md(q.answer_text || "") }));
     if (q.diagram) el.append(h("p", { class: "small" }, `${T("diagram")}: ${q.diagram}`));
     if (q.scheme?.length) el.append(h("div", { class: "small-caps" }, T("scheme")), h("ul", {}, ...q.scheme.map((s) => h("li", {}, `${s.point} — ${s.marks}`))));

@@ -28,7 +28,7 @@ from indiclearn.studio.courses import papers as P
 from indiclearn.studio.db import Database, jdump, jload, now
 
 TERMS_PER_TOPIC = 5
-BUILD = 3  # bump when build() changes, so every student's course document is rebuilt (progress is kept)
+BUILD = 4  # bump when build() changes, so every student's course document is rebuilt (progress is kept)
 _LOCK = threading.Lock()
 _BUILT: dict[tuple[str, str], dict[str, Any]] = {}  # (subject, version) -> built course (shared by all students)
 
@@ -165,6 +165,13 @@ def build(subject: str) -> dict[str, Any]:
                     texts.append(f"{t['label']} - {head.lower()}: " + " ".join(les[key]))
             for x in texts:
                 chunks.append({"id": f"c{len(chunks)}", "section_id": t["id"], "page": page, "text": _clean(x)})
+    # previous exam questions with worked answers: the chat can find and explain them
+    from indiclearn.studio.courses import pyq
+
+    page_of = {n["id"]: n["page"] for n in nodes}
+    for topic, text in pyq.chunks(subject):
+        if topic in page_of:
+            chunks.append({"id": f"c{len(chunks)}", "section_id": topic, "page": page_of[topic], "text": _clean(text)})
     # prerequisites from the syllabus
     ids = {n["id"] for n in nodes}
     for u in syl["units"]:

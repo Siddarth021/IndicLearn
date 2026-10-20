@@ -214,7 +214,7 @@ def render(paper: dict[str, Any], answers: bool = False) -> bytes:
         head.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0), ("ALIGN", (2, 0), (2, 0), "RIGHT")]))
         body: list[Any] = _blocks(rest, st, qw)
         if q.get("options"):
-            body += [Paragraph(_txt(f"({'abcd'[i]}) {o}"), st["bullet"]) for i, o in enumerate(q["options"])]
+            body += [Paragraph(_txt(f"({'abcde'[i]}) {o}"), st["bullet"]) for i, o in enumerate(q["options"])]
         if q["kind"] == "nat" and not answers:
             body.append(Paragraph(_txt("Answer: ______________"), st["body"]))
         if answers:
@@ -235,9 +235,9 @@ def render(paper: dict[str, Any], answers: bool = False) -> bytes:
 def _answer(q: dict[str, Any], st: dict[str, ParagraphStyle], width: float) -> list[Any]:
     out: list[Any] = [Paragraph("<b>Answer:</b>", st["body"])]
     if q["kind"] == "msq" and q.get("correct") is not None:
-        out.append(Paragraph(_txt("Correct options: " + ", ".join(f"({'abcd'[i]})" for i in q["correct"])), st["bold"]))
+        out.append(Paragraph(_txt("Correct options: " + ", ".join(f"({'abcde'[i]})" for i in q["correct"])), st["bold"]))
     if q.get("answer_blocks") and q["kind"] == "mcq" and q.get("correct") is not None:
-        out.append(Paragraph(_txt(f"({'abcd'[q['correct']]}) {q['options'][q['correct']]}"), st["bold"]))
+        out.append(Paragraph(_txt(f"({'abcde'[q['correct']]}) {q['options'][q['correct']]}"), st["bold"]))
     if q.get("answer_blocks"):
         out += _blocks(q["answer_blocks"], st, width)
         return out
@@ -245,7 +245,7 @@ def _answer(q: dict[str, Any], st: dict[str, ParagraphStyle], width: float) -> l
         out += _blocks(q.get("answer_blocks") or [], st, width)
         return out
     if q["kind"] == "mcq" and q.get("correct") is not None:
-        out.append(Paragraph(_txt(f"({'abcd'[q['correct']]}) {q['options'][q['correct']]}"), st["bold"]))
+        out.append(Paragraph(_txt(f"({'abcde'[q['correct']]}) {q['options'][q['correct']]}"), st["bold"]))
     out += _rich(q.get("answer_text", ""), st)
     if q.get("diagram"):
         out.append(Paragraph(_txt(f"Diagram expected: {q['diagram']}"), st["small"]))

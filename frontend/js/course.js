@@ -4,7 +4,7 @@
 //
 // A course is also a study document on the server (the lessons are the student's "notes"), so the Mind map, Quiz,
 // Progress and Study tabs and the tutor chat all work on the course exactly as they do on uploaded notes.
-import { api } from "./api.js";
+import { api, getToken } from "./api.js";
 import { getLang } from "./i18n.js";
 import { h, md, toast, mathify, renderBlocks } from "./util.js";
 import { presetUnits } from "./papers.js";
@@ -23,6 +23,10 @@ const L = {
     continue: "Continue", start: "Start", map: "Knowledge map", quiz: "Quiz me", progress: "My progress", papers: "Exam paper", ask: "Ask a doubt",
     ask_lesson: "✦ Ask a doubt about this lesson", read: "Read", before: "Learn first", books: "Text books and references", text: "Text book", ref: "Reference",
     links: "Free lectures and courses", numericals: "numericals", opening: "Opening the course…",
+    pyq: "Previous papers", pyq_sub: "Questions from IIIT Sri City exams, with worked answers. Read them here or print them.", pyq_q: "{n} questions",
+    pdf_q: "⎙ Question paper", pdf_a: "Answer key", show_ans: "Show answer", hide_ans: "Hide answer", show_all: "Show all answers", hide_all: "Hide answers",
+    back_course: "← Back to the course", asked: "Asked in IIIT Sri City exams", issue: "Note on the printed paper", correct_opts: "Correct", marks_s: "marks", min_s: "min",
+    open_lesson: "Lesson →", no_key: "None of the printed options is correct", open_paper: "Open",
   },
   te: {
     courses: "కోర్సులు", courses_h: "ఒక subject ని", courses_em: "మొదటి నుండి చివరి వరకు", courses_p: "English, తెలుగు lessons, మళ్ళీ మళ్ళీ కొత్తగా వచ్చే solved examples, quick checks, lessons తెలిసిన doubt chat, మీ progress తో మారే knowledge map, exam papers.",
@@ -36,6 +40,10 @@ const L = {
     continue: "కొనసాగించు", start: "మొదలుపెట్టు", map: "Knowledge map", quiz: "Quiz", progress: "నా progress", papers: "Exam paper", ask: "Doubt అడగండి",
     ask_lesson: "✦ ఈ lesson పై doubt అడగండి", read: "చదవండి", before: "ముందు నేర్చుకోండి", books: "Text books, references", text: "Text book", ref: "Reference",
     links: "ఉచిత lectures, courses", numericals: "numericals", opening: "కోర్సు తెరుస్తోంది…",
+    pyq: "పాత ప్రశ్నాపత్రాలు", pyq_sub: "IIIT Sri City పరీక్షల ప్రశ్నలు, పూర్తి జవాబులతో. ఇక్కడ చదవండి లేదా print తీసుకోండి.", pyq_q: "{n} ప్రశ్నలు",
+    pdf_q: "⎙ ప్రశ్నాపత్రం", pdf_a: "జవాబుల key", show_ans: "జవాబు చూపించు", hide_ans: "జవాబు దాచు", show_all: "అన్ని జవాబులు", hide_all: "జవాబులు దాచు",
+    back_course: "← కోర్సుకి", asked: "IIIT Sri City పరీక్షల్లో అడిగినవి", issue: "Printed paper పై గమనిక", correct_opts: "సరైనవి", marks_s: "మార్కులు", min_s: "ని.",
+    open_lesson: "Lesson →", no_key: "ఇచ్చిన options లో ఏదీ సరైనది కాదు", open_paper: "తెరువు",
   },
 };
 const T = (k, v = {}) => { let s = (L[getLang()] || L.en)[k] ?? L.en[k] ?? k; for (const [a, b] of Object.entries(v)) s = s.replace("{" + a + "}", b); return s; };
@@ -59,10 +67,11 @@ async function enter(subject) {
   try { localStorage.setItem("il_course", subject); } catch (e) { /* ignore */ }
 }
 
-export async function renderCourse(v, topic = null, subject = undefined) {
+export async function renderCourse(v, topic = null, subject = undefined, paperId = null) {
   stopSpeaking();
   if (subject !== undefined) current.subject = subject;
   current.topic = topic;
+  current.paper = paperId;
   v.innerHTML = "";
   if (!current.subject) { emit("layout-course"); return renderCourses(v); }
   if (S.doc?.course !== current.subject) {
@@ -71,8 +80,52 @@ export async function renderCourse(v, topic = null, subject = undefined) {
     v.innerHTML = "";
   }
   emit("layout-course");
+  if (paperId) return renderPaper(v, paperId);
   if (topic) return renderLesson(v, topic);
   return renderIndex(v);
+}
+
+// ---- previous question papers of the institute
+const pyqPdf = (pid, answers) => `/api/courses/${current.subject}/pyq/${pid}/pdf?answers=${answers}&token=${encodeURIComponent(getToken() || "")}`;
+
+function pyqQuestion(q, opts = {}) {
+  const ans = h("div", { class: "qans", hidden: true });
+  const fill = () => {
+    if (ans.childElementCount) return;
+    if (Array.isArray(q.correct)) ans.append(h("p", {}, h("b", {}, T("correct_opts") + ": " + q.correct.map((i) => "(" + "abcde"[i] + ")").join(", "))));
+    else if (q.correct !== null && q.correct !== undefined && q.options) ans.append(h("p", {}, h("b", { html: "(" + "abcde"[q.correct] + ") " + md(q.options[q.correct]).replace(/^<p>|<\/p>$/g, "") })));
+    else if (q.key_note) ans.append(h("p", {}, h("b", {}, "⚠ " + T("no_key"))));
+    ans.append(...renderBlocks(q.answer_blocks || []));
+    mathify(ans);
+  };
+  const btn = h("button", { class: "linkbtn", onclick: () => { fill(); ans.hidden = !ans.hidden; btn.textContent = ans.hidden ? T("show_ans") : T("hide_ans"); } }, T("show_ans"));
+  const el = h("section", { class: "pq" }, h("div", { class: "pqn" }, q.n + "."),
+    h("div", { class: "pqb" }, opts.source ? h("div", { class: "small-caps", style: { marginBottom: "4px" } }, opts.source) : null,
+      h("p", { html: md(q.q).replace(/^<p>|<\/p>$/g, "") }),
+      q.options ? h("ol", { class: "opts", type: "a" }, ...q.options.map((o) => h("li", { html: md(o).replace(/^<p>|<\/p>$/g, "") }))) : null,
+      h("div", { class: "pqfoot" }, q.topic_label && opts.lessonLink ? h("button", { class: "chip", onclick: opts.lessonLink }, q.topic_label + " · " + T("open_lesson")) : null, btn), ans),
+    h("div", { class: "pqm" }, `[${q.marks}]`));
+  el._show = (on) => { fill(); ans.hidden = !on; btn.textContent = on ? T("hide_ans") : T("show_ans"); };
+  return el;
+}
+
+async function renderPaper(v, pid) {
+  let p;
+  try { p = await api.pyq(current.subject, pid, true); } catch (e) { toast(e.message, true); return renderCourse(v); }
+  if (current.paper !== pid) return;
+  v.innerHTML = "";
+  const qs = p.questions.map((q) => pyqQuestion(q, { lessonLink: () => renderCourse(v, q.topic) }));
+  let shown = false;
+  const all = h("button", { class: "btn ghost sm", onclick: () => { shown = !shown; qs.forEach((x) => x._show(shown)); all.textContent = shown ? T("hide_all") : T("show_all"); } }, T("show_all"));
+  const issues = p.questions.filter((q) => q.paper_issue);
+  v.append(...[h("div", { class: "lnav" }, h("button", { class: "linkbtn", onclick: () => renderCourse(v) }, T("back_course"))),
+    h("div", { class: "pbar" }, h("a", { class: "btn", href: pyqPdf(pid, false), target: "_blank", rel: "noopener" }, T("pdf_q")),
+      h("a", { class: "btn ghost", href: pyqPdf(pid, true), target: "_blank", rel: "noopener" }, T("pdf_a")), all),
+    issues.length ? h("div", { class: "pinfo" }, ...issues.map((q) => h("p", { html: `<b>⚠ ${T("issue")} (Q${q.n}):</b> ` + md(q.paper_issue).replace(/^<p>|<\/p>$/g, "") }))) : null,
+    h("article", { class: "card sheet" }, h("header", {}, h("h2", {}, `IIIT Sri City — ${p.title}`),
+      h("div", { class: "meta" }, h("span", {}, `${p.marks} ${T("marks_s")}`), h("span", {}, `${p.minutes} ${T("min_s")}`), p.note ? h("span", {}, p.note) : null)), ...qs)].filter(Boolean));
+  v.scrollTop = 0; v.closest?.("main")?.scrollTo?.(0, 0);
+  mathify(v);
 }
 
 // ---- all courses
@@ -121,6 +174,16 @@ async function renderIndex(v) {
         h("span", { class: "lbl" }, h("b", {}, t.label), h("small", { html: t.has_lesson ? md(t.summary.slice(0, 130) + (t.summary.length > 130 ? "…" : "")).replace(/^<p>|<\/p>$/g, "") : T("soon") })),
         t.numerical ? h("span", { class: "chip" }, T("numericals")) : null)))));
   }
+  let pyqs = [];
+  try { pyqs = await api.pyqList(current.subject); } catch (e) { /* none */ }
+  if (pyqs.length) {
+    v.append(h("section", { class: "card cpyq" }, h("header", {}, h("h3", {}, "★ " + T("pyq")), h("small", {}, T("pyq_sub"))),
+      h("div", { class: "pyqlist" }, ...pyqs.map((p) => h("div", { class: "rec" },
+        h("div", {}, h("h4", {}, p.title), h("small", {}, `${p.marks} ${T("marks_s")} · ${p.minutes} ${T("min_s")} · ${T("pyq_q", { n: p.questions })}`)),
+        h("div", { style: { display: "flex", gap: "8px", alignItems: "center" } },
+          h("button", { class: "btn sm", onclick: () => renderCourse(v, null, undefined, p.id) }, T("open_paper")),
+          h("a", { class: "linkbtn", href: pyqPdf(p.id, false), target: "_blank", rel: "noopener" }, "PDF")))))));
+  }
   if (idx.books?.length || idx.links?.length) {
     v.append(h("section", { class: "card cbooks" },
       idx.books?.length ? h("div", {}, h("h3", {}, T("books")), h("ul", {}, ...idx.books.map((b) => h("li", {}, h("span", { class: "chip" + (b.kind === "text" ? " gold" : "") }, b.kind === "text" ? T("text") : T("ref")), " ", b.title)))) : null,
@@ -159,6 +222,8 @@ async function renderLesson(v, topic, seed = null) {
       les.diagram ? h("section", { class: "ldraw" }, h("h3", {}, "✎ " + T("draw")), h("div", { html: md(les.diagram) })) : null,
       les.exam_tips?.length ? h("section", { class: "ltips" }, h("h3", {}, T("tips")), h("ul", {}, ...les.exam_tips.map((x) => h("li", { html: md(x).replace(/^<p>|<\/p>$/g, "") })))) : null,
       les.mistakes?.length ? h("section", { class: "lmist" }, h("h3", {}, T("mistakes")), h("ul", {}, ...les.mistakes.map((x) => h("li", { html: md(x).replace(/^<p>|<\/p>$/g, "") })))) : null,
+      d.pyq?.length ? h("section", { class: "lpyq" }, h("h3", {}, "★ " + T("asked")),
+        ...d.pyq.map((q) => pyqQuestion(q, { source: `${q.paper_title} · Q${q.n}` }))) : null,
       d.check?.length ? quickCheck(d.check, topic) : null,
       footer(d, v)));
   v.scrollTop = 0; v.closest?.("main")?.scrollTo?.(0, 0);

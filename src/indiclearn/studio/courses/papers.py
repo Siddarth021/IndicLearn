@@ -77,8 +77,11 @@ def _bank_cached(subject: str, mtime: float) -> tuple[dict, ...]:
 
 
 def bank(subject: str = "os") -> list[dict]:
+    """The checked question bank plus the institute's previous exam questions (with worked answers)."""
+    from indiclearn.studio.courses import pyq
+
     path = HERE / f"{subject}_bank.jsonl"
-    return list(_bank_cached(subject, path.stat().st_mtime)) if path.exists() else []
+    return (list(_bank_cached(subject, path.stat().st_mtime)) if path.exists() else []) + pyq.bank_items(subject)
 
 
 def presets(subject: str) -> list[dict[str, Any]]:
@@ -184,6 +187,8 @@ def numericish(q: dict) -> bool:
     """A bank question that is really a numerical (it gives data and asks for a computed result): its answer was worked
     out by a language model, not computed. Numericals come only from the exact generators, so these never go into a paper."""
     text = q.get("q", "")
+    if q.get("source") == "pyq":
+        return False  # previous exam questions carry answers computed and checked when they were added
     return q.get("qtype") in ("short", "medium", "long") and bool(_ASKS_TO_COMPUTE.search(text)) and len(re.findall(r"\b\d+\b", text)) >= 3
 
 
@@ -273,7 +278,7 @@ def assemble(bp: dict[str, Any], topic_ids: list[str], fresh: list[dict], used: 
                     def w(c: dict) -> float:
                         fit = 1.0 if c["qtype"] == types[0] else 0.4
                         spread = 1 / (1 + 2 * topic_count.get(c["topic"], 0))
-                        fresh_bonus = 2.0 if c.get("source") == "notes" else 1.0
+                        fresh_bonus = 2.0 if c.get("source") == "notes" else 1.7 if c.get("source") == "pyq" else 1.0  # own notes, then real past papers
                         seen = 0.15 if c["id"] in used else 1.0
                         return fit * spread * fresh_bonus * seen * _diff_weight(c, bp["difficulty"]) * (0.5 + rng.random())
                     c = max(cands, key=w)
@@ -282,6 +287,8 @@ def assemble(bp: dict[str, Any], topic_ids: list[str], fresh: list[dict], used: 
                          "options": c.get("options"), "correct": c.get("correct"), "answer_text": c["answer"],
                          "scheme": _scale_scheme(c.get("scheme") or [], row["marks"]), "diagram": c.get("diagram") or "",
                          "source": c.get("source", "bank")}
+                    if c.get("source") == "pyq":
+                        q.update(answer_blocks=c["answer_blocks"], paper_title=c["paper_title"], answer_text="")
             if q is None:
                 notes.append("short_of_questions")
                 continue
@@ -299,7 +306,7 @@ def assemble(bp: dict[str, Any], topic_ids: list[str], fresh: list[dict], used: 
 
 def public(paper: dict[str, Any], answers: bool) -> dict[str, Any]:
     """Questions only, unless the student asked for the answers."""
-    keep = ("n", "id", "kind", "marks", "negative", "topic", "topic_label", "unit", "blocks", "options", "source")
+    keep = ("n", "id", "kind", "marks", "negative", "topic", "topic_label", "unit", "blocks", "options", "source", "paper_title")
     secret = ("correct", "answer_text", "answer_blocks", "scheme", "diagram", "value", "tolerance")
     qs = [{k: q.get(k) for k in keep} | ({k: q.get(k) for k in secret} if answers else {})
           for q in paper["questions"]]

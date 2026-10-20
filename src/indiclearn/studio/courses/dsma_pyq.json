@@ -1,0 +1,2107 @@
+{
+ "subject": "dsma",
+ "institute": "IIIT Sri City",
+ "papers": [
+  {
+   "id": "mid-2025",
+   "title": "Mid-Sem Exam, Monsoon 2025",
+   "exam": "mid",
+   "year": 2025,
+   "date": "08-10-2025",
+   "minutes": 90,
+   "marks": 25,
+   "note": "UG1 (CSE/ECE/AI&DS), 14 questions.",
+   "questions": [
+    {
+     "n": "1",
+     "q": "Simplify the compound proposition step by step to an equivalent expression containing no implications or negations of conjunctions/disjunctions: $((p \\vee q) \\wedge (p \\rightarrow r) \\wedge (q \\rightarrow r)) \\rightarrow r$. Then decide whether it is a tautology, contradiction or contingency, stating the law used at each step.",
+     "marks": 1,
+     "topic": "equivalence",
+     "qtype": "short",
+     "answer_blocks": [
+      {
+       "p": "$(p \\rightarrow r) \\wedge (q \\rightarrow r) \\equiv (\\neg p \\vee r) \\wedge (\\neg q \\vee r) \\equiv (\\neg p \\wedge \\neg q) \\vee r$ (implication law, distributive law)."
+      },
+      {
+       "p": "So the whole formula is $\\neg[(p \\vee q) \\wedge ((\\neg p \\wedge \\neg q) \\vee r)] \\vee r$ (implication law)."
+      },
+      {
+       "p": "$(p \\vee q) \\wedge ((\\neg p \\wedge \\neg q) \\vee r) \\equiv [(p \\vee q) \\wedge \\neg(p \\vee q)] \\vee [(p \\vee q) \\wedge r] \\equiv (p \\vee q) \\wedge r$ (distributive, De Morgan, negation law $F \\vee x \\equiv x$)."
+      },
+      {
+       "p": "Negating (De Morgan): $\\neg(p \\vee q) \\vee \\neg r \\equiv (\\neg p \\wedge \\neg q) \\vee \\neg r$. Adding $\\vee\\, r$: $(\\neg p \\wedge \\neg q) \\vee \\neg r \\vee r \\equiv (\\neg p \\wedge \\neg q) \\vee T \\equiv T$ (negation law, domination law)."
+      },
+      {
+       "p": "Final expression: $T$ - the formula is a **tautology** (it is the rule of proof by cases / constructive dilemma)."
+      },
+      {
+       "table": [
+        [
+         "p",
+         "q",
+         "r",
+         "$(((p \\vee q) \\wedge (p \\rightarrow r)) \\wedge (q \\rightarrow r)) \\rightarrow r$"
+        ],
+        [
+         "T",
+         "T",
+         "T",
+         "T"
+        ],
+        [
+         "T",
+         "T",
+         "F",
+         "T"
+        ],
+        [
+         "T",
+         "F",
+         "T",
+         "T"
+        ],
+        [
+         "T",
+         "F",
+         "F",
+         "T"
+        ],
+        [
+         "F",
+         "T",
+         "T",
+         "T"
+        ],
+        [
+         "F",
+         "T",
+         "F",
+         "T"
+        ],
+        [
+         "F",
+         "F",
+         "T",
+         "T"
+        ],
+        [
+         "F",
+         "F",
+         "F",
+         "T"
+        ]
+       ]
+      }
+     ],
+     "paper": "mid-2025"
+    },
+    {
+     "n": "2",
+     "q": "Universe: all real numbers. $P(x): x^2 > 4$, $Q(x): x > 2$, $R(x): x < -2$. Express in English, simplify, and decide true or false: (I) $\\forall x[P(x) \\rightarrow (Q(x) \\vee R(x))]$; (II) $\\exists x[P(x) \\wedge \\neg(Q(x) \\vee R(x))]$.",
+     "marks": 1,
+     "topic": "predicates",
+     "qtype": "short",
+     "answer_blocks": [
+      {
+       "p": "$x^2 > 4 \\iff x > 2$ or $x < -2$, i.e. $P(x) \\equiv Q(x) \\vee R(x)$ for every real $x$."
+      },
+      {
+       "p": "(I) \"Every real number whose square exceeds 4 is greater than 2 or less than $-2$.\" **True** - it is exactly the equivalence above."
+      },
+      {
+       "p": "(II) \"Some real number has square greater than 4 but lies between $-2$ and $2$.\" $P(x) \\wedge \\neg(Q(x) \\vee R(x)) \\equiv P(x) \\wedge \\neg P(x)$, a contradiction for every $x$, so (II) is **false**. (II) is exactly the negation of (I)."
+      }
+     ],
+     "paper": "mid-2025"
+    },
+    {
+     "n": "3",
+     "q": "Which of the following statements are logically equivalent?",
+     "marks": 1,
+     "topic": "conditionals",
+     "qtype": "msq",
+     "answer_blocks": [
+      {
+       "p": "Let $p$: it rains, $q$: the ground gets wet. (a) $p \\rightarrow q$; (b) $q \\rightarrow p$ (converse); (c) $\\neg q \\rightarrow \\neg p$ (contrapositive); (d) $p \\wedge q$; (e) $\\neg p \\vee q$. Since $p \\rightarrow q \\equiv \\neg q \\rightarrow \\neg p \\equiv \\neg p \\vee q$, statements **(a), (c) and (e)** are equivalent. (b) and (d) are not."
+      }
+     ],
+     "options": [
+      "If it rains, then the ground gets wet.",
+      "If the ground gets wet, then it rains.",
+      "If the ground does not get wet, then it does not rain.",
+      "It rains and the ground gets wet.",
+      "Either it does not rain or the ground gets wet."
+     ],
+     "correct": [
+      0,
+      2,
+      4
+     ],
+     "paper": "mid-2025"
+    },
+    {
+     "n": "4",
+     "q": "Express using predicates, quantifiers and logical connectives: (i) \"No cats are dogs.\" (ii) \"Every student in DSMA class has studied Math I.\" (domain: all students of IIIT Sri City) (iii) \"A negative real number does not have a square root that is a real number.\" (iv) \"Every insurance agent who sells a policy to at least one person who is not insured refuses to sell policies to anyone who is dishonest.\"",
+     "marks": 2,
+     "topic": "predicates",
+     "qtype": "short",
+     "answer_blocks": [
+      {
+       "p": "(i) $C(x)$: $x$ is a cat, $D(x)$: $x$ is a dog. $\\forall x\\,(C(x) \\rightarrow \\neg D(x))$, equivalently $\\neg \\exists x\\,(C(x) \\wedge D(x))$."
+      },
+      {
+       "p": "(ii) $S(x)$: $x$ is in the DSMA class, $M(x)$: $x$ has studied Math I. $\\forall x\\,(S(x) \\rightarrow M(x))$ - note $\\rightarrow$, not $\\wedge$, because the domain is all students."
+      },
+      {
+       "p": "(iii) Domain: real numbers. $\\forall x\\,(x < 0 \\rightarrow \\neg \\exists y\\,(y^2 = x))$, equivalently $\\forall x\\,\\forall y\\,(x < 0 \\rightarrow y^2 \\ne x)$."
+      },
+      {
+       "p": "(iv) $A(x)$: $x$ is an insurance agent, $S(x,y)$: $x$ sells a policy to $y$, $I(y)$: $y$ is insured, $H(z)$: $z$ is dishonest, $R(x,z)$: $x$ refuses to sell policies to $z$. $\\forall x\\,[(A(x) \\wedge \\exists y\\,(S(x,y) \\wedge \\neg I(y))) \\rightarrow \\forall z\\,(H(z) \\rightarrow R(x,z))]$."
+      }
+     ],
+     "paper": "mid-2025"
+    },
+    {
+     "n": "5",
+     "q": "The $n$th statement in a list of 129 statements is \"Exactly $n$ of the statements in this list are true.\" What conclusions can you draw?",
+     "marks": 1,
+     "topic": "propositions",
+     "qtype": "short",
+     "answer_blocks": [
+      {
+       "p": "Two different statements of the list cannot both be true (they claim different numbers), so **at most one statement is true**."
+      },
+      {
+       "p": "If exactly one is true, the number of true statements is 1, so it must be statement 1 (\"exactly 1 is true\") - and then statements 2 to 129 are false, which is consistent."
+      },
+      {
+       "p": "If none is true, statement 1 is false (there are 0, not 1, true statements) and so are all the others - also consistent."
+      },
+      {
+       "p": "Conclusion: statements 2, 3, ..., 129 are all **false**; statement 1 may be true or false, and no other statement can be true. (In Rosen's version, \"exactly $n$ are **false**\" with 100 statements, only statement 99 is true.)"
+      }
+     ],
+     "paper": "mid-2025"
+    },
+    {
+     "n": "6",
+     "q": "Prove or disprove: (i) Is $\\forall x \\exists y \\forall z\\, P(x,y,z)$ equivalent to $\\exists y \\forall x \\forall z\\, P(x,y,z)$? (ii) Is $\\exists x \\forall y \\forall z\\, Q(x,y,z)$ equivalent to $\\forall y \\exists x \\exists z\\, Q(x,y,z)$?",
+     "marks": 2,
+     "topic": "predicates",
+     "qtype": "short",
+     "answer_blocks": [
+      {
+       "p": "(i) **Not equivalent.** In $\\forall x \\exists y$ the $y$ may depend on $x$; $\\exists y \\forall x$ needs one $y$ for all $x$. Counterexample: domain $\\{1, 2\\}$, $P(x,y,z): x = y$. Then $\\forall x \\exists y \\forall z\\, P$ is true ($y = x$), but $\\exists y \\forall x \\forall z\\, P$ is false (no $y$ equals both 1 and 2). (The second implies the first.)"
+      },
+      {
+       "p": "(ii) **Not equivalent.** $\\exists x \\forall y \\forall z\\, Q \\Rightarrow \\forall y \\exists x \\exists z\\, Q$ always (keep the same $x$, pick any $z$), but not conversely. Counterexample: domain $\\{1, 2\\}$, $Q(x,y,z): x = y$. $\\forall y \\exists x \\exists z\\, Q$ is true ($x = y$), $\\exists x \\forall y \\forall z\\, Q$ is false."
+      }
+     ],
+     "paper": "mid-2025"
+    },
+    {
+     "n": "7",
+     "q": "Determine whether this argument is valid. SRI is an AI created to protect humanity. If SRI were both rational and ethical, she would prevent disasters. If SRI were not rational, she would be malfunctioning; if she were not ethical, she would be dangerous. However, SRI does not prevent disasters. If SRI exists, she is neither malfunctioning nor dangerous. Therefore, SRI does not exist.",
+     "marks": 2,
+     "topic": "inference",
+     "qtype": "short",
+     "answer_blocks": [
+      {
+       "p": "Let $E$: SRI exists, $R$: rational, $T$: ethical, $P$: prevents disasters, $M$: malfunctioning, $D$: dangerous. Premises: $(R \\wedge T) \\rightarrow P$, $\\neg R \\rightarrow M$, $\\neg T \\rightarrow D$, $\\neg P$, $E \\rightarrow (\\neg M \\wedge \\neg D)$. Conclusion: $\\neg E$."
+      },
+      {
+       "p": "1. $\\neg P$ and $(R \\wedge T) \\rightarrow P$ give $\\neg(R \\wedge T)$, i.e. $\\neg R \\vee \\neg T$ (modus tollens, De Morgan)."
+      },
+      {
+       "p": "2. From $\\neg R \\rightarrow M$ and $\\neg T \\rightarrow D$ with $\\neg R \\vee \\neg T$: $M \\vee D$ (constructive dilemma)."
+      },
+      {
+       "p": "3. $M \\vee D \\equiv \\neg(\\neg M \\wedge \\neg D)$ (De Morgan). With $E \\rightarrow (\\neg M \\wedge \\neg D)$, modus tollens gives $\\neg E$."
+      },
+      {
+       "p": "The argument is **valid**: SRI does not exist."
+      }
+     ],
+     "paper": "mid-2025"
+    },
+    {
+     "n": "8",
+     "q": "If $3n + 2 \\equiv 0 \\pmod 4$, then $n \\equiv 2 \\pmod 4$. Prove this by contradiction. [$a \\equiv b \\pmod n$ means $n \\mid (a - b)$.]",
+     "marks": 1,
+     "topic": "proofs",
+     "qtype": "short",
+     "answer_blocks": [
+      {
+       "p": "Suppose $3n + 2 \\equiv 0 \\pmod 4$ but $n \\not\\equiv 2 \\pmod 4$. Then $n \\equiv 0, 1$ or $3 \\pmod 4$."
+      },
+      {
+       "p": "$n \\equiv 0$: $3n + 2 \\equiv 2$; $n \\equiv 1$: $3n + 2 \\equiv 5 \\equiv 1$; $n \\equiv 3$: $3n + 2 \\equiv 11 \\equiv 3 \\pmod 4$."
+      },
+      {
+       "p": "In every case $3n + 2 \\not\\equiv 0 \\pmod 4$, contradicting the hypothesis. Hence $n \\equiv 2 \\pmod 4$. (Check: $n = 2$ gives $3n + 2 = 8 \\equiv 0$.)"
+      }
+     ],
+     "paper": "mid-2025"
+    },
+    {
+     "n": "9",
+     "q": "$S$ is the set of integers defined by: basis step $4 \\in S$; recursive step: if $n \\in S$ then $n + 3 \\in S$ and $n^2 \\in S$. Use structural induction to prove that every $n \\in S$ satisfies $n \\equiv 1 \\pmod 3$.",
+     "marks": 2,
+     "topic": "recursion",
+     "qtype": "short",
+     "answer_blocks": [
+      {
+       "p": "**Basis:** $4 = 3 \\cdot 1 + 1$, so $4 \\equiv 1 \\pmod 3$."
+      },
+      {
+       "p": "**Recursive step:** assume $n \\in S$ with $n \\equiv 1 \\pmod 3$, i.e. $n = 3k + 1$."
+      },
+      {
+       "p": "$n + 3 = 3(k + 1) + 1 \\equiv 1 \\pmod 3$, and $n^2 = 9k^2 + 6k + 1 = 3(3k^2 + 2k) + 1 \\equiv 1 \\pmod 3$."
+      },
+      {
+       "p": "Both elements built from $n$ keep the property, so by structural induction every element of $S$ is $\\equiv 1 \\pmod 3$."
+      }
+     ],
+     "paper": "mid-2025"
+    },
+    {
+     "n": "10",
+     "q": "Use mathematical induction to show that $\\dfrac{1 \\cdot 3 \\cdot 5 \\cdots (2n-1)}{2 \\cdot 4 \\cdot 6 \\cdots (2n)} \\le \\dfrac{1}{\\sqrt{n+1}}$ for $n \\ge 1$.",
+     "marks": 2,
+     "topic": "induction",
+     "qtype": "short",
+     "answer_blocks": [
+      {
+       "p": "Let $P_n$ be the left side. **Basis** $n = 1$: $P_1 = \\frac{1}{2} \\le \\frac{1}{\\sqrt 2} \\approx 0.707$. True."
+      },
+      {
+       "p": "**Inductive step:** assume $P_k \\le \\frac{1}{\\sqrt{k+1}}$. Then $P_{k+1} = P_k \\cdot \\frac{2k+1}{2k+2} \\le \\frac{2k+1}{(2k+2)\\sqrt{k+1}}$."
+      },
+      {
+       "p": "It suffices that $\\frac{2k+1}{(2k+2)\\sqrt{k+1}} \\le \\frac{1}{\\sqrt{k+2}}$, i.e. $(2k+1)^2(k+2) \\le (2k+2)^2(k+1)$."
+      },
+      {
+       "p": "Expanding: $4k^3 + 12k^2 + 9k + 2 \\le 4k^3 + 12k^2 + 12k + 4$, i.e. $0 \\le 3k + 2$ - true for $k \\ge 1$. Hence $P_{k+1} \\le \\frac{1}{\\sqrt{k+2}}$ and the result holds for all $n \\ge 1$."
+      }
+     ],
+     "paper": "mid-2025"
+    },
+    {
+     "n": "11",
+     "q": "Let $a_0 = 1$ and $a_n = a_{n-1} + 3n^2$ for $n \\ge 1$. Find a formula for $a_n$ by iteration and prove it by mathematical induction.",
+     "marks": 3,
+     "topic": "recurrence-model",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "Iterating: $a_n = a_{n-1} + 3n^2 = a_{n-2} + 3(n-1)^2 + 3n^2 = \\cdots = a_0 + 3(1^2 + 2^2 + \\cdots + n^2)$."
+      },
+      {
+       "p": "So $a_n = 1 + 3 \\cdot \\frac{n(n+1)(2n+1)}{6} = 1 + \\frac{n(n+1)(2n+1)}{2} = \\frac{2 n^{3} + 3 n^{2} + n + 2}{2}$."
+      },
+      {
+       "p": "Check: $a_1 = 1 + 3 = 4$ and the formula gives $1 + \\frac{1 \\cdot 2 \\cdot 3}{2} = 4$; $a_2 = 4 + 12 = 16 = 1 + \\frac{2 \\cdot 3 \\cdot 5}{2}$."
+      },
+      {
+       "p": "**Induction:** basis $a_0 = 1 = 1 + 0$. If $a_k = 1 + \\frac{k(k+1)(2k+1)}{2}$, then $a_{k+1} = 1 + \\frac{k(k+1)(2k+1)}{2} + 3(k+1)^2 = 1 + \\frac{(k+1)[k(2k+1) + 6(k+1)]}{2} = 1 + \\frac{(k+1)(2k^2 + 7k + 6)}{2} = 1 + \\frac{(k+1)(k+2)(2k+3)}{2}$, which is the formula for $n = k + 1$."
+      }
+     ],
+     "paper": "mid-2025"
+    },
+    {
+     "n": "12",
+     "q": "Which of the following sets are uncountable? Justify. (1) The set of all functions from $\\mathbb{R}$ to $\\{0, 1\\}$. (2) The set of all functions from $\\mathbb{N}$ to $\\{0, 1\\}$. (3) The set of all finite subsets of $\\mathbb{N}$.",
+     "marks": 3,
+     "topic": "cardinality",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "(2) **Uncountable.** A function $f: \\mathbb{N} \\to \\{0,1\\}$ is an infinite 0-1 sequence (equivalently a subset of $\\mathbb{N}$). If they were listed $f_1, f_2, \\dots$, the diagonal function $g(n) = 1 - f_n(n)$ differs from every $f_n$ at $n$ - Cantor's diagonal argument. So $|\\{0,1\\}^{\\mathbb{N}}| = |P(\\mathbb{N})| > |\\mathbb{N}|$."
+      },
+      {
+       "p": "(1) **Uncountable.** Restricting to $\\mathbb{N} \\subset \\mathbb{R}$ maps it onto the set in (2) (each $g: \\mathbb{N} \\to \\{0,1\\}$ extends, e.g. by 0 elsewhere), so it is at least as large as an uncountable set (in fact $|P(\\mathbb{R})| > |\\mathbb{R}|$)."
+      },
+      {
+       "p": "(3) **Countable.** Finite subsets of size $k$ are countable (finite tuples of naturals), and the set of all finite subsets is a countable union over $k = 0, 1, 2, \\dots$ of countable sets. Explicitly, $\\{a_1, \\dots, a_k\\} \\mapsto 2^{a_1} + \\cdots + 2^{a_k}$ is a bijection onto $\\mathbb{N}$ (binary representation)."
+      }
+     ],
+     "paper": "mid-2025"
+    },
+    {
+     "n": "13",
+     "q": "Solve $y_n = 9y_{n-1} - 26y_{n-2} + 24y_{n-3} + 4^n$ with $y_0 = 0$, $y_1 = 1$, $y_2 = 10$.",
+     "marks": 3,
+     "topic": "recurrence-nonhomog",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "Characteristic equation: $r^3 - 9r^2 + 26r - 24 = (r - 2)(r - 3)(r - 4) = 0$, roots $2, 3, 4$."
+      },
+      {
+       "p": "$F(n) = 4^n$ and 4 is a root of multiplicity 1, so try $a_n^{(p)} = A\\,n\\,4^n$. Substituting gives $A\\,4^n[n - \\tfrac{9}{4}(n-1) + \\tfrac{26}{16}(n-2) - \\tfrac{24}{64}(n-3)] = 4^n$, so $A \\cdot \\tfrac{1}{8} = 1$, $A = 8$."
+      },
+      {
+       "p": "General solution: $y_n = c_1 2^n + c_2 3^n + c_3 4^n + 8n\\,4^n$. From $y_0 = 0, y_1 = 1, y_2 = 10$: $c_1 = -\\frac{29}{2}$, $c_2 = 60$, $c_3 = -\\frac{91}{2}$."
+      },
+      {
+       "p": "$y_n = 8n\\,4^n - \\frac{29}{2}\\,2^n + 60 \\cdot 3^n - \\frac{91}{2}\\,4^n$. Check: $y_3 = 128$, $y_4 = 1172$ from the recurrence agree with the formula."
+      }
+     ],
+     "paper": "mid-2025"
+    },
+    {
+     "n": "14",
+     "q": "Define a bijective function from $(0, 1)$ to $\\mathbb{R}$.",
+     "marks": 1,
+     "topic": "cardinality",
+     "qtype": "short",
+     "answer_blocks": [
+      {
+       "p": "$f(x) = \\tan\\left(\\pi\\left(x - \\tfrac{1}{2}\\right)\\right)$: $x \\mapsto \\pi(x - \\frac12)$ is a bijection $(0,1) \\to (-\\frac{\\pi}{2}, \\frac{\\pi}{2})$ and $\\tan$ is a strictly increasing bijection from there onto $\\mathbb{R}$."
+      },
+      {
+       "p": "Another one: $f(x) = \\ln\\frac{x}{1 - x}$, with inverse $f^{-1}(y) = \\frac{1}{1 + e^{-y}}$."
+      }
+     ],
+     "paper": "mid-2025"
+    }
+   ],
+   "marks_sum": 25
+  },
+  {
+   "id": "quiz1-2024",
+   "title": "Scheduled Quiz 1, October 2024",
+   "exam": "quiz",
+   "year": 2024,
+   "date": "03-10-2024",
+   "minutes": 20,
+   "marks": 15,
+   "note": "15 MCQs, 1 mark each (no key was given; the answers below are worked out and checked).",
+   "questions": [
+    {
+     "n": "1",
+     "q": "Sets $A$ and $B$ have $|A| = |B| = n$ and $A \\cap B = \\emptyset$. What is $|A \\cup B|$?",
+     "marks": 1,
+     "topic": "sets",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "$|A \\cup B| = |A| + |B| - |A \\cap B| = n + n - 0 = 2n$."
+      }
+     ],
+     "options": [
+      "$n$",
+      "$2n$",
+      "$n^2$",
+      "$n(n-1)$"
+     ],
+     "correct": 1,
+     "paper": "quiz1-2024"
+    },
+    {
+     "n": "2",
+     "q": "If $f: A \\to B$ and $g: B \\to C$ are both injective, which is necessarily true about $g \\circ f$?",
+     "marks": 1,
+     "topic": "functions",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "$g(f(x)) = g(f(y)) \\Rightarrow f(x) = f(y)$ ($g$ one-to-one) $\\Rightarrow x = y$ ($f$ one-to-one). Surjectivity is not guaranteed either way, so only (d) is necessarily true."
+      }
+     ],
+     "options": [
+      "$g \\circ f$ is injective but not surjective",
+      "$g \\circ f$ is surjective but not injective",
+      "$g \\circ f$ is both injective and surjective",
+      "$g \\circ f$ is injective"
+     ],
+     "correct": 3,
+     "paper": "quiz1-2024"
+    },
+    {
+     "n": "3",
+     "q": "Which of the following is a characteristic of a countable set?",
+     "marks": 1,
+     "topic": "cardinality",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "Countable = finite or countably infinite (in bijection with $\\mathbb{N}$). $\\mathbb{N}$ itself is an infinite countable subset of $\\mathbb{N}$, and $P(\\mathbb{N})$ is uncountable."
+      }
+     ],
+     "options": [
+      "Every subset of a countable set is finite",
+      "A countable set must be finite",
+      "A countable set is either finite or has a bijection with $\\mathbb{N}$",
+      "A power set of a countable set is countable"
+     ],
+     "correct": 2,
+     "paper": "quiz1-2024"
+    },
+    {
+     "n": "4",
+     "q": "$f(0) = 1$ and $f(n) = 3f(n-1) + 1$. What is $f(n)$ in terms of $n$?",
+     "marks": 1,
+     "topic": "recursion",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "$f(0..4) = 1, 4, 13, 40, 121$. Iterating, $f(n) = 3^n + 3^{n-1} + \\cdots + 1 = \\dfrac{3^{n+1} - 1}{2}$."
+      },
+      {
+       "p": "⚠ None of the printed options is correct: (a) gives $f(2) = 11$, (b) $f(0) = 1$ but $f(1) = 7$, (c) $f(2) = 7$, (d) $f(0) = 0$. The correct answer is $f(n) = \\frac{3^{n+1} - 1}{2}$."
+      }
+     ],
+     "options": [
+      "$f(n) = 3^n + n$",
+      "$f(n) = 3^{n+1} - 2$",
+      "$f(n) = 3n + 1$",
+      "$f(n) = 3^n - 1$"
+     ],
+     "correct": null,
+     "key_note": "none of the printed options is correct",
+     "paper_issue": "None of the printed options is correct: (a) gives $f(2) = 11$, (b) $f(0) = 1$ but $f(1) = 7$, (c) $f(2) = 7$, (d) $f(0) = 0$. The correct answer is $f(n) = \\frac{3^{n+1} - 1}{2}$.",
+     "paper": "quiz1-2024"
+    },
+    {
+     "n": "5",
+     "q": "A set $S$ is defined recursively by $1 \\in S$; if $x \\in S$ then $x + 1 \\in S$. Which is true about $S$?",
+     "marks": 1,
+     "topic": "recursion",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "Starting from 1 and adding 1 repeatedly generates $\\{1, 2, 3, \\dots\\}$ - the natural numbers (taking $\\mathbb{N}$ to start at 1)."
+      }
+     ],
+     "options": [
+      "$S$ contains only even numbers",
+      "$S = \\mathbb{N}$, the set of natural numbers",
+      "$S$ is finite",
+      "$S$ contains only powers of 2"
+     ],
+     "correct": 1,
+     "paper": "quiz1-2024"
+    },
+    {
+     "n": "6",
+     "q": "Which statement about recursive algorithms is FALSE?",
+     "marks": 1,
+     "topic": "recursion",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "Recursion is not always faster - e.g. naive recursive Fibonacci is exponential while the loop is linear, and calls add overhead."
+      }
+     ],
+     "options": [
+      "A recursive algorithm must always have a base case",
+      "A recursive algorithm can always be transformed into an iterative algorithm",
+      "Recursive algorithms can solve problems where the problem size is reduced at each step",
+      "Recursive algorithms are always faster than their iterative counterparts"
+     ],
+     "correct": 3,
+     "paper": "quiz1-2024"
+    },
+    {
+     "n": "7",
+     "q": "In a proof by strong induction, which step is necessary but not in a standard proof by induction?",
+     "marks": 1,
+     "topic": "induction",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "Strong induction's hypothesis is that $P(1), \\dots, P(n)$ all hold when proving $P(n+1)$."
+      }
+     ],
+     "options": [
+      "Prove the base case for $n = 1$",
+      "Assume the statement is true for $n = k$",
+      "Assume the statement is true for all $k \\le n$ when proving for $n + 1$",
+      "Prove that $P(k+1)$ follows from $P(k)$"
+     ],
+     "correct": 2,
+     "paper": "quiz1-2024"
+    },
+    {
+     "n": "8",
+     "q": "Which statement about structural induction is true?",
+     "marks": 1,
+     "topic": "recursion",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "Structural induction proves a property for the basis elements and shows the recursive rules preserve it - for recursively defined sets, strings, trees, formulas."
+      }
+     ],
+     "options": [
+      "It is commonly used to prove sequences of real numbers",
+      "It is a variation of mathematical induction that applies to recursively defined structures",
+      "It requires proving a property for all elements less than $n$",
+      "It can only be applied to finite sets of numbers"
+     ],
+     "correct": 1,
+     "paper": "quiz1-2024"
+    },
+    {
+     "n": "9",
+     "q": "Let $p, q$ be propositional variables. Which is a tautology?",
+     "marks": 1,
+     "topic": "tautology",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "$(p \\vee q) \\vee \\neg q \\equiv p \\vee (q \\vee \\neg q) \\equiv p \\vee T \\equiv T$. The others are false for some row."
+      }
+     ],
+     "options": [
+      "$p \\wedge q$",
+      "$p \\rightarrow q$",
+      "$p \\vee q$",
+      "$(p \\vee q) \\vee \\neg q$"
+     ],
+     "correct": 3,
+     "paper": "quiz1-2024"
+    },
+    {
+     "n": "10",
+     "q": "When do $p \\wedge q$ and $p \\vee q$ have the same truth value?",
+     "marks": 1,
+     "topic": "propositions",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "TT: both T; FF: both F; TF and FT: $\\wedge$ is F but $\\vee$ is T. So exactly when $p$ and $q$ agree."
+      }
+     ],
+     "options": [
+      "$p$ and $q$ have the same truth value",
+      "$p$ and $q$ have different truth values",
+      "$p$ is the negation of $q$",
+      "none of the above"
+     ],
+     "correct": 0,
+     "paper": "quiz1-2024"
+    },
+    {
+     "n": "11",
+     "q": "The premises $(p \\wedge q) \\vee r$ and $r \\rightarrow s$ imply which conclusion?",
+     "marks": 1,
+     "topic": "inference",
+     "qtype": "msq",
+     "answer_blocks": [
+      {
+       "p": "$(p \\wedge q) \\vee r \\equiv (p \\vee r) \\wedge (q \\vee r)$, so $p \\vee r$ and $q \\vee r$ both follow (simplification). From $q \\vee r$ and $r \\rightarrow s$ (i.e. $\\neg r \\vee s$), resolution gives $q \\vee s$. $p \\vee q$ does not follow ($p = q = F$, $r = s = T$)."
+      },
+      {
+       "p": "⚠ Three options are valid conclusions; the intended single answer is most likely (b) $q \\vee s$ (resolution). Checked with a full truth table."
+      }
+     ],
+     "options": [
+      "$p \\vee r$",
+      "$q \\vee s$",
+      "$q \\vee r$",
+      "$p \\vee q$"
+     ],
+     "correct": [
+      0,
+      1,
+      2
+     ],
+     "paper_issue": "Three options are valid conclusions; the intended single answer is most likely (b) $q \\vee s$ (resolution). Checked with a full truth table.",
+     "paper": "quiz1-2024"
+    },
+    {
+     "n": "12",
+     "q": "The inverse of a conditional statement is the ______ of its converse.",
+     "marks": 1,
+     "topic": "conditionals",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "For $p \\rightarrow q$: converse $q \\rightarrow p$, whose contrapositive is $\\neg p \\rightarrow \\neg q$ - exactly the inverse."
+      }
+     ],
+     "options": [
+      "negation",
+      "equivalence",
+      "contrapositive",
+      "none of the above"
+     ],
+     "correct": 2,
+     "paper": "quiz1-2024"
+    },
+    {
+     "n": "13",
+     "q": "$\\vee$ has precedence over",
+     "marks": 1,
+     "topic": "propositions",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "Precedence: $\\neg$, then $\\wedge$, then $\\vee$, then $\\rightarrow$, then $\\leftrightarrow$. So $\\vee$ binds tighter only than $\\rightarrow$ (and $\\leftrightarrow$)."
+      }
+     ],
+     "options": [
+      "$\\wedge$",
+      "$\\neg$",
+      "$\\Rightarrow$",
+      "none of the above"
+     ],
+     "correct": 2,
+     "paper": "quiz1-2024"
+    },
+    {
+     "n": "14",
+     "q": "Which of the following can only be used in disproving statements?",
+     "marks": 1,
+     "topic": "proofs",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "A counterexample shows a universal statement is false; it cannot prove one."
+      }
+     ],
+     "options": [
+      "Direct proof",
+      "Contrapositive proofs",
+      "Counter example",
+      "Mathematical induction"
+     ],
+     "correct": 2,
+     "paper": "quiz1-2024"
+    },
+    {
+     "n": "15",
+     "q": "Express \"The difference of a real number and itself is zero\".",
+     "marks": 1,
+     "topic": "predicates",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "It is about every real number and that same number: $\\forall x\\,(x - x = 0)$."
+      }
+     ],
+     "options": [
+      "$\\forall x \\exists y (x - y = 0)$",
+      "$\\forall x \\forall y (x - y = 0)$",
+      "$\\exists x (x - x = 0)$",
+      "$\\forall x (x - x = 0)$"
+     ],
+     "correct": 3,
+     "paper": "quiz1-2024"
+    }
+   ],
+   "marks_sum": 15
+  },
+  {
+   "id": "quiz2-2024",
+   "title": "Scheduled Quiz 2, November 2024",
+   "exam": "quiz",
+   "year": 2024,
+   "date": "11-11-2024",
+   "minutes": 20,
+   "marks": 15,
+   "note": "15 MCQs with the official key, each re-checked (one printed question has a typo - see Q1).",
+   "questions": [
+    {
+     "n": "1",
+     "q": "$x_1 + x_2 + x_3 + x_4 + x_5 = 21$ with nonnegative integers, $0 \\le x_1 \\le 3$, $1 \\le x_2 \\le 4$ and $x_3 \\ge 15$. How many solutions are there?",
+     "marks": 1,
+     "topic": "incl-excl",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "Substitute $x_2' = x_2 - 1$, $x_3' = x_3 - 15$: $x_1 + x_2' + x_3' + x_4 + x_5 = 5$ with $x_1 \\le 3$ and $x_2' \\le 2$ (for $x_2 < 4$). Count $\\binom{9}{4} = 126$, minus $x_1 \\ge 4$: $\\binom{5}{4} = 5$, minus $x_2' \\ge 3$: $\\binom{6}{4} = 15$, plus both: 0. $126 - 5 - 15 = 106$."
+      },
+      {
+       "p": "⚠ As printed ($1 \\le x_2 \\le 4$, so $x_2' \\le 3$) the count is $126 - 5 - \\binom{5}{4} = 116$ - not among the options. The key (d) 106 is for $1 \\le x_2 < 4$, as in Rosen. Both counts verified by brute force."
+      }
+     ],
+     "options": [
+      "80",
+      "100",
+      "108",
+      "106"
+     ],
+     "correct": 3,
+     "paper_issue": "As printed ($1 \\le x_2 \\le 4$, so $x_2' \\le 3$) the count is $126 - 5 - \\binom{5}{4} = 116$ - not among the options. The key (d) 106 is for $1 \\le x_2 < 4$, as in Rosen. Both counts verified by brute force.",
+     "paper": "quiz2-2024"
+    },
+    {
+     "n": "2",
+     "q": "How many positive integers not exceeding 1000 are divisible by 7 or 11?",
+     "marks": 1,
+     "topic": "incl-excl",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "$\\lfloor 1000/7 \\rfloor + \\lfloor 1000/11 \\rfloor - \\lfloor 1000/77 \\rfloor = 142 + 90 - 12 = 220$."
+      }
+     ],
+     "options": [
+      "220",
+      "240",
+      "100",
+      "200"
+     ],
+     "correct": 0,
+     "paper": "quiz2-2024"
+    },
+    {
+     "n": "3",
+     "q": "$R$ and $S$ are reflexive relations on a set $A$. The relation $R \\cap S$ is",
+     "marks": 1,
+     "topic": "relations",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "Every $(a, a)$ is in $R$ and in $S$, hence in $R \\cap S$."
+      }
+     ],
+     "options": [
+      "antisymmetric",
+      "reflexive",
+      "irreflexive",
+      "symmetric",
+      "none of the above"
+     ],
+     "correct": 1,
+     "paper": "quiz2-2024"
+    },
+    {
+     "n": "4",
+     "q": "$R = \\{(0,0), (0,1), (1,1), (2,2)\\}$ on $\\{0, 1, 2\\}$, and $P$ is the property \"is not reflexive\". The closure of $R$ with respect to $P$",
+     "marks": 1,
+     "topic": "closures",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "$R$ already contains $(0,0), (1,1), (2,2)$, so $R$ and every relation containing it is reflexive. No relation containing $R$ has property $P$, so the closure does not exist."
+      }
+     ],
+     "options": [
+      "exists",
+      "does not exist",
+      "has an odd number of elements",
+      "is the relation $R$ itself"
+     ],
+     "correct": 1,
+     "paper": "quiz2-2024"
+    },
+    {
+     "n": "5",
+     "q": "Which collection of subsets is a partition of $\\{1, 2, 3, 4, 5, 6\\}$?",
+     "marks": 1,
+     "topic": "equiv-rel",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "(b): nonempty, pairwise disjoint, union is the whole set. (a) overlaps (2 and 4 twice); (c) misses 3 and 6; (d) misses 3."
+      }
+     ],
+     "options": [
+      "$\\{\\{1,2\\},\\{2,3,4\\},\\{4,5,6\\}\\}$",
+      "$\\{\\{1\\},\\{2,3,6\\},\\{4\\},\\{5\\}\\}$",
+      "$\\{\\{2,4\\},\\{1,5\\}\\}$",
+      "$\\{\\{1,4,5\\},\\{2,6\\}\\}$"
+     ],
+     "correct": 1,
+     "paper": "quiz2-2024"
+    },
+    {
+     "n": "6",
+     "q": "Which of these is a poset?",
+     "marks": 1,
+     "topic": "posets",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "$\\ge$ is reflexive, antisymmetric and transitive. $\\not\\ge$ (i.e. $<$) and $\\ne$ are not reflexive; $\\nmid$ is not reflexive either."
+      }
+     ],
+     "options": [
+      "$(\\mathbb{Z}, \\not\\geq)$",
+      "$(\\mathbb{Z}, \\ne)$",
+      "$(\\mathbb{Z}, \\ge)$",
+      "$(\\mathbb{Z}, \\nmid)$"
+     ],
+     "correct": 2,
+     "paper": "quiz2-2024"
+    },
+    {
+     "n": "7",
+     "q": "Which statement is correct about the least upper bound (supremum) in a poset?",
+     "marks": 1,
+     "topic": "extremal",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "The LUB of a subset is the least of its upper bounds."
+      }
+     ],
+     "options": [
+      "It is the smallest element in the set",
+      "It is the maximum element in the set",
+      "It is the least element that is greater than or equal to all elements in a subset",
+      "It is always equal to the greatest lower bound"
+     ],
+     "correct": 2,
+     "paper": "quiz2-2024"
+    },
+    {
+     "n": "8",
+     "q": "In a well-ordered set, which statement is true?",
+     "marks": 1,
+     "topic": "posets",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "That is the definition of a well-ordered set (e.g. $\\mathbb{N}$ with $\\le$)."
+      }
+     ],
+     "options": [
+      "Every non-empty subset has a least element",
+      "Every non-empty subset has a maximum element",
+      "Every non-empty subset has a greatest lower bound",
+      "Every element has an immediate successor"
+     ],
+     "correct": 0,
+     "paper": "quiz2-2024"
+    },
+    {
+     "n": "9",
+     "q": "Find the minimum number of students in a class to be sure that three of them are born in the same month.",
+     "marks": 1,
+     "topic": "pigeonhole",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "Generalized pigeonhole: $12(3 - 1) + 1 = 25$."
+      }
+     ],
+     "options": [
+      "13",
+      "24",
+      "25",
+      "37"
+     ],
+     "correct": 2,
+     "paper": "quiz2-2024"
+    },
+    {
+     "n": "10",
+     "q": "Every person at a party shakes hands with every other person. If there were 91 handshakes, how many persons were present?",
+     "marks": 1,
+     "topic": "perm-comb",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "$\\binom{n}{2} = 91 \\Rightarrow n(n-1) = 182 \\Rightarrow n = 14$."
+      }
+     ],
+     "options": [
+      "14",
+      "15",
+      "16",
+      "17"
+     ],
+     "correct": 0,
+     "paper": "quiz2-2024"
+    },
+    {
+     "n": "11",
+     "q": "An urn has 40 balls: 16 white, 10 red, 14 black. What is the minimum number drawn blindfolded (no replacement) to be sure of at least one ball of every colour?",
+     "marks": 1,
+     "topic": "pigeonhole",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "Worst case: all 16 white and all 14 black first (30 balls), then the next ball must be red: $30 + 1 = 31$."
+      }
+     ],
+     "options": [
+      "21",
+      "25",
+      "27",
+      "31"
+     ],
+     "correct": 3,
+     "paper": "quiz2-2024"
+    },
+    {
+     "n": "12",
+     "q": "The recurrence relation $a_n = a_{n-2} + a_{n-5} + 5n$ is not",
+     "marks": 1,
+     "topic": "recurrence-model",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "It is linear with constant coefficients, but the term $5n$ makes it non-homogeneous."
+      }
+     ],
+     "options": [
+      "homogeneous",
+      "linear",
+      "having constant coefficients",
+      "none of the above"
+     ],
+     "correct": 0,
+     "paper": "quiz2-2024"
+    },
+    {
+     "n": "13",
+     "q": "The solution of $a_n = a_{n-1} + 2$ with $a_0 = 2$ is",
+     "marks": 1,
+     "topic": "recurrence-homog",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "$a_n = a_0 + 2n = 2 + 2n = 2(1 + n)$."
+      }
+     ],
+     "options": [
+      "$2(2n + 1)$",
+      "$3n^2$",
+      "$2(1 + n)$",
+      "$5(n + 1)/2$"
+     ],
+     "correct": 2,
+     "paper": "quiz2-2024"
+    },
+    {
+     "n": "14",
+     "q": "$a_k = \\dfrac{a_{k-1}}{1 + a_{k-1}}$ for $k \\ge 1$ and $a_0 = 1$. An explicit formula for $a_k$ is",
+     "marks": 1,
+     "topic": "recurrence-model",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "$a_1 = \\frac12, a_2 = \\frac13, \\dots$ In fact $\\frac{1}{a_k} = \\frac{1}{a_{k-1}} + 1$, so $\\frac{1}{a_k} = k + 1$."
+      }
+     ],
+     "options": [
+      "$1/2^k$",
+      "$1/(3^{k+1} - 2)$",
+      "$1/(k+1)$",
+      "$2/(k+2)$"
+     ],
+     "correct": 2,
+     "paper": "quiz2-2024"
+    },
+    {
+     "n": "15",
+     "q": "On $\\mathbb{N} \\times \\mathbb{N}$ (nonzero naturals) define $(a,b)\\,R\\,(x,y)$ iff $\\gcd(a,b) = \\gcd(x,y)$. The relation $R$ is",
+     "marks": 1,
+     "topic": "equiv-rel",
+     "qtype": "mcq",
+     "answer_blocks": [
+      {
+       "p": "\"Same value of a function\" is always an equivalence relation: equality of gcds is reflexive, symmetric and transitive."
+      }
+     ],
+     "options": [
+      "Reflexive, Symmetric, Not Transitive",
+      "Not Reflexive, Not Symmetric, Not Transitive",
+      "Reflexive, Not Symmetric, Not Transitive",
+      "Reflexive, Symmetric, Transitive"
+     ],
+     "correct": 3,
+     "paper": "quiz2-2024"
+    }
+   ],
+   "marks_sum": 15
+  },
+  {
+   "id": "mid-2022-g6",
+   "title": "Mid Exam 2022, Group 6",
+   "exam": "mid",
+   "year": 2022,
+   "minutes": 90,
+   "marks": 20,
+   "note": "Online proctored exam, 5 questions.",
+   "questions": [
+    {
+     "n": "1",
+     "q": "For each statement decide, using truth tables, whether it is a tautology, contradiction or contingency: (a) $ (p \\wedge q) \\rightarrow p $; (b) $ p \\rightarrow (p \\vee p) $; (c) $ \\neg p \\rightarrow (p \\rightarrow q) $; (d) $ (p \\wedge q) \\rightarrow (p \\rightarrow q) $; (e) $ \\neg (p \\rightarrow q) \\rightarrow p $; (f) $ \\neg (p \\rightarrow q) \\rightarrow \\neg q $; (g) $ q \\rightarrow (p \\rightarrow q) $.",
+     "marks": 7,
+     "topic": "tautology",
+     "qtype": "long",
+     "answer_blocks": [
+      {
+       "p": "**(a)** $ (p \\wedge q) \\rightarrow p $"
+      },
+      {
+       "table": [
+        [
+         "p",
+         "q",
+         "$(p \\wedge q) \\rightarrow p$"
+        ],
+        [
+         "T",
+         "T",
+         "T"
+        ],
+        [
+         "T",
+         "F",
+         "T"
+        ],
+        [
+         "F",
+         "T",
+         "T"
+        ],
+        [
+         "F",
+         "F",
+         "T"
+        ]
+       ]
+      },
+      {
+       "p": "The last column is all T: **tautology**."
+      },
+      {
+       "p": "**(b)** $ p \\rightarrow (p \\vee p) $"
+      },
+      {
+       "table": [
+        [
+         "p",
+         "$p \\rightarrow (p \\vee p)$"
+        ],
+        [
+         "T",
+         "T"
+        ],
+        [
+         "F",
+         "T"
+        ]
+       ]
+      },
+      {
+       "p": "The last column is all T: **tautology**."
+      },
+      {
+       "p": "**(c)** $ \\neg p \\rightarrow (p \\rightarrow q) $"
+      },
+      {
+       "table": [
+        [
+         "p",
+         "q",
+         "$\\neg p \\rightarrow (p \\rightarrow q)$"
+        ],
+        [
+         "T",
+         "T",
+         "T"
+        ],
+        [
+         "T",
+         "F",
+         "T"
+        ],
+        [
+         "F",
+         "T",
+         "T"
+        ],
+        [
+         "F",
+         "F",
+         "T"
+        ]
+       ]
+      },
+      {
+       "p": "The last column is all T: **tautology**."
+      },
+      {
+       "p": "**(d)** $ (p \\wedge q) \\rightarrow (p \\rightarrow q) $"
+      },
+      {
+       "table": [
+        [
+         "p",
+         "q",
+         "$(p \\wedge q) \\rightarrow (p \\rightarrow q)$"
+        ],
+        [
+         "T",
+         "T",
+         "T"
+        ],
+        [
+         "T",
+         "F",
+         "T"
+        ],
+        [
+         "F",
+         "T",
+         "T"
+        ],
+        [
+         "F",
+         "F",
+         "T"
+        ]
+       ]
+      },
+      {
+       "p": "The last column is all T: **tautology**."
+      },
+      {
+       "p": "**(e)** $ \\neg (p \\rightarrow q) \\rightarrow p $"
+      },
+      {
+       "table": [
+        [
+         "p",
+         "q",
+         "$\\neg (p \\rightarrow q) \\rightarrow p$"
+        ],
+        [
+         "T",
+         "T",
+         "T"
+        ],
+        [
+         "T",
+         "F",
+         "T"
+        ],
+        [
+         "F",
+         "T",
+         "T"
+        ],
+        [
+         "F",
+         "F",
+         "T"
+        ]
+       ]
+      },
+      {
+       "p": "The last column is all T: **tautology**."
+      },
+      {
+       "p": "**(f)** $ \\neg (p \\rightarrow q) \\rightarrow \\neg q $"
+      },
+      {
+       "table": [
+        [
+         "p",
+         "q",
+         "$\\neg (p \\rightarrow q) \\rightarrow \\neg q$"
+        ],
+        [
+         "T",
+         "T",
+         "T"
+        ],
+        [
+         "T",
+         "F",
+         "T"
+        ],
+        [
+         "F",
+         "T",
+         "T"
+        ],
+        [
+         "F",
+         "F",
+         "T"
+        ]
+       ]
+      },
+      {
+       "p": "The last column is all T: **tautology**."
+      },
+      {
+       "p": "**(g)** $ q \\rightarrow (p \\rightarrow q) $"
+      },
+      {
+       "table": [
+        [
+         "p",
+         "q",
+         "$q \\rightarrow (p \\rightarrow q)$"
+        ],
+        [
+         "T",
+         "T",
+         "T"
+        ],
+        [
+         "T",
+         "F",
+         "T"
+        ],
+        [
+         "F",
+         "T",
+         "T"
+        ],
+        [
+         "F",
+         "F",
+         "T"
+        ]
+       ]
+      },
+      {
+       "p": "The last column is all T: **tautology**."
+      }
+     ],
+     "paper": "mid-2022-g6"
+    },
+    {
+     "n": "2",
+     "q": "Determine whether the argument is valid and explain why: If Prakash plays Cricket, then either Qadir or Ratan will play Football. If Qadir plays Football, then Prakash will not play Cricket. If Sonu plays Football, then Ratan will not play Football. Prakash plays Cricket. Therefore, Sonu will not play Football.",
+     "marks": 4,
+     "topic": "inference",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "Let $P$: Prakash plays cricket, $Q$: Qadir plays football, $R$: Ratan plays football, $S$: Sonu plays football. Premises: $P \\rightarrow (Q \\vee R)$, $Q \\rightarrow \\neg P$, $S \\rightarrow \\neg R$, $P$. Conclusion: $\\neg S$."
+      },
+      {
+       "p": "1. $P$ and $P \\rightarrow (Q \\vee R)$: $Q \\vee R$ (modus ponens)."
+      },
+      {
+       "p": "2. $P$ and $Q \\rightarrow \\neg P$: $\\neg Q$ (modus tollens, since $\\neg\\neg P$)."
+      },
+      {
+       "p": "3. $Q \\vee R$ and $\\neg Q$: $R$ (disjunctive syllogism)."
+      },
+      {
+       "p": "4. $R$ and $S \\rightarrow \\neg R$: $\\neg S$ (modus tollens)."
+      },
+      {
+       "p": "The argument is **valid** (a truth table over $P, Q, R, S$ confirms: whenever all four premises are true, $\\neg S$ is true)."
+      }
+     ],
+     "paper": "mid-2022-g6"
+    },
+    {
+     "n": "3",
+     "q": "$f, g, h$ map non-negative integers to non-negative integers: $f(n) = 3n + 1$, $g(n) = 4n$, $h(n) = 1$ if $n$ is odd and $0$ otherwise. Find $(f \\circ g) \\circ h$.",
+     "marks": 3,
+     "topic": "functions",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "$(f \\circ g)(m) = f(g(m)) = f(4m) = 12m + 1$."
+      },
+      {
+       "p": "$((f \\circ g) \\circ h)(n) = 12\\,h(n) + 1$, so it equals $ 13 $ if $n$ is odd and $1$ if $n$ is even."
+      },
+      {
+       "p": "Composition is associative, so $f \\circ (g \\circ h)$ gives the same: $g(h(n)) \\in \\{0, 4\\}$, then $f$ adds as above."
+      }
+     ],
+     "paper": "mid-2022-g6"
+    },
+    {
+     "n": "4",
+     "q": "Find the closed form of $\\sum_{j=0}^{n} j(j+2)$ and use it to evaluate $\\sum_{j=9}^{20} j(j+2)$.",
+     "marks": 3,
+     "topic": "sums",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "$\\sum_{j=0}^{n} j(j+2) = \\sum j^2 + 2\\sum j = \\frac{n(n+1)(2n+1)}{6} + n(n+1) = \\frac{n \\left(n + 1\\right) \\left(2 n + 7\\right)}{6}$."
+      },
+      {
+       "p": "$\\sum_{j=9}^{20} = S(20) - S(8) = 3290 - 276 = 3014$."
+      }
+     ],
+     "paper": "mid-2022-g6"
+    },
+    {
+     "n": "5",
+     "q": "Prove that $n^2 < 2^n$ for all integers $n \\ge 5$.",
+     "marks": 3,
+     "topic": "induction",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "**Basis** $n = 5$: $25 < 32$."
+      },
+      {
+       "p": "**Step:** assume $k^2 < 2^k$ for some $k \\ge 5$. Then $(k+1)^2 = k^2 + 2k + 1 < k^2 + k^2 = 2k^2$ because $2k + 1 < k^2$ for $k \\ge 3$."
+      },
+      {
+       "p": "So $(k+1)^2 < 2k^2 < 2 \\cdot 2^k = 2^{k+1}$. By induction $n^2 < 2^n$ for all $n \\ge 5$."
+      }
+     ],
+     "paper": "mid-2022-g6"
+    }
+   ],
+   "marks_sum": 20
+  },
+  {
+   "id": "mid-2022-g1",
+   "title": "Mid Exam 2021-22, Group 1",
+   "exam": "mid",
+   "year": 2022,
+   "minutes": 90,
+   "marks": 20,
+   "note": "Online proctored exam, 5 questions.",
+   "questions": [
+    {
+     "n": "1",
+     "q": "For each statement decide, using truth tables, whether it is a tautology, contradiction or contingency: (a) $ \\neg (p \\wedge q) \\rightarrow p $; (b) $ p \\rightarrow (p \\vee q) $; (c) $ p \\rightarrow (p \\rightarrow q) $; (d) $ (p \\wedge q) \\rightarrow (p \\rightarrow q) $; (e) $ (p \\rightarrow q) \\rightarrow p $; (f) $ \\neg (p \\rightarrow q) \\rightarrow \\neg q $; (g) $ q \\rightarrow \\neg (p \\rightarrow q) $.",
+     "marks": 7,
+     "topic": "tautology",
+     "qtype": "long",
+     "answer_blocks": [
+      {
+       "p": "**(a)** $ \\neg (p \\wedge q) \\rightarrow p $"
+      },
+      {
+       "table": [
+        [
+         "p",
+         "q",
+         "$\\neg (p \\wedge q) \\rightarrow p$"
+        ],
+        [
+         "T",
+         "T",
+         "T"
+        ],
+        [
+         "T",
+         "F",
+         "T"
+        ],
+        [
+         "F",
+         "T",
+         "F"
+        ],
+        [
+         "F",
+         "F",
+         "F"
+        ]
+       ]
+      },
+      {
+       "p": "The last column is mixed: **contingency**."
+      },
+      {
+       "p": "**(b)** $ p \\rightarrow (p \\vee q) $"
+      },
+      {
+       "table": [
+        [
+         "p",
+         "q",
+         "$p \\rightarrow (p \\vee q)$"
+        ],
+        [
+         "T",
+         "T",
+         "T"
+        ],
+        [
+         "T",
+         "F",
+         "T"
+        ],
+        [
+         "F",
+         "T",
+         "T"
+        ],
+        [
+         "F",
+         "F",
+         "T"
+        ]
+       ]
+      },
+      {
+       "p": "The last column is all T: **tautology**."
+      },
+      {
+       "p": "**(c)** $ p \\rightarrow (p \\rightarrow q) $"
+      },
+      {
+       "table": [
+        [
+         "p",
+         "q",
+         "$p \\rightarrow (p \\rightarrow q)$"
+        ],
+        [
+         "T",
+         "T",
+         "T"
+        ],
+        [
+         "T",
+         "F",
+         "F"
+        ],
+        [
+         "F",
+         "T",
+         "T"
+        ],
+        [
+         "F",
+         "F",
+         "T"
+        ]
+       ]
+      },
+      {
+       "p": "The last column is mixed: **contingency**."
+      },
+      {
+       "p": "**(d)** $ (p \\wedge q) \\rightarrow (p \\rightarrow q) $"
+      },
+      {
+       "table": [
+        [
+         "p",
+         "q",
+         "$(p \\wedge q) \\rightarrow (p \\rightarrow q)$"
+        ],
+        [
+         "T",
+         "T",
+         "T"
+        ],
+        [
+         "T",
+         "F",
+         "T"
+        ],
+        [
+         "F",
+         "T",
+         "T"
+        ],
+        [
+         "F",
+         "F",
+         "T"
+        ]
+       ]
+      },
+      {
+       "p": "The last column is all T: **tautology**."
+      },
+      {
+       "p": "**(e)** $ (p \\rightarrow q) \\rightarrow p $"
+      },
+      {
+       "table": [
+        [
+         "p",
+         "q",
+         "$(p \\rightarrow q) \\rightarrow p$"
+        ],
+        [
+         "T",
+         "T",
+         "T"
+        ],
+        [
+         "T",
+         "F",
+         "T"
+        ],
+        [
+         "F",
+         "T",
+         "F"
+        ],
+        [
+         "F",
+         "F",
+         "F"
+        ]
+       ]
+      },
+      {
+       "p": "The last column is mixed: **contingency**."
+      },
+      {
+       "p": "**(f)** $ \\neg (p \\rightarrow q) \\rightarrow \\neg q $"
+      },
+      {
+       "table": [
+        [
+         "p",
+         "q",
+         "$\\neg (p \\rightarrow q) \\rightarrow \\neg q$"
+        ],
+        [
+         "T",
+         "T",
+         "T"
+        ],
+        [
+         "T",
+         "F",
+         "T"
+        ],
+        [
+         "F",
+         "T",
+         "T"
+        ],
+        [
+         "F",
+         "F",
+         "T"
+        ]
+       ]
+      },
+      {
+       "p": "The last column is all T: **tautology**."
+      },
+      {
+       "p": "**(g)** $ q \\rightarrow \\neg (p \\rightarrow q) $"
+      },
+      {
+       "table": [
+        [
+         "p",
+         "q",
+         "$q \\rightarrow \\neg (p \\rightarrow q)$"
+        ],
+        [
+         "T",
+         "T",
+         "F"
+        ],
+        [
+         "T",
+         "F",
+         "T"
+        ],
+        [
+         "F",
+         "T",
+         "F"
+        ],
+        [
+         "F",
+         "F",
+         "T"
+        ]
+       ]
+      },
+      {
+       "p": "The last column is mixed: **contingency**."
+      }
+     ],
+     "paper": "mid-2022-g1"
+    },
+    {
+     "n": "2",
+     "q": "Determine whether the argument is valid and explain why: If A reads, then either B or C will sleep. If B sleeps, then A will not read. If D sleeps, then C will not sleep. A reads. Therefore, D will not sleep.",
+     "marks": 4,
+     "topic": "inference",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "Let $P$: A reads, $Q$: B sleeps, $R$: C sleeps, $S$: D sleeps. Premises: $P \\rightarrow (Q \\vee R)$, $Q \\rightarrow \\neg P$, $S \\rightarrow \\neg R$, $P$. Conclusion: $\\neg S$."
+      },
+      {
+       "p": "1. $P$ and $P \\rightarrow (Q \\vee R)$: $Q \\vee R$ (modus ponens)."
+      },
+      {
+       "p": "2. $P$ and $Q \\rightarrow \\neg P$: $\\neg Q$ (modus tollens, since $\\neg\\neg P$)."
+      },
+      {
+       "p": "3. $Q \\vee R$ and $\\neg Q$: $R$ (disjunctive syllogism)."
+      },
+      {
+       "p": "4. $R$ and $S \\rightarrow \\neg R$: $\\neg S$ (modus tollens)."
+      },
+      {
+       "p": "The argument is **valid** (a truth table over $P, Q, R, S$ confirms: whenever all four premises are true, $\\neg S$ is true)."
+      }
+     ],
+     "paper": "mid-2022-g1"
+    },
+    {
+     "n": "3",
+     "q": "$f, g, h$ map non-negative integers to non-negative integers: $f(n) = n + 1$, $g(n) = 2n$, $h(n) = 1$ if $n$ is odd and $0$ otherwise. Find $(f \\circ g) \\circ h$.",
+     "marks": 3,
+     "topic": "functions",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "$(f \\circ g)(m) = f(g(m)) = f(2m) = 2m + 1$."
+      },
+      {
+       "p": "$((f \\circ g) \\circ h)(n) = 2\\,h(n) + 1$, so it equals $ 3 $ if $n$ is odd and $1$ if $n$ is even."
+      },
+      {
+       "p": "Composition is associative, so $f \\circ (g \\circ h)$ gives the same: $g(h(n)) \\in \\{0, 2\\}$, then $f$ adds as above."
+      }
+     ],
+     "paper": "mid-2022-g1"
+    },
+    {
+     "n": "4",
+     "q": "Find the closed form of $\\sum_{j=0}^{n} j(j+1)$ and use it to evaluate $\\sum_{j=10}^{20} j(j+1)$.",
+     "marks": 3,
+     "topic": "sums",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "$\\sum_{j=0}^{n} j(j+1) = \\sum j^2 + \\sum j = \\frac{n(n+1)(2n+1)}{6} + \\frac{n(n+1)}{2} = \\frac{n \\left(n + 1\\right) \\left(n + 2\\right)}{3}$."
+      },
+      {
+       "p": "$\\sum_{j=10}^{20} = S(20) - S(9) = 3080 - 330 = 2750$."
+      }
+     ],
+     "paper": "mid-2022-g1"
+    },
+    {
+     "n": "5",
+     "q": "Prove that $3^n < n!$ for all integers $n > 6$.",
+     "marks": 3,
+     "topic": "induction",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "**Basis** $n = 7$: $3^7 = 2187 < 7! = 5040$."
+      },
+      {
+       "p": "**Step:** assume $3^k < k!$ for some $k \\ge 7$. Then $3^{k+1} = 3 \\cdot 3^k < 3 \\cdot k! < (k+1)\\,k! = (k+1)!$ since $k + 1 \\ge 8 > 3$."
+      },
+      {
+       "p": "By induction $3^n < n!$ for all $n > 6$."
+      }
+     ],
+     "paper": "mid-2022-g1"
+    }
+   ],
+   "marks_sum": 20
+  },
+  {
+   "id": "end-2022-g6",
+   "title": "End Exam 2022, Group 6",
+   "exam": "end",
+   "year": 2022,
+   "date": "03-2022",
+   "minutes": 90,
+   "marks": 20,
+   "note": "Online proctored exam, 4 questions.",
+   "questions": [
+    {
+     "n": "1a",
+     "q": "Solve the recurrence $S_{n+2} + 3S_{n+1} + 2S_n = 3^n$ for $n \\ge 0$ with $S_0 = 1$, $S_1 = 1$.",
+     "marks": 3,
+     "topic": "recurrence-nonhomog",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "Characteristic equation $r^2 + 3r + 2 = (r+1)(r+2) = 0$: roots $-1, -2$. Homogeneous part $c_1(-1)^n + c_2(-2)^n$."
+      },
+      {
+       "p": "Particular: try $A\\,3^n$: $9A + 9A + 2A = 20A = 1$, so $A = \\frac{1}{20}$."
+      },
+      {
+       "p": "$S_0 = c_1 + c_2 + \\frac{1}{20} = 1$ and $S_1 = -c_1 - 2c_2 + \\frac{3}{20} = 1$ give $c_1 = \\frac{11}{4}$, $c_2 = -\\frac{9}{5}$."
+      },
+      {
+       "p": "$S_n = \\frac{11 \\left(-1\\right)^{n}}{4} - \\frac{9 \\left(-2\\right)^{n}}{5} + \\frac{3^{n}}{20}$. Check: $S_2 = 3^0 - 3 - 2 = -4$ from the recurrence, and the formula gives $\\frac{11}{4} - \\frac{36}{5} + \\frac{9}{20} = -4$."
+      }
+     ],
+     "paper": "end-2022-g6"
+    },
+    {
+     "n": "1b",
+     "q": "Let $S = \\text{span}\\{[1,-1,1], [1,0,1]\\}$. Find an orthonormal basis of $S$ and of $S^\\perp$.",
+     "marks": 4,
+     "topic": "gram-schmidt",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "Gram-Schmidt on $v_1 = \\begin{bmatrix} 1 \\\\ -1 \\\\ 1 \\end{bmatrix}$, $v_2 = \\begin{bmatrix} 1 \\\\ 0 \\\\ 1 \\end{bmatrix}$: $q_1 = v_1/\\|v_1\\|$, $B = v_2 - (q_1^Tv_2)\\,q_1$, $q_2 = B/\\|B\\|$."
+      },
+      {
+       "math": "q_1 = \\begin{bmatrix} \\frac{\\sqrt{3}}{3} \\\\ - \\frac{\\sqrt{3}}{3} \\\\ \\frac{\\sqrt{3}}{3} \\end{bmatrix},\\quad q_2 = \\begin{bmatrix} \\frac{\\sqrt{6}}{6} \\\\ \\frac{\\sqrt{6}}{3} \\\\ \\frac{\\sqrt{6}}{6} \\end{bmatrix}"
+      },
+      {
+       "p": "$S^\\perp = N(A)$ for $A$ with rows $v_1, v_2$: solving $Ax = 0$ gives one direction, normalised: $q_3 = \\begin{bmatrix} - \\frac{\\sqrt{2}}{2} \\\\ 0 \\\\ \\frac{\\sqrt{2}}{2} \\end{bmatrix}$ (check: $q_3 \\perp v_1, v_2$). $\\{q_1, q_2\\}$ is an orthonormal basis of $S$ and $\\{q_3\\}$ of $S^\\perp$."
+      }
+     ],
+     "paper": "end-2022-g6"
+    },
+    {
+     "n": "2a",
+     "q": "Find the dimension of the column space of $A = \\begin{bmatrix} 1 & -1 & 0 & 1 \\\\ -1 & -1 & -2 & -3 \\\\ -1 & -1 & -2 & -3 \\\\ 1 & -1 & 0 & 1 \\end{bmatrix}$.",
+     "marks": 3,
+     "topic": "rank",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "math": "\\operatorname{rref}(A) = \\begin{bmatrix} 1 & 0 & 1 & 2 \\\\ 0 & 1 & 1 & 1 \\\\ 0 & 0 & 0 & 0 \\\\ 0 & 0 & 0 & 0 \\end{bmatrix}"
+      },
+      {
+       "p": "There are 2 pivots, so $\\dim C(A) = \\operatorname{rank} A = 2$ (rows 2 and 3 are equal, and row 4 equals row 1)."
+      }
+     ],
+     "paper": "end-2022-g6"
+    },
+    {
+     "n": "2b",
+     "q": "Find the projection matrix that projects a vector onto the null space of $A = \\begin{bmatrix} 1 & 1 & 2 \\\\ 2 & 1 & 1 \\end{bmatrix}$.",
+     "marks": 4,
+     "topic": "projections",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "Solve $Ax = 0$: $N(A)$ has basis $\\begin{bmatrix} 1 \\\\ -3 \\\\ 1 \\end{bmatrix}$ (dimension 1). Put them as the columns of $B$."
+      },
+      {
+       "p": "Projection onto $N(A) = C(B)$: $P = B(B^TB)^{-1}B^T$. (Equivalently $P = I - A^T(AA^T)^{-1}A$ when $A$ has independent rows, since $N(A) \\perp C(A^T)$.)"
+      },
+      {
+       "math": "P = \\begin{bmatrix} \\frac{1}{11} & -\\frac{3}{11} & \\frac{1}{11} \\\\ -\\frac{3}{11} & \\frac{9}{11} & -\\frac{3}{11} \\\\ \\frac{1}{11} & -\\frac{3}{11} & \\frac{1}{11} \\end{bmatrix}"
+      },
+      {
+       "p": "Check: $P^2 = P$, $P = P^T$, and $AP = 0$."
+      }
+     ],
+     "paper": "end-2022-g6"
+    },
+    {
+     "n": "3",
+     "q": "Let $A = \\{2, 3, 5, 10, 11, 15, 25\\}$ and $aRb$ iff $a$ divides $b$. (a) Give the zero-one matrix of $R$. (b) Draw the Hasse diagram. (c) Find the maximal and minimal elements. Is there a greatest and a least element?",
+     "marks": 3,
+     "topic": "posets",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "(a) Zero-one matrix (rows and columns in the order 2, 3, 5, 10, 11, 15, 25; entry 1 when the row element divides the column element):"
+      },
+      {
+       "math": "\\begin{bmatrix} 1 & 0 & 0 & 1 & 0 & 0 & 0 \\\\ 0 & 1 & 0 & 0 & 0 & 1 & 0 \\\\ 0 & 0 & 1 & 1 & 0 & 1 & 1 \\\\ 0 & 0 & 0 & 1 & 0 & 0 & 0 \\\\ 0 & 0 & 0 & 0 & 1 & 0 & 0 \\\\ 0 & 0 & 0 & 0 & 0 & 1 & 0 \\\\ 0 & 0 & 0 & 0 & 0 & 0 & 1 \\end{bmatrix}"
+      },
+      {
+       "p": "(b) Hasse diagram - covering pairs only (drawn upward): 2–10, 3–15, 5–10, 5–15, 5–25."
+      },
+      {
+       "p": "(c) Maximal: 10, 11, 15, 25. Minimal: 2, 3, 5, 11. Greatest element: none. Least element: none."
+      }
+     ],
+     "paper": "end-2022-g6"
+    },
+    {
+     "n": "4",
+     "q": "$R$ on $A = \\{1,2,3,4,5,6,7,8,9,10,12\\}$: $xRy$ iff $x - y$ is a multiple of 4. (a) Verify that $R$ is an equivalence relation. (b) Find the equivalence classes and the partition of $A$.",
+     "marks": 3,
+     "topic": "equiv-rel",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "(a) Reflexive: $x - x = 0$ is a multiple of 4. Symmetric: if $x - y = 4k$ then $y - x = 4(-k)$. Transitive: $x - y = 4k$, $y - z = 4l$ give $x - z = 4(k + l)$. So $R$ is an equivalence relation."
+      },
+      {
+       "p": "(b) Equivalence classes: $[1] = \\{1, 5, 9\\}$; $[2] = \\{2, 6, 10\\}$; $[3] = \\{3, 7\\}$; $[4] = \\{4, 8, 12\\}$. The partition of $A$ is $\\{{1, 5, 9}, {2, 6, 10}, {3, 7}, {4, 8, 12}\\}$."
+      }
+     ],
+     "paper": "end-2022-g6"
+    }
+   ],
+   "marks_sum": 20
+  },
+  {
+   "id": "end-2022-g4",
+   "title": "End Exam 2022, Group 4",
+   "exam": "end",
+   "year": 2022,
+   "date": "03-2022",
+   "minutes": 90,
+   "marks": 20,
+   "note": "Online proctored exam, 4 questions.",
+   "questions": [
+    {
+     "n": "1a",
+     "q": "Solve the recurrence $S_n + 4S_{n-1} + 4S_{n-2} = 5(-2)^n$ for $n \\ge 2$.",
+     "marks": 3,
+     "topic": "recurrence-nonhomog",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "Characteristic equation $r^2 + 4r + 4 = (r+2)^2 = 0$: $r = -2$ repeated. Homogeneous part $(c_1 + c_2 n)(-2)^n$."
+      },
+      {
+       "p": "$F(n) = 5(-2)^n$ and $-2$ is a root of multiplicity 2, so try $A n^2 (-2)^n$. Dividing the substituted equation by $(-2)^{n-2}$: $A[4n^2 - 8(n-1)^2 + 4(n-2)^2] = 20$, i.e. $8A = 20$, $A = \\frac{5}{2}$."
+      },
+      {
+       "p": "General solution: $S_n = (c_1 + c_2 n)(-2)^n + \\frac{5}{2}n^2(-2)^n$. (No initial values are given on the paper, so $c_1, c_2$ stay arbitrary.)"
+      }
+     ],
+     "paper": "end-2022-g4"
+    },
+    {
+     "n": "1b",
+     "q": "Let $S = \\text{span}\\{[1,2,0], [8,1,-6]\\}$. Find an orthonormal basis of $S$ and of $S^\\perp$.",
+     "marks": 4,
+     "topic": "gram-schmidt",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "Gram-Schmidt on $v_1 = \\begin{bmatrix} 1 \\\\ 2 \\\\ 0 \\end{bmatrix}$, $v_2 = \\begin{bmatrix} 8 \\\\ 1 \\\\ -6 \\end{bmatrix}$: $q_1 = v_1/\\|v_1\\|$, $B = v_2 - (q_1^Tv_2)\\,q_1$, $q_2 = B/\\|B\\|$."
+      },
+      {
+       "math": "q_1 = \\begin{bmatrix} \\frac{\\sqrt{5}}{5} \\\\ \\frac{2 \\sqrt{5}}{5} \\\\ 0 \\end{bmatrix},\\quad q_2 = \\begin{bmatrix} \\frac{2}{3} \\\\ -\\frac{1}{3} \\\\ -\\frac{2}{3} \\end{bmatrix}"
+      },
+      {
+       "p": "$S^\\perp = N(A)$ for $A$ with rows $v_1, v_2$: solving $Ax = 0$ gives one direction, normalised: $q_3 = \\begin{bmatrix} \\frac{4 \\sqrt{5}}{15} \\\\ - \\frac{2 \\sqrt{5}}{15} \\\\ \\frac{\\sqrt{5}}{3} \\end{bmatrix}$ (check: $q_3 \\perp v_1, v_2$). $\\{q_1, q_2\\}$ is an orthonormal basis of $S$ and $\\{q_3\\}$ of $S^\\perp$."
+      }
+     ],
+     "paper": "end-2022-g4"
+    },
+    {
+     "n": "2a",
+     "q": "Decompose $A = \\begin{bmatrix} 1 & 3 & 2 \\\\ 0 & 4 & 1 \\\\ 5 & 0 & 6 \\end{bmatrix}$ into $LDU$, giving intermediate steps.",
+     "marks": 3,
+     "topic": "lu",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "Elimination: $\\ell_{21} = 0$ (already 0). $\\ell_{31} = 5$: $R_3 \\leftarrow R_3 - 5R_1 = [0, -15, -4]$. $\\ell_{32} = -\\frac{15}{4}$: $R_3 \\leftarrow R_3 + \\frac{15}{4}R_2 = [0, 0, -\\frac{1}{4}]$."
+      },
+      {
+       "math": "L = \\begin{bmatrix} 1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 5 & -\\frac{15}{4} & 1 \\end{bmatrix},\\quad D = \\begin{bmatrix} 1 & 0 & 0 \\\\ 0 & 4 & 0 \\\\ 0 & 0 & -\\frac{1}{4} \\end{bmatrix},\\quad U = \\begin{bmatrix} 1 & 3 & 2 \\\\ 0 & 1 & \\frac{1}{4} \\\\ 0 & 0 & 1 \\end{bmatrix}"
+      },
+      {
+       "p": "$D$ holds the pivots $1, 4, -\\frac{1}{4}$; $U$ is the upper-triangular factor divided by its pivots (1s on the diagonal). Check: $LDU = A$, and $\\det A = 1 \\cdot 4 \\cdot (-\\frac14) = -1$."
+      }
+     ],
+     "paper": "end-2022-g4"
+    },
+    {
+     "n": "2b",
+     "q": "Find the projection matrix that projects a vector onto the null space of $A = \\begin{bmatrix} 1 & 2 & 3 \\\\ 2 & 4 & 6 \\end{bmatrix}$.",
+     "marks": 4,
+     "topic": "projections",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "Solve $Ax = 0$: $N(A)$ has basis $\\begin{bmatrix} -2 \\\\ 1 \\\\ 0 \\end{bmatrix}$, $\\begin{bmatrix} -3 \\\\ 0 \\\\ 1 \\end{bmatrix}$ (dimension 2). Put them as the columns of $B$."
+      },
+      {
+       "p": "Projection onto $N(A) = C(B)$: $P = B(B^TB)^{-1}B^T$. (Equivalently $P = I - A^T(AA^T)^{-1}A$ when $A$ has independent rows, since $N(A) \\perp C(A^T)$.)"
+      },
+      {
+       "math": "P = \\begin{bmatrix} \\frac{13}{14} & -\\frac{1}{7} & -\\frac{3}{14} \\\\ -\\frac{1}{7} & \\frac{5}{7} & -\\frac{3}{7} \\\\ -\\frac{3}{14} & -\\frac{3}{7} & \\frac{5}{14} \\end{bmatrix}"
+      },
+      {
+       "p": "Check: $P^2 = P$, $P = P^T$, and $AP = 0$."
+      },
+      {
+       "p": "Here $A$ has rank 1 (row 2 = 2 × row 1), so $N(A)$ is a plane and $P = I - \\frac{aa^T}{a^Ta}$ with $a = (1, 2, 3)$ gives the same matrix."
+      }
+     ],
+     "paper": "end-2022-g4"
+    },
+    {
+     "n": "3",
+     "q": "Let $A = \\{1, 2, 4, 8, 16, 32, 64\\}$ and $aRb$ iff $a$ divides $b$. (a) Zero-one matrix. (b) Hasse diagram. (c) Maximal, minimal, greatest and least elements.",
+     "marks": 3,
+     "topic": "posets",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "(a) Zero-one matrix (rows and columns in the order 1, 2, 4, 8, 16, 32, 64; entry 1 when the row element divides the column element):"
+      },
+      {
+       "math": "\\begin{bmatrix} 1 & 1 & 1 & 1 & 1 & 1 & 1 \\\\ 0 & 1 & 1 & 1 & 1 & 1 & 1 \\\\ 0 & 0 & 1 & 1 & 1 & 1 & 1 \\\\ 0 & 0 & 0 & 1 & 1 & 1 & 1 \\\\ 0 & 0 & 0 & 0 & 1 & 1 & 1 \\\\ 0 & 0 & 0 & 0 & 0 & 1 & 1 \\\\ 0 & 0 & 0 & 0 & 0 & 0 & 1 \\end{bmatrix}"
+      },
+      {
+       "p": "(b) Hasse diagram - covering pairs only (drawn upward): 1–2, 2–4, 4–8, 8–16, 16–32, 32–64."
+      },
+      {
+       "p": "(c) Maximal: 64. Minimal: 1. Greatest element: 64. Least element: 1."
+      },
+      {
+       "p": "This poset is a chain (totally ordered)."
+      }
+     ],
+     "paper": "end-2022-g4"
+    },
+    {
+     "n": "4",
+     "q": "$R$ on $A = \\{1, 2, \\dots, 10\\}$: $xRy$ iff $x - y$ is a multiple of 2. (a) Verify that $R$ is an equivalence relation. (b) Equivalence classes and partition.",
+     "marks": 3,
+     "topic": "equiv-rel",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "(a) Reflexive: $x - x = 0$ is a multiple of 2. Symmetric: if $x - y = 2k$ then $y - x = 2(-k)$. Transitive: $x - y = 2k$, $y - z = 2l$ give $x - z = 2(k + l)$. So $R$ is an equivalence relation."
+      },
+      {
+       "p": "(b) Equivalence classes: $[1] = \\{1, 3, 5, 7, 9\\}$; $[2] = \\{2, 4, 6, 8, 10\\}$. The partition of $A$ is $\\{{1, 3, 5, 7, 9}, {2, 4, 6, 8, 10}\\}$."
+      }
+     ],
+     "paper": "end-2022-g4"
+    }
+   ],
+   "marks_sum": 20
+  },
+  {
+   "id": "end-2022-g8",
+   "title": "End Exam 2022, Group 8",
+   "exam": "end",
+   "year": 2022,
+   "date": "24-03-2022",
+   "minutes": 90,
+   "marks": 20,
+   "note": "Online proctored exam, 4 questions.",
+   "questions": [
+    {
+     "n": "1a",
+     "q": "Solve the recurrence $S_n + 5S_{n-1} + 6S_{n-2} = 42 \\cdot 4^n$ for $n \\ge 2$.",
+     "marks": 3,
+     "topic": "recurrence-nonhomog",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "Characteristic equation $r^2 + 5r + 6 = (r+2)(r+3) = 0$: roots $-2, -3$."
+      },
+      {
+       "p": "Particular: try $A\\,4^n$. Dividing by $4^{n-2}$: $16A + 20A + 6A = 42 \\cdot 16$, so $42A = 672$, $A = 16$."
+      },
+      {
+       "p": "General solution: $S_n = c_1(-2)^n + c_2(-3)^n + 16 \\cdot 4^n$ (no initial values are given, so $c_1, c_2$ are arbitrary)."
+      }
+     ],
+     "paper": "end-2022-g8"
+    },
+    {
+     "n": "1b",
+     "q": "Let $S = \\text{span}\\{[1,0,0], [2,0,3]\\}$. Find an orthonormal basis of $S$ and of $S^\\perp$.",
+     "marks": 4,
+     "topic": "gram-schmidt",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "Gram-Schmidt on $v_1 = \\begin{bmatrix} 1 \\\\ 0 \\\\ 0 \\end{bmatrix}$, $v_2 = \\begin{bmatrix} 2 \\\\ 0 \\\\ 3 \\end{bmatrix}$: $q_1 = v_1/\\|v_1\\|$, $B = v_2 - (q_1^Tv_2)\\,q_1$, $q_2 = B/\\|B\\|$."
+      },
+      {
+       "math": "q_1 = \\begin{bmatrix} 1 \\\\ 0 \\\\ 0 \\end{bmatrix},\\quad q_2 = \\begin{bmatrix} 0 \\\\ 0 \\\\ 1 \\end{bmatrix}"
+      },
+      {
+       "p": "$S^\\perp = N(A)$ for $A$ with rows $v_1, v_2$: solving $Ax = 0$ gives one direction, normalised: $q_3 = \\begin{bmatrix} 0 \\\\ 1 \\\\ 0 \\end{bmatrix}$ (check: $q_3 \\perp v_1, v_2$). $\\{q_1, q_2\\}$ is an orthonormal basis of $S$ and $\\{q_3\\}$ of $S^\\perp$."
+      },
+      {
+       "p": "So $S$ is the $xz$-plane and $S^\\perp$ is the $y$-axis."
+      }
+     ],
+     "paper": "end-2022-g8"
+    },
+    {
+     "n": "2",
+     "q": "Let $A = \\{1, 3, 5, 15, 25, 30, 45\\}$ and $aRb$ iff $a$ divides $b$. (a) Zero-one matrix. (b) Hasse diagram. (c) Maximal, minimal, greatest and least elements.",
+     "marks": 3,
+     "topic": "posets",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "(a) Zero-one matrix (rows and columns in the order 1, 3, 5, 15, 25, 30, 45; entry 1 when the row element divides the column element):"
+      },
+      {
+       "math": "\\begin{bmatrix} 1 & 1 & 1 & 1 & 1 & 1 & 1 \\\\ 0 & 1 & 0 & 1 & 0 & 1 & 1 \\\\ 0 & 0 & 1 & 1 & 1 & 1 & 1 \\\\ 0 & 0 & 0 & 1 & 0 & 1 & 1 \\\\ 0 & 0 & 0 & 0 & 1 & 0 & 0 \\\\ 0 & 0 & 0 & 0 & 0 & 1 & 0 \\\\ 0 & 0 & 0 & 0 & 0 & 0 & 1 \\end{bmatrix}"
+      },
+      {
+       "p": "(b) Hasse diagram - covering pairs only (drawn upward): 1–3, 1–5, 3–15, 5–15, 5–25, 15–30, 15–45."
+      },
+      {
+       "p": "(c) Maximal: 25, 30, 45. Minimal: 1. Greatest element: none. Least element: 1."
+      }
+     ],
+     "paper": "end-2022-g8"
+    },
+    {
+     "n": "3",
+     "q": "$R$ on $A = \\{1,2,3,4,5,6,7,8,9,10,12\\}$: $xRy$ iff $x - y$ is a multiple of 2. (a) Verify that $R$ is an equivalence relation. (b) Equivalence classes and partition.",
+     "marks": 3,
+     "topic": "equiv-rel",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "(a) Reflexive: $x - x = 0$ is a multiple of 2. Symmetric: if $x - y = 2k$ then $y - x = 2(-k)$. Transitive: $x - y = 2k$, $y - z = 2l$ give $x - z = 2(k + l)$. So $R$ is an equivalence relation."
+      },
+      {
+       "p": "(b) Equivalence classes: $[1] = \\{1, 3, 5, 7, 9\\}$; $[2] = \\{2, 4, 6, 8, 10, 12\\}$. The partition of $A$ is $\\{{1, 3, 5, 7, 9}, {2, 4, 6, 8, 10, 12}\\}$."
+      }
+     ],
+     "paper": "end-2022-g8"
+    },
+    {
+     "n": "4a",
+     "q": "By the Gauss-Jordan method find the inverse of $A = \\begin{bmatrix} 1 & 3 & 2 \\\\ 0 & 4 & 1 \\\\ 5 & 0 & 6 \\end{bmatrix}$. Give intermediate steps.",
+     "marks": 3,
+     "topic": "inverse",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "math": "[A \\mid I] = \\begin{bmatrix} 1 & 3 & 2 & 1 & 0 & 0 \\\\ 0 & 4 & 1 & 0 & 1 & 0 \\\\ 5 & 0 & 6 & 0 & 0 & 1 \\end{bmatrix}"
+      },
+      {
+       "p": "$R_3 \\leftarrow R_3 - 5R_1$; $R_3 \\leftarrow R_3 + \\frac{15}{4}R_2$ (now upper triangular, pivots $1, 4, -\\frac14$); scale $R_2 \\div 4$, $R_3 \\times (-4)$; clear above the pivots: $R_2 \\leftarrow R_2 - \\frac14 R_3$, $R_1 \\leftarrow R_1 - 2R_3 - 3R_2$."
+      },
+      {
+       "math": "[I \\mid A^{-1}] = \\begin{bmatrix} 1 & 0 & 0 & -24 & 18 & 5 \\\\ 0 & 1 & 0 & -5 & 4 & 1 \\\\ 0 & 0 & 1 & 20 & -15 & -4 \\end{bmatrix}"
+      },
+      {
+       "math": "A^{-1} = \\begin{bmatrix} -24 & 18 & 5 \\\\ -5 & 4 & 1 \\\\ 20 & -15 & -4 \\end{bmatrix}"
+      },
+      {
+       "p": "Check: $AA^{-1} = I$ ($\\det A = -1$)."
+      }
+     ],
+     "paper": "end-2022-g8"
+    },
+    {
+     "n": "4b",
+     "q": "$Ax = b$ may have no solution when $b \\notin C(A)$; projecting $b$ onto $C(A)$ gives the best approximate solution. Find it for $\\begin{bmatrix} 1 & 2 \\\\ 2 & 4 \\end{bmatrix}\\begin{bmatrix} x_1 \\\\ x_2 \\end{bmatrix} = \\begin{bmatrix} 1 \\\\ 3 \\end{bmatrix}$.",
+     "marks": 4,
+     "topic": "projections",
+     "qtype": "medium",
+     "answer_blocks": [
+      {
+       "p": "$C(A)$ is the line through $a = (1, 2)$ (column 2 = 2 × column 1), and $b = (1, 3) \\notin C(A)$."
+      },
+      {
+       "p": "Projection: $p = \\frac{a^Tb}{a^Ta}a = \\frac{7}{5}(1, 2) = (\\frac{7}{5}, \\frac{14}{5})$. Solve $Ax = p$: $x_1 + 2x_2 = \\frac{7}{5}$."
+      },
+      {
+       "p": "Note $A^TA = \\begin{bmatrix} 5 & 10 \\\\ 10 & 20 \\end{bmatrix}$ is singular, so the normal equations have infinitely many solutions: every $x$ with $x_1 + 2x_2 = \\frac75$ is a best approximate (least-squares) solution."
+      },
+      {
+       "p": "The shortest one (minimum norm, $x \\in C(A^T)$) is $x = \\begin{bmatrix} \\frac{7}{25} \\\\ \\frac{14}{25} \\end{bmatrix}$. Error $e = b - p = (-\\frac25, \\frac15) \\perp C(A)$."
+      }
+     ],
+     "paper": "end-2022-g8"
+    }
+   ],
+   "marks_sum": 20
+  }
+ ]
+}

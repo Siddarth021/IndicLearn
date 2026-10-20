@@ -397,3 +397,7 @@ html[lang="te"] .nav button,html[lang="hi"] .nav button,html[lang="sa"] .nav but
 .ptable th,.ptable td{white-space:nowrap}
 .pcourse{display:flex;align-items:center;gap:12px;margin:-4px 0 14px;flex-wrap:wrap}
 @media (max-width:640px){.ccards{grid-template-columns:1fr}.cacts .btn{flex:1 1 calc(50% - 8px);justify-content:center}}
+.cpyq{margin:8px 0 16px;padding:18px 20px}.cpyq header{display:flex;flex-direction:column;gap:2px;margin-bottom:10px}.cpyq h3{margin:0;font-size:17px}.cpyq header small{color:var(--ink-2)}
+.pyqlist{display:grid;gap:8px}
+.lpyq{margin-top:22px}.lpyq .pq{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.pqfoot .chip{cursor:pointer;border:1px solid var(--line-2);background:#fff;font:inherit;font-size:12px}

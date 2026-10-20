@@ -144,3 +144,37 @@ def test_telugu_never_blocks_the_lesson(client, auth, monkeypatch):
     assert time.time() - t < 5 and r["lang"] == "en" and r["te_pending"] is False
     r = client.get("/api/courses/os/lessons/round-robin?lang=te", headers=auth).json()
     assert r["lang"] == "te"  # built-in Telugu
+
+
+def test_previous_papers_are_in_the_course(client, auth):
+    """The institute's DSMA papers: listed, readable with worked answers, printable, on lessons, in the bank and in papers."""
+    lst = client.get("/api/courses/dsma/pyq", headers=auth).json()
+    assert {p["id"] for p in lst} >= {"mid-2025", "quiz1-2024", "quiz2-2024", "mid-2022-g6", "end-2022-g8"}
+    for p in lst:
+        full = client.get(f"/api/courses/dsma/pyq/{p['id']}?answers=true", headers=auth).json()
+        assert sum(q["marks"] for q in full["questions"]) == p["marks"]  # every question of the paper is there
+        assert all(q["answer_blocks"] for q in full["questions"])
+    bare = client.get("/api/courses/dsma/pyq/mid-2025", headers=auth).json()
+    assert "answer_blocks" not in bare["questions"][0]  # answers only when asked for
+    pdf = client.get("/api/courses/dsma/pyq/end-2022-g4/pdf?answers=true", headers=auth)
+    assert pdf.status_code == 200 and pdf.content[:5] == b"%PDF-"
+    les = client.get("/api/courses/dsma/lessons/posets", headers=auth).json()
+    assert any("End Exam 2022" in q["paper_title"] for q in les["pyq"])
+    assert sum(1 for q in P.bank("dsma") if q.get("source") == "pyq") >= 60
+    # keys that were checked: the paper's own typo is flagged, a question with no right option never reaches a quiz
+    q2 = client.get("/api/courses/dsma/pyq/quiz2-2024?answers=true", headers=auth).json()["questions"][0]
+    assert "116" in q2["paper_issue"]
+    assert not any(q["id"] == "pyq-quiz1-2024-4" for q in P.bank("dsma"))
+
+
+def test_pyq_worked_answers_are_exact():
+    import sympy as sp
+
+    from indiclearn.studio.courses import pyq
+
+    qs = {(p["id"], q["n"]): q for p in pyq.papers("dsma") for q in p["questions"]}
+    txt = lambda k: " ".join(b.get("p", "") + b.get("math", "") for b in qs[k]["answer_blocks"])  # noqa: E731
+    assert "3014" in txt(("mid-2022-g6", "4")) and "2750" in txt(("mid-2022-g1", "4"))
+    B = sp.Matrix([[1, 3, 2], [0, 4, 1], [5, 0, 6]])
+    assert all(str(x) in txt(("end-2022-g8", "4a")) for x in (-24, 18, 5, -15, -4))
+    assert B.inv() == sp.Matrix([[-24, 18, 5], [-5, 4, 1], [20, -15, -4]])

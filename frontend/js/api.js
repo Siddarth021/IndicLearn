@@ -27,6 +27,8 @@ export const api = {
   quizRetry: (quizId) => req("POST", `/quiz/${quizId}/retry`),
   lessons: (subject = "os") => req("GET", `/courses/${subject}/lessons`),
   courseOpen: (subject) => req("POST", `/courses/${subject}/open`),
+  pyqList: (subject) => req("GET", `/courses/${subject}/pyq`),
+  pyq: (subject, pid, answers = false) => req("GET", `/courses/${subject}/pyq/${pid}?answers=${answers}`),
   lesson: (subject, topic, lang = "en", seed = null, poll = false) => req("GET", `/courses/${subject}/lessons/${topic}?lang=${lang}${seed !== null ? "&seed=" + seed : ""}${poll ? "&poll=1" : ""}`),
   lessonMark: (subject, topic, status) => req("POST", `/courses/${subject}/lessons/${topic}/mark?status=${status}`),
   lessonCheck: (subject, topic, correct) => req("POST", `/courses/${subject}/lessons/${topic}/check?correct=${!!correct}`),

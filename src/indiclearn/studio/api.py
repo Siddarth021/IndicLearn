@@ -204,6 +204,30 @@ def build_router(svc: StudioService) -> APIRouter:
 
         return wrap(lessons.index, svc.db, u["id"], subject)
 
+    @r.get("/courses/{subject}/pyq")
+    def pyq_list(subject: str, u: dict = Depends(current)) -> list[dict[str, Any]]:
+        from indiclearn.studio.courses import papers as P
+        from indiclearn.studio.courses import pyq
+
+        wrap(P.syllabus, subject)
+        return pyq.listing(subject)
+
+    @r.get("/courses/{subject}/pyq/{pid}")
+    def pyq_get(subject: str, pid: str, answers: bool = False, u: dict = Depends(current)) -> dict[str, Any]:
+        from indiclearn.studio.courses import pyq
+
+        return wrap(pyq.paper, subject, pid, answers)
+
+    @r.get("/courses/{subject}/pyq/{pid}/pdf")
+    def pyq_pdf(subject: str, pid: str, answers: bool = False, u: dict = Depends(current)) -> Response:
+        import re as _re
+
+        from indiclearn.studio.courses import pdf, pyq
+
+        wrap(pyq.paper, subject, pid)  # 404 for an unknown paper
+        name = _re.sub(r"[^A-Za-z0-9]+", "_", f"{subject}_{pid}_{'answer_key' if answers else 'paper'}") + ".pdf"
+        return Response(pdf.render(pyq.as_exam_paper(subject, pid), answers), media_type="application/pdf", headers={"Content-Disposition": f'inline; filename="{name}"'})
+
     @r.post("/courses/{subject}/open")
     def course_open(subject: str, u: dict = Depends(current)) -> dict[str, Any]:
         """The course as a study document (for the chat, mind map, quiz and progress views)."""

@@ -15,7 +15,7 @@ SYMS = {
     "le": "≤", "leq": "≤", "ge": "≥", "geq": "≥", "ne": "≠", "neq": "≠", "equiv": "≡", "approx": "≈", "cdot": "·", "times": "×", "div": "÷", "pm": "±",
     "lambda": "λ", "Lambda": "Λ", "alpha": "α", "beta": "β", "gamma": "γ", "delta": "δ", "Delta": "Δ", "epsilon": "ε", "theta": "θ", "mu": "μ", "pi": "π",
     "sigma": "σ", "Sigma": "Σ", "Pi": "Π", "phi": "φ", "omega": "ω", "infty": "∞", "sum": "Σ", "prod": "Π", "perp": "⊥", "mid": "|", "nmid": "∤",
-    "therefore": "∴", "vdash": "⊢", "models": "⊨", "top": "⊤", "bot": "⊥", "ell": "ℓ", "dots": "…", "cdots": "⋯", "ldots": "…", "vdots": "⋮",
+    "therefore": "∴", "vdash": "⊢", "models": "⊨", "top": "⊤", "bot": "⊥", "ell": "l", "dots": "…", "cdots": "⋯", "ldots": "…", "vdots": "⋮",
     "lfloor": "⌊", "rfloor": "⌋", "lceil": "⌈", "rceil": "⌉", "langle": "⟨", "rangle": "⟩", "quad": "  ", "qquad": "    ", "|": "‖", "{": "{", "}": "}",
     ",": " ", ";": " ", ":": " ", "!": "", " ": " ", "colon": ":", "triangle": "△", "star": "*", "prime": "′", "partial": "∂", "nabla": "∇", "sim": "~",
     "uparrow": "↑", "downarrow": "↓", "mapsto": "↦", "setminus": "∖", "%": "%", "#": "#", "&": "&", "_": "_", "$": "$",
@@ -58,6 +58,8 @@ def _wrap(x: str) -> str:
 
 def _script(x: str, table: dict, mark: str) -> str:
     t = x.strip()
+    if t in ("⊥", "′", "*", "†", "+", "-") and mark == "^":
+        return {"+": "⁺", "-": "⁻"}.get(t, t)
     if t and all(ord(ch) in table for ch in t):
         return t.translate(table)
     return mark + (t if len(t) == 1 else f"({t})")
@@ -76,7 +78,9 @@ def plain(s: str) -> str:
             if name in ("frac", "dfrac", "tfrac"):
                 a, i = _group(s, i)
                 b, i = _group(s, i)
-                out.append(f"{_wrap(plain(a))}/{_wrap(plain(b))}")
+                frac = f"{_wrap(plain(a))}/{_wrap(plain(b))}"
+                nxt = s[i:].lstrip()[:1]
+                out.append(f"({frac})" if nxt and (nxt.isalnum() or nxt in "(\\") else frac)  # 5/2 n^2 -> (5/2)n²
             elif name == "binom":
                 a, i = _group(s, i)
                 b, i = _group(s, i)
