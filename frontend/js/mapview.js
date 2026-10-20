@@ -9,6 +9,12 @@ export function createMapView(root) {
   let map, svg, wrap, tip, detail, tourBar, legend, mode = "default", layout = "radial", g = null, tourIdx = -1, tourList = [], loadedFor = null;
   const toolBtns = {};
   let nextBtn = null, nextId = null;
+  // courses: one map per unit (only that unit's lessons, no lines into other units) or the whole course.
+  // Progress lives in the same course document, so a unit's map and the full map always agree.
+  let unit = "all", unitSel = null, drawnUnit = "all";
+  const unitKey = () => "il-map-unit-" + (S.doc?.id || "");
+  const readUnit = () => { try { return localStorage.getItem(unitKey()) || "all"; } catch (e) { return "all"; } };
+  const saveUnit = () => { try { localStorage.setItem(unitKey(), unit); } catch (e) {} };
   async function refreshNext() {
     // the single best thing to learn now - one tap away, so a student never wonders what to do next
     if (!S.doc || !nextBtn) return;
@@ -36,7 +42,9 @@ export function createMapView(root) {
       seg("layout", [["radial", t("layout_radial")], ["tree", t("layout_tree")], ["flow", t("layout_flow")]], layout, (l) => { layout = l; map.setLayout(l); }),
       chk(t("show_prereq"), "prereq", true), chk(t("show_related"), "related", false), search,
       h("button", { class: "btn sm ghost", onclick: () => map.fit() }, t("fit")), h("button", { class: "btn sm ghost", onclick: () => map.expandAll() }, t("expand")), h("button", { class: "btn sm ghost", onclick: () => map.collapseAll() }, t("collapse")),
-      nextBtn = h("button", { class: "nextup", hidden: true, onclick: () => { if (nextId) { map.focus(nextId, 1.2); const n = S.nodes.get(nextId); if (n) openDetail(n); } } }),
+      unitSel = h("select", { class: "field", hidden: true, style: { padding: "5px 8px", maxWidth: "220px" }, "aria-label": "Unit",
+        onchange: (e) => { unit = e.target.value; saveUnit(); closeDetail(); draw(); } }),
+      nextBtn = h("button", { class: "nextup", hidden: true, onclick: () => { if (nextId) { map.focus(ensureVisible(nextId), 1.2); const n = S.nodes.get(nextId); if (n) openDetail(n); } } }),
       h("span", { style: { flex: 1 } }), h("button", { class: "btn sm", onclick: startTour }, "▶ " + t("tour")),
       h("button", { "data-tutor-toggle": "1", class: "btn sm ghost", onclick: () => { S.tutorOpen = !S.tutorOpen; emit("layout"); } }, S.tutorOpen ? t("hide_tutor") : "✦ " + t("ask_tutor")));
     svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("id", "mapsvg"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", t("nav_map"));
@@ -63,13 +71,59 @@ export function createMapView(root) {
     try {
       g = await api.graph(S.doc.id, mode);
       S.graph = g; S.nodes = new Map(g.nodes.map((n) => [n.id, n]));
-      map.setData({ nodes: g.nodes, edges: g.edges, path: g.path, mode, title: S.doc.title });
-      drawLegend(); loadedFor = S.doc.id + mode;
-      if (!keepView) setTimeout(() => map.fit(), 120);
+      if (loadedFor?.split("|")[0] !== String(S.doc.id)) unit = readUnit();
+      fillUnits();
+      draw(keepView);
+      drawLegend(); loadedFor = S.doc.id + "|" + mode;
       if (map.selected && S.nodes.has(map.selected)) openDetail(S.nodes.get(map.selected), true);
       emit("nodes");
       refreshNext();
     } catch (e) { toast(e.message, true); }
+  }
+
+  // the unit (chapter) a node belongs to, following parents up from it
+  function unitOf(id) {
+    let cur = S.nodes.get(id);
+    while (cur && cur.type !== "chapter") cur = S.nodes.get(cur.parent);
+    return cur?.id || null;
+  }
+  function fillUnits() {
+    const units = S.doc?.course ? g.nodes.filter((n) => n.type === "chapter").sort((a, b) => (a.order ?? 0) - (b.order ?? 0)) : [];
+    unitSel.hidden = !units.length;
+    if (!units.some((u) => u.id === unit)) unit = "all";
+    unitSel.innerHTML = "";
+    unitSel.append(h("option", { value: "all" }, "All units"), ...units.map((u, i) => h("option", { value: u.id }, u.full_label || `Unit ${i + 1}: ${u.label}`)));
+    unitSel.value = unit;
+  }
+  function draw(keepView = false) {
+    let nodes = g.nodes, edges = g.edges, path = g.path;
+    if (S.doc?.course) {
+      const uo = new Map(nodes.map((n) => [n.id, unitOf(n.id)]));
+      if (unit !== "all") {
+        // the unit sits in the centre of its own map
+        const u = S.nodes.get(unit);
+        const keep = new Set(nodes.filter((n) => uo.get(n.id) === unit && n.id !== unit).map((n) => n.id));
+        nodes = [{ ...u, id: "root", type: "root", parent: null, level: 0 },
+          ...nodes.filter((n) => keep.has(n.id)).map((n) => (n.parent === unit ? { ...n, parent: "root" } : n))];
+        const vid = (id) => (id === unit ? "root" : id);
+        edges = edges.filter((e) => (keep.has(e.source) || e.source === unit) && (keep.has(e.target) || e.target === unit)).map((e) => ({ ...e, source: vid(e.source), target: vid(e.target) }));
+        path = (path || []).filter((id) => keep.has(id));
+      } else {
+        // never draw a line between two different units: it only confuses
+        edges = edges.filter((e) => e.source === "root" || e.target === "root" || uo.get(e.source) === uo.get(e.target));
+      }
+    }
+    map.setData({ nodes, edges, path, mode, title: S.doc.title });
+    // a different unit on screen: open it as a fresh map (its lessons visible), not the folds of the last view
+    if (drawnUnit !== unit) { drawnUnit = unit; map.autoCollapse(); map.render(false); keepView = false; }
+    if (!keepView) setTimeout(() => map.fit(), 120);
+  }
+  // show a node even if it sits in another unit than the one on screen; returns its id on screen
+  function ensureVisible(id) {
+    if (S.doc?.course && unit !== "all" && S.nodes.has(id) && unitOf(id) !== unit) {
+      unit = S.nodes.get(id)?.type === "root" ? "all" : (unitOf(id) || "all"); unitSel.value = unit; saveUnit(); draw(true);
+    }
+    return unit !== "all" && id === unit ? "root" : id;
   }
 
   function hoverTip(n, e) {
@@ -88,7 +142,7 @@ export function createMapView(root) {
     if (!n || n.type === "root") { closeDetail(); return; }
     tip.hidden = true; detail.hidden = false; map.opts.offsetX = 190; detail.innerHTML = ""; S.focus = n.type === "doubt" ? S.focus : n.id; emit("focus");
     const nodes = S.nodes; const lab = (id) => nodes.get(id)?.label || id;
-    const link = (id) => h("button", { class: "lnk", onclick: () => { map.focus(id, 1.2); openDetail(nodes.get(id)); } }, lab(id));
+    const link = (id) => h("button", { class: "lnk", onclick: () => { map.focus(ensureVisible(id), 1.2); openDetail(nodes.get(id)); } }, lab(id));
     const section = (title, ...kids) => h("div", { class: "sec" }, h("span", { class: "small-caps" }, title), ...kids);
     const typeName = { chapter: t("lg_chapter"), section: t("lg_section"), topic: t("lg_section"), concept: t("lg_concept"), doubt: t("lg_doubt") }[n.type];
     detail.append(h("button", { class: "x", onclick: closeDetail, "aria-label": "close" }, "×"), h("span", { class: "small-caps" }, typeName));
@@ -129,7 +183,7 @@ export function createMapView(root) {
 
   // ---------------- guided tour along the learning path
   function startTour() {
-    tourList = (g?.path || []).filter((id) => { const n = S.nodes.get(id); return n && n.type !== "doubt" && (n.type !== "section" || n.definition || (n.n_children || 0) > 0); });
+    tourList = (g?.path || []).filter((id) => { const n = S.nodes.get(id); return n && map.byId.has(id) && n.type !== "doubt" && (n.type !== "section" || n.definition || (n.n_children || 0) > 0); });
     if (!tourList.length) return;
     tourIdx = 0; stepTour(0);
   }
@@ -149,10 +203,10 @@ export function createMapView(root) {
   return {
     show(selectId) {
       if (!map) build();
-      if (loadedFor !== (S.doc?.id + mode)) load().then(() => selectId && sel(selectId)); else if (selectId) sel(selectId);
+      if (loadedFor !== (S.doc?.id + "|" + mode)) load().then(() => selectId && sel(selectId)); else if (selectId) sel(selectId);
       setTimeout(() => map.fit(), 80);
     },
     reload: () => load(true),
   };
-  function sel(id) { if (S.nodes.has(id)) { map.focus(id, 1.2); openDetail(S.nodes.get(id), true); } }
+  function sel(id) { if (S.nodes.has(id)) { map.focus(ensureVisible(id), 1.2); openDetail(S.nodes.get(id), true); } }
 }
