@@ -289,8 +289,12 @@ def lesson(db: Database, user_id: str, topic_id: str, lang: str = "en", seed: in
     if not st:
         db.run("INSERT OR IGNORE INTO lesson_progress(user_id,subject,topic,status,updated_at) VALUES (?,?,?,?,?)", (user_id, subject, topic_id, "opened", now()))
     nav = lambda i: {"id": order[i][1]["id"], "label": order[i][1]["label"]} if 0 <= i < len(order) else None  # noqa: E731
+    from indiclearn.studio.courses import diagrams
+
+    figure = diagrams.render(subject, topic_id)  # the drawn version of lesson["diagram"], when we have one
     return {"subject": subject, "topic": topic_id, "unit": {"id": u["id"], "title": u["title"]}, "label": t["label"], "lang": "te" if te else "en",
-            "has_telugu": bool(d.get("te")), "te_pending": te_pending, "lesson": body, "example": example, "check": check, "status": (st["status"] if st else "opened"),
+            "has_telugu": bool(d.get("te")), "te_pending": te_pending, "lesson": body, "figure": figure, "example": example, "check": check,
+            "status": (st["status"] if st else "opened"),
             "refs": t.get("refs", []), "pyq": _pyq(subject, topic_id), "prereq": [{"id": x, "label": lbl} for x in t.get("prereq", []) for lbl in [_label(subject, x)] if lbl],
             "prev": nav(pos - 1), "next": nav(pos + 1)}
 

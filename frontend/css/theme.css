@@ -343,6 +343,10 @@ html[lang="te"] .nav button,html[lang="hi"] .nav button,html[lang="sa"] .nav but
 .terms{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;margin:0}.terms dt{font-weight:700}.terms dd{margin:0;color:var(--ink-2)}
 .lex{background:#fff;border:1px solid var(--line);border-radius:14px;padding:4px 18px 16px;margin-top:22px}
 .ldraw{background:var(--surface-2);border-radius:12px;padding:2px 16px 10px;margin-top:20px}
+/* the drawn figure: white card so the lesson's own cream panel does not tint it, and it stays printable */
+.dgmwrap{margin:4px 0 10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;overflow-x:auto}
+.dgmwrap .dgm{display:block;max-width:100%;height:auto}
+@media print{.dgmwrap{break-inside:avoid;border-color:#ccc}}
 .ltips li,.lmist li{margin-bottom:6px}.lmist h3{color:var(--bad)}
 .lcheck .qcard{margin-bottom:12px}
 .lfoot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:30px 0 20px;padding-top:18px;border-top:1px solid var(--line)}
