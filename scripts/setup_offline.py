@@ -51,12 +51,13 @@ def step(title: str) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--quality", action="store_true", help="gemma4:e4b + whisper_te_medium (slower on a 4 GB GPU)")
+    ap.add_argument("--quality", action="store_true", help="also fetch whisper_te_medium")
+    ap.add_argument("--small", action="store_true", help="gemma4:e2b instead of e4b (for a 4 GB GPU)")
     ap.add_argument("--parler", action="store_true", help="also fetch Indic Parler-TTS (gated; commercial-friendly voices)")
     ap.add_argument("--nllb", action="store_true", help="also fetch NLLB-200 600M (non-commercial translation fallback)")
     ap.add_argument("--check", action="store_true", help="report only, download nothing")
     a = ap.parse_args()
-    llm = "gemma4:e4b" if a.quality else "gemma4:e2b"
+    llm = "gemma4:e2b" if a.small else "gemma4:e4b"  # 6 GB VRAM (RTX 3050 laptop) fits E4B
 
     step("1/3  Local LLM (Ollama)")
     exe = shutil.which("ollama")
@@ -102,10 +103,14 @@ def main() -> int:
     nllb = (neural.models_dir() / "pretrained" / "nllb_600m" / "config.json").exists()
     print("Translation    :", "IndicTrans2" if st.get("indictrans2") else "NLLB-200" if nllb else "LLM only (no local translator downloaded)")
     print("Voices         :", ", ".join(st.get("tts") or []) or "browser voices only", "+ Parler" if st.get("parler_tts") else "")
+    print("Telugu lessons :", "te_style_translator (our fine-tuned mT5)" if st.get("te_style_translator") else "MISSING - python training/kaggle_run.py fetch --kind indic")
     print("Device         :", st.get("device"), "| torch installed:", st.get("torch"))
     if not st.get("torch"):
         print("\nInstall PyTorch for the speech/translation models (CUDA build for an RTX card):")
         print("  pip install torch --index-url https://download.pytorch.org/whl/cu121")
+    elif st.get("device") == "cpu":
+        print("\nPyTorch is the CPU build, so the GPU is idle. For the RTX card:")
+        print("  pip install --force-reinstall torch --index-url https://download.pytorch.org/whl/cu121")
         print("  pip install -r requirements-models.txt")
     print("\nDone. Start the app with run.bat - it uses these automatically.")
     return 0
