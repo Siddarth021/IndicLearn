@@ -3,16 +3,18 @@ against the SAME code-mixed references, so 'beats the baseline' is a like-for-li
 
     .venv\\Scripts\\python training\\baseline_fair.py
 
-Prints chrF and Telugu-script ratio for IndicTrans2 next to our model's 72.0 / code-mixed.
-Needs: models/pretrained/indictrans2_en_indic (already installed), torch, transformers, sacrebleu.
+Uses the app's own IndicTrans2 loader (the one check_ai reports as working), so it loads
+the same way the running app does. Needs sacrebleu:  .venv\\Scripts\\pip install sacrebleu
 """
 from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
 TEST = ROOT / "training" / "datasets" / "te_style" / "test.jsonl"
 
 
@@ -25,41 +27,40 @@ def te_ratio(s: str) -> float:
 def main() -> int:
     try:
         import sacrebleu
-        import torch
-        from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
-    except ImportError as e:
-        print("Missing package:", e, "\n  .venv\\Scripts\\pip install sacrebleu")
+    except ImportError:
+        print("Run:  .venv\\Scripts\\pip install sacrebleu")
+        return 1
+    from indiclearn.studio import neural
+
+    tr = neural.load_indictrans()
+    if tr is None or not tr.can("en", "te"):
+        print("IndicTrans2 could not load. Reason:", neural.LOAD_ERRORS.get("indictrans2"))
         return 1
 
     rows = [json.loads(l) for l in TEST.open(encoding="utf-8")]
-    src = [r["target_en"] if r.get("target_en") else r["input"].replace("to Telugu: ", "") for r in rows]
+    src = [(r.get("target_en") or r["input"].replace("to Telugu: ", "")) for r in rows]
     gold = [r["target"] for r in rows]
 
-    mdir = ROOT / "models" / "pretrained" / "indictrans2_en_indic"
-    if not (mdir / "config.json").exists():
-        print("IndicTrans2 not found at", mdir, "- run setup_offline.py first.")
-        return 1
-    dev = "cuda" if torch.cuda.is_available() else "cpu"
-    print("device:", dev, "| items:", len(rows))
-    tok = AutoTokenizer.from_pretrained(str(mdir), trust_remote_code=True)
-    model = AutoModelForSeq2SeqLM.from_pretrained(str(mdir), trust_remote_code=True).to(dev).eval()
-
-    out = []
+    print(f"items: {len(rows)} | translating with IndicTrans2 en->te ...")
+    out: list[str] = []
     for i in range(0, len(src), 16):
-        batch = [f"eng_Latn tel_Telu {s}" for s in src[i:i + 16]]
-        enc = tok(batch, return_tensors="pt", padding=True, truncation=True, max_length=256).to(dev)
-        with torch.no_grad():
-            gen = model.generate(**enc, max_new_tokens=256, num_beams=5)
-        out.extend(tok.batch_decode(gen, skip_special_tokens=True))
-        print(f"  {min(i+16, len(src))}/{len(src)}", end="\r", flush=True)
+        out.extend(tr.translate(src[i:i + 16], "en", "te"))
+        print(f"  {min(i + 16, len(src))}/{len(src)}", end="\r", flush=True)
     print()
 
     chrf = sacrebleu.corpus_chrf(out, [gold]).score
-    print("\n=== fair baseline on te_style test (same references) ===")
-    print(f"IndicTrans2 en->te   chrF = {chrf:5.1f}   te-ratio = {sum(map(te_ratio, out))/len(out):.3f}")
-    print(f"Our mT5 (reported)   chrF =  72.0   te-ratio = 0.314")
-    print("\nIf IndicTrans2's te-ratio is much higher (~0.9), it over-translates the technical")
-    print("terms - that is the register gap, visible even where chrF is close.")
+    it_ratio = sum(map(te_ratio, out)) / len(out)
+    print("\n=== fair baseline on te_style test (same 349 references) ===")
+    print(f"IndicTrans2 en->te   chrF = {chrf:5.1f}   te-script-ratio = {it_ratio:.3f}")
+    print(f"Our mT5 (reported)   chrF =  72.0   te-script-ratio = 0.314")
+    print("\nHigher IndicTrans2 te-ratio (~0.9) = it over-translates the technical terms;")
+    print("that register gap is the contribution, visible even if chrF is close.")
+    (ROOT / "training" / "reports").mkdir(exist_ok=True)
+    (ROOT / "training" / "reports" / "te_style__indictrans2_baseline.json").write_text(
+        json.dumps({"n_test": len(rows), "chrF": round(chrf, 2), "telugu_script_ratio": round(it_ratio, 3),
+                    "model": "ai4bharat/indictrans2-en-indic-dist-200M", "vs_ours_chrF": 72.0}, indent=2),
+        encoding="utf-8")
+    print("\nsaved training/reports/te_style__indictrans2_baseline.json")
     return 0
 
 
