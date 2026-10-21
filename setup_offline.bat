@@ -19,7 +19,7 @@ if not exist .venv ( py -3 -m venv .venv && .venv\Scripts\python -m pip install 
 
 rem GPU build of PyTorch (2.4 GB). Retries, because the download can drop on a slow link.
 for /l %%i in (1,1,6) do (
-  .venv\Scripts\python -c "import torch,sys; sys.exit(0 if torch.cuda.is_available() else 1)" || .venv\Scripts\pip install --default-timeout=300 --retries 30 --force-reinstall torch --index-url https://download.pytorch.org/whl/cu121
+  .venv\Scripts\python -c "import torch,sys; sys.exit(0 if torch.cuda.is_available() else 1)" || .venv\Scripts\pip install --default-timeout=300 --retries 30 --upgrade "torch>=2.6" --index-url https://download.pytorch.org/whl/cu124
 )
 
 rem Telugu models (the style translator is 2.2 GB)

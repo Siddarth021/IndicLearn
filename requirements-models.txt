@@ -1,7 +1,7 @@
 # OPTIONAL local neural models (downloaded once from Hugging Face, then run offline)
 sentence-transformers>=3.0   # multilingual-e5-small dense retrieval
 transformers>=4.40           # NLLB-200 translator
-torch>=2.2                   # for an RTX GPU install the CUDA build first: pip install torch --index-url https://download.pytorch.org/whl/cu121
+torch>=2.6                   # transformers 5.x needs torch.accelerator (torch 2.6+). RTX GPU: pip install "torch>=2.6" --index-url https://download.pytorch.org/whl/cu124
 sacremoses>=0.1              # English tokenisation for IndicTrans2 (pure Python, works on Windows)
 librosa>=0.10                # audio decoding for speech recognition
 soundfile>=0.12
