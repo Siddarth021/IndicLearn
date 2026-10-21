@@ -28,3 +28,5 @@ secrets/
 # app runtime data (uploads, user DB) - private, never in git
 data/studio/
 data/studio_*/
+
+.tmp/

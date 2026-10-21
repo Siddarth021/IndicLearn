@@ -51,7 +51,8 @@ def setup_token() -> str:
 
 
 def kg(*args: str, check: bool = True) -> str:
-    r = subprocess.run(["kaggle", *args], capture_output=True, text=True)
+    exe = shutil.which("kaggle") or str(Path(sys.executable).parent / ("kaggle.exe" if os.name == "nt" else "kaggle"))  # the venv's Scripts folder is not always on PATH
+    r = subprocess.run([exe, *args], capture_output=True, text=True)
     if check and r.returncode != 0:
         raise SystemExit(f"kaggle {' '.join(args)} failed:\n{r.stdout}\n{r.stderr}")
     return r.stdout + r.stderr
