@@ -265,6 +265,80 @@ class Recogniser:
             return "", ""
 
 
+# --------------------------------------------------------------------------- offline Telugu
+_MATH = re.compile(r"\$[^$]*\$|`[^`]*`")
+_SENT = re.compile(r"(?<=[.!?:;])\s+")
+_BULLET = re.compile(r"^(\s*(?:[-*•]\s+|\d+[.)]\s+))?(.*)$", re.S)
+
+
+def _protect(s: str) -> tuple[str, list[str]]:
+    """Hide $maths$ and `code` behind markers, so the translator cannot rewrite a formula."""
+    kept: list[str] = []
+
+    def take(m: re.Match) -> str:
+        kept.append(m.group(0))
+        return f" Z{len(kept) - 1}Z "
+
+    return _MATH.sub(take, s), kept
+
+
+_MARKER = re.compile(r"\s*[Zz]\s*(\d+)\s*[Zz]\s*")
+
+
+def _restore(s: str, kept: list[str]) -> str:
+    """Put the formulas back, or return '' so the caller keeps the English sentence.
+
+    A seq2seq model sometimes repeats a clause or changes a marker's case, which would leave the
+    student a line with half a formula in it. Anything we cannot place exactly is refused instead.
+    """
+    seen: set[int] = set()
+
+    def put(m: re.Match) -> str:
+        i = int(m.group(1))
+        if i in seen or i >= len(kept):  # repeated or invented marker: refuse the whole sentence
+            raise ValueError("marker reused")
+        seen.add(i)
+        return f" {kept[i]} "
+
+    try:
+        s = _MARKER.sub(put, s)
+    except ValueError:
+        return ""
+    if len(seen) != len(kept):  # the model dropped a formula
+        return ""
+    return re.sub(r"\s+([,.;:!?])", r"\1", re.sub(r"[ \t]{2,}", " ", s)).strip()
+
+
+def to_telugu(text: str, translator: Seq2SeqModel | None = None) -> str:
+    """English study text -> lecturer Telugu, entirely on this computer. '' when the model is missing.
+
+    Long text is translated a sentence at a time (the model was trained on single definitions and
+    questions), keeping blank lines, bullet markers and every formula exactly as they were.
+    """
+    m = translator if translator is not None else load_te_translator()
+    if m is None or not (text or "").strip():
+        return ""
+    out_lines: list[str] = []
+    for raw in str(text).split("\n"):
+        if not raw.strip():
+            out_lines.append("")
+            continue
+        marker, body = _BULLET.match(raw).groups()
+        pieces = []
+        for sent in _SENT.split(body):
+            if not sent.strip():
+                continue
+            safe, kept = _protect(sent)
+            if not re.search(r"[A-Za-z]{2}", safe):  # nothing to translate (a bare formula, a number)
+                pieces.append(sent.strip())
+                continue
+            te = m.generate("to Telugu: " + safe.strip())
+            done = _restore(te, kept) if te else ""
+            pieces.append(done or sent.strip())  # no answer, or a formula lost: that sentence stays English
+        out_lines.append((marker or "") + " ".join(p for p in pieces if p))
+    return "\n".join(out_lines).strip()
+
+
 # --------------------------------------------------------------------------- loaders
 @lru_cache(maxsize=1)
 def load_concept_filter() -> ConceptFilter | None:
@@ -312,6 +386,16 @@ def load_describer() -> Seq2SeqModel | None:
 @lru_cache(maxsize=1)
 def load_quizzer() -> Seq2SeqModel | None:
     return _load_seq2seq("m4_quiz", "m4", 128)
+
+
+@lru_cache(maxsize=1)
+def load_te_translator() -> Seq2SeqModel | None:
+    """Our fine-tuned English -> lecturer-Telugu model (training/train_indic.py, task te_style).
+
+    Telugu sentences with the technical terms left in English, the way a lecturer says them in class.
+    This is what makes Telugu work with no internet; without the folder the app simply has no offline Telugu.
+    """
+    return _load_seq2seq("te_style_translator", "te", 256)
 
 
 @lru_cache(maxsize=1)
@@ -685,6 +769,7 @@ def status() -> dict[str, Any]:
         "m2_describe": bool(_folder("trained", "m2_describe")) and _enabled("m2"),
         "m3_relations": bool(_folder("trained", "m3_relations")) and _enabled("m3"),
         "m4_quiz": bool(_folder("trained", "m4_quiz")) and _enabled("m4"),
+        "te_style_translator": bool(_folder("trained", "te_style_translator")) and _enabled("te"),
         "asr": bool(_folder("pretrained", "whisper_small")) and _enabled("asr"),
         "asr_te": next((f for f in ASR_FOLDERS["te"] if _folder("pretrained", f)), None) if _enabled("asr") else None,
         "parler_tts": bool(_folder("pretrained", "indic_parler_tts")) and _enabled("tts"),

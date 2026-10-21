@@ -113,8 +113,10 @@ def build_router(svc: StudioService) -> APIRouter:
         from indiclearn.studio import neural, ocr
 
         brain = getattr(svc.models, "brain", None)
+        from indiclearn.studio.brain import offline_mode
+
         out: dict[str, Any] = {"brain": brain.status() if brain else {"chain": ["off"]}, "ocr": ocr.status(),
-                               "models": neural.status()}
+                               "models": neural.status(), "offline": offline_mode()}
         if test and brain is not None:
             out["live_test"] = brain.diagnose()
         return out

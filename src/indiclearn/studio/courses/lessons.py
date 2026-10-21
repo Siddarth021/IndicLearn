@@ -111,7 +111,8 @@ def _telugu(db: Database, d: dict, brain: Any, subject: str = "os") -> tuple[dic
     if key in _TE_RUNNING:
         return None, True
     view = _hosted(brain)
-    if view is None:
+    local = _local_te() if view is None else None  # offline mode, or the online engines are out of quota
+    if view is None and local is None:
         return None, False
 
     def work() -> None:
@@ -119,7 +120,7 @@ def _telugu(db: Database, d: dict, brain: Any, subject: str = "os") -> tuple[dic
             with _TE_LOCKS.setdefault(key, threading.Lock()):
                 if _cached_te(db, d, subject):
                     return
-                out = translate(view, d["en"], "te")
+                out = translate(view, d["en"], "te") if view is not None else translate_local(local, d["en"])
                 if out:
                     db.run("INSERT OR REPLACE INTO lesson_i18n(subject,topic,lang,payload_json,created_at) VALUES (?,?,?,?,?)",
                            (subject, d["topic"], "te", jdump(out), now()))
@@ -135,6 +136,31 @@ def _telugu(db: Database, d: dict, brain: Any, subject: str = "os") -> tuple[dic
 
 _TE_RUNNING: set[str] = set()
 _TE_LOCKS: dict[str, threading.Lock] = {}
+
+
+def _local_te() -> Any:
+    """Our own fine-tuned English -> lecturer-Telugu model, when it is installed. None otherwise."""
+    try:
+        from indiclearn.studio import neural
+
+        return neural.load_te_translator()
+    except Exception:  # pragma: no cover - a missing model is never an error
+        return None
+
+
+def translate_local(translator: Any, lesson: dict) -> dict | None:
+    """Translate a whole lesson on this computer, field by field. Slower than an online engine but free,
+    private and always available; the result is cached like any other translation, so a lesson pays this once."""
+    from indiclearn.studio import neural
+
+    src = flatten(lesson)
+    out: dict[str, str] = {}
+    for k, v in src.items():
+        te = neural.to_telugu(v, translator)
+        out[k] = te if te and _te_ok(v, te) else v  # a field the model could not render stays English
+    if sum(1 for k in src if out.get(k) != src[k]) < max(1, len(src) // 3):
+        return None  # almost nothing came back in Telugu: keep English rather than show a broken page
+    return unflatten(lesson, out)
 
 
 # The exact rules the solver (oscalc.py) uses - written by hand, so the lesson can never contradict the worked example.

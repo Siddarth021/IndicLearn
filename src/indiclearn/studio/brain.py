@@ -349,6 +349,15 @@ def partial_answer(raw: str) -> str:
     return "".join(out)
 
 
+def offline_mode() -> bool:
+    """INDICLEARN_OFFLINE=true: the whole app runs on this computer - no request may leave it.
+
+    Read from the environment on every call (not cached) so a student can flip it in .env and restart,
+    and so tests can switch it per case.
+    """
+    return (os.environ.get("INDICLEARN_OFFLINE") or "").strip().lower() in ("1", "true", "yes", "on")
+
+
 def gemini_keys() -> list[str]:
     """All Gemini keys, in order: INDICLEARN_GEMINI_API_KEY (may hold several, comma-separated), then _2 ... _9."""
     env = os.environ.get
@@ -717,6 +726,10 @@ class Brain:
         if order_raw in ("off", "none", "extractive", "0"):
             return cls([])
         order = ["gemini", "sarvam", "openai", "anthropic", "ollama"] if order_raw == "auto" else [x.strip() for x in order_raw.split(",") if x.strip()]
+        if offline_mode():  # INDICLEARN_OFFLINE=true: nothing leaves this computer
+            order = [n for n in order if n == "ollama" or (n == "openai" and (env("INDICLEARN_OPENAI_LOCAL") or "").lower() in ("1", "true", "yes", "on"))]
+            if "ollama" not in order:
+                order.append("ollama")
         timeout = float(env("INDICLEARN_BRAIN_TIMEOUT", "90"))
         out: list[Provider] = []
         for name in order:

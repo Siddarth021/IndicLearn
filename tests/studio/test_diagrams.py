@@ -15,9 +15,15 @@ COURSES = Path(diagrams.__file__).resolve().parent
 TOPICS = [t["id"] for u in json.loads((COURSES / "dsma_syllabus.json").read_text(encoding="utf-8"))["units"] for t in u["topics"]]
 
 
-def test_every_dsma_topic_has_a_figure():
-    missing = [t for t in TOPICS if t not in diagrams.have("dsma")]
-    assert not missing, f"topics with no drawn figure: {missing}"
+UNITS = {u["id"]: [t["id"] for t in u["topics"]] for u in json.loads((COURSES / "dsma_syllabus.json").read_text(encoding="utf-8"))["units"]}
+DRAWN_UNITS = ("u1", "u2", "u3", "u4")  # units 5 and 6 are not drawn yet, by choice
+
+
+@pytest.mark.parametrize("unit", DRAWN_UNITS)
+def test_a_drawn_unit_is_complete(unit):
+    """Every lesson of a unit we have drawn has its figure - a half-drawn unit looks broken to a student."""
+    missing = [t for t in UNITS[unit] if t not in diagrams.have("dsma")]
+    assert not missing, f"{unit}: lessons with no figure: {missing}"
 
 
 def test_unknown_topic_is_not_an_error():

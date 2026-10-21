@@ -23,6 +23,11 @@ class Settings:
     allow_guest: bool = field(default_factory=lambda: _bool("INDICLEARN_ALLOW_GUEST", True))
     allow_registration: bool = field(default_factory=lambda: _bool("INDICLEARN_ALLOW_REGISTRATION", True))
     cors_origins: list[str] = field(default_factory=lambda: [o.strip() for o in os.environ.get("INDICLEARN_CORS_ORIGINS", "").split(",") if o.strip()])
+    # One switch for the whole app. True: everything runs on this computer - our trained models, the local
+    # translator and Ollama - and no request ever leaves it. False (the default): the online engines answer
+    # first (Gemini, then Sarvam) and the offline models take over whenever those are out of quota or
+    # unreachable, so a student is never left without an answer.
+    offline: bool = field(default_factory=lambda: _bool("INDICLEARN_OFFLINE", False))
     # --- local model backends (all optional; the app works with none of them) ---
     llm_backend: str = field(default_factory=lambda: os.environ.get("INDICLEARN_LLM_BACKEND", "extractive").lower())  # extractive | ollama | transformers
     llm_model: str = field(default_factory=lambda: os.environ.get("INDICLEARN_LLM_MODEL", "gemma4:e2b"))
