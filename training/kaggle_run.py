@@ -187,10 +187,10 @@ def fetch(ref: str, kind: str) -> None:
         if kind == "indic":  # Telugu students: reports + the best model per task
             for f in out.rglob("reports/*.json"):
                 shutil.copy(f, reports / f.name)
-            for task in ("m2_te", "m4_te", "te_style"):
+            for task in ("m2_te", "m4_te", "te_style", "te_plus"):
                 src = next((p for p in out.rglob(task) if (p / "config.json").exists()), None)
                 if src:
-                    dest = ROOT / "models" / "trained" / {"m2_te": "m2_describe_te", "m4_te": "m4_quiz_te", "te_style": "te_style_translator"}[task]
+                    dest = ROOT / "models" / "trained" / {"m2_te": "m2_describe_te", "m4_te": "m4_quiz_te", "te_style": "te_style_translator", "te_plus": "te_style_translator_plus"}[task]
                     if dest.exists():
                         old = ROOT / "old_useful_trash" / "models" / "trained" / (dest.name + time.strftime("_%Y%m%d_%H%M"))
                         old.parent.mkdir(parents=True, exist_ok=True)

@@ -128,8 +128,8 @@ def train_one(task: str, bkey: str, ds: Path, out: Path, smoke: bool) -> dict:
     model = AutoModelForSeq2SeqLM.from_pretrained(base, torch_dtype=torch.float32).to(DEV)
     if DEV == "cuda" and bkey == "mt5":
         model.gradient_checkpointing_enable()
-    max_in, max_out = {"m2_te": (192, 96), "m4_te": (384, 256), "te_style": (256, 256)}[task]
-    epochs = 1 if smoke else {"m2_te": 10, "m4_te": 6, "te_style": 8}[task]
+    max_in, max_out = {"m2_te": (192, 96), "m4_te": (384, 256), "te_style": (256, 256), "te_plus": (256, 256)}[task]
+    epochs = 1 if smoke else {"m2_te": 10, "m4_te": 6, "te_style": 8, "te_plus": 6}[task]
     bs, accum = (4, 4) if task == "m4_te" else (8, 2)
     if bkey == "mt5":  # mT5 trains best with Adafactor at a high constant-ish rate
         opt = Adafactor(model.parameters(), lr=5e-4, relative_step=False, scale_parameter=False, warmup_init=False)
@@ -275,7 +275,7 @@ def main() -> None:
             (rdir / f"{task}__{b}.json").write_text(json.dumps(rep, indent=1, ensure_ascii=False), encoding="utf-8")
             print("==", task, b, {k: v for k, v in rep.items() if k not in ("samples", "log")}, flush=True)
         try:
-            if task == "te_style":
+            if task in ("te_style", "te_plus"):
                 raise RuntimeError("baseline = the m2_te / m4_te NLLB runs (same test items)")
             bl = nllb_baseline(task, ds, a.smoke)
             (rdir / f"{task}__nllb_baseline.json").write_text(json.dumps(bl, indent=1, ensure_ascii=False), encoding="utf-8")
