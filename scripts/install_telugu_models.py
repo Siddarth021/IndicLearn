@@ -15,7 +15,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TARGET = {"te_style": "te_style_translator", "m2_te": "m2_describe_te", "m4_te": "m4_quiz_te"}
+TARGET = {"te_plus": "te_style_translator", "te_style": "te_style_translator", "m2_te": "m2_describe_te", "m4_te": "m4_quiz_te"}
 
 
 def main() -> int:
@@ -31,7 +31,10 @@ def main() -> int:
             z.extractall(work)
         src = work
     found = 0
+    done = set()
     for name, dest_name in TARGET.items():
+        if dest_name in done:  # te_plus (newer) wins over te_style for the same slot
+            continue
         hit = next((p for p in src.rglob(name) if (p / "config.json").exists() and (p / "model.safetensors").exists()), None)
         if not hit:
             continue
@@ -41,7 +44,8 @@ def main() -> int:
             old.parent.mkdir(parents=True, exist_ok=True)
             shutil.move(str(dest), str(old))
         shutil.copytree(hit, dest)
-        print("installed", dest)
+        print("installed", dest, "<-", name)
+        done.add(dest_name)
         found += 1
     if not found:
         print("No te_style / m2_te / m4_te folder with a model.safetensors found in", src)
