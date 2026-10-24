@@ -597,6 +597,33 @@ class IndicTranslator:
 LOAD_ERRORS: dict[str, str] = {}  # model name -> why it could not be used (shown by /api/info and the UI)
 
 
+def _shim_transformers_onnx() -> None:
+    """IndicTrans2's remote code imports transformers.onnx, which transformers 5 removed. It only needs the
+    names to exist (they are used for ONNX export, never for translation), so give it empty stand-ins."""
+    import sys
+    import types
+
+    try:
+        import transformers.onnx  # noqa: F401
+        return
+    except ImportError:
+        pass
+
+    class OnnxConfig:  # export-only base classes: unused when translating
+        default_fixed_batch = 2
+        default_fixed_sequence = 8
+
+    class OnnxSeq2SeqConfigWithPast(OnnxConfig):
+        pass
+
+    mod = types.ModuleType("transformers.onnx")
+    mod.OnnxConfig, mod.OnnxSeq2SeqConfigWithPast = OnnxConfig, OnnxSeq2SeqConfigWithPast
+    util = types.ModuleType("transformers.onnx.utils")
+    util.compute_effective_axis_dimension = lambda dim, fixed_dimension, num_token_to_add=0: dim
+    mod.utils = util
+    sys.modules["transformers.onnx"], sys.modules["transformers.onnx.utils"] = mod, util
+
+
 @lru_cache(maxsize=1)
 def load_indictrans() -> IndicTranslator | None:
     """Needs the two gated IndicTrans2 folders and ``pip install IndicTransToolkit``."""
@@ -624,6 +651,7 @@ def load_indictrans() -> IndicTranslator | None:
         log.info("IndicTransToolkit not installed - using the built-in light processor for IndicTrans2")
         IndicProcessor = None
     try:
+        _shim_transformers_onnx()
         from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
         def ld(folder: Path | None) -> tuple[Any, Any] | None:
