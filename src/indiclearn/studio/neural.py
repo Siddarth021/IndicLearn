@@ -51,9 +51,31 @@ def _enabled(name: str) -> bool:
     return os.environ.get(f"INDICLEARN_USE_{name.upper()}", "1").strip().lower() not in ("0", "false", "no", "off")
 
 
+def _fix_tokenizer_config(folder: Path) -> None:
+    """Models saved by transformers 5 write ``"extra_special_tokens": [...]`` (a list); transformers 4.x, which
+    IndicTrans2 needs, expects a dict and crashes with "'list' object has no attribute 'keys'". Rewrite the
+    list as ``additional_special_tokens`` (what 4.x understands); 5.x reads that key too."""
+    import json
+
+    f = folder / "tokenizer_config.json"
+    try:
+        cfg = json.loads(f.read_text(encoding="utf-8"))
+        if not isinstance(cfg.get("extra_special_tokens"), list):
+            return
+        extra = cfg.pop("extra_special_tokens")
+        if extra:
+            cfg["additional_special_tokens"] = list(dict.fromkeys([*cfg.get("additional_special_tokens", []), *extra]))
+        f.write_text(json.dumps(cfg, indent=2, ensure_ascii=False), encoding="utf-8")
+    except (OSError, ValueError):
+        pass  # no tokenizer file, or read-only folder: leave it as it is
+
+
 def _folder(*parts: str) -> Path | None:
     p = models_dir().joinpath(*parts)
-    return p if (p / "config.json").exists() else None
+    if not (p / "config.json").exists():
+        return None
+    _fix_tokenizer_config(p)
+    return p
 
 
 def _meta(folder: Path) -> dict[str, Any]:
@@ -574,7 +596,17 @@ class IndicTranslator:
     def _batched(self, pair: tuple[Any, Any], texts: list[str], src: str, tgt: str) -> list[str]:
         out: list[str] = []
         for i in range(0, len(texts), 8):
-            out += self._run(pair, texts[i : i + 8], src, tgt)
+            chunk = texts[i : i + 8]
+            try:
+                out += self._run(pair, chunk, src, tgt)
+            except RuntimeError as e:  # a 6 GB GPU shared with Ollama: free the cache and go one sentence at a time
+                if "out of memory" not in str(e).lower():
+                    raise
+                t = _torch()
+                if t is not None and t.cuda.is_available():
+                    t.cuda.empty_cache()
+                for one in chunk:
+                    out += self._run(pair, [one], src, tgt)
         return out
 
     def translate(self, texts: list[str], src: str, tgt: str, strict: bool = False) -> list[str]:

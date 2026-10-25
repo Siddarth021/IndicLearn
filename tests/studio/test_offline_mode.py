@@ -145,3 +145,30 @@ def test_bullets_and_blank_lines_survive(monkeypatch):
 
     out = neural.to_telugu("- first point\n\n- second point", Fake())
     assert out.split("\n")[0].startswith("- ") and out.count("- ") == 2 and "\n\n" in out
+
+
+# ---------------------------------------------------------------- models saved by transformers 5 must load on 4.x
+def test_tokenizer_config_saved_by_transformers_5_is_repaired(tmp_path):
+    import json
+
+    from indiclearn.studio import neural
+
+    (tmp_path / "config.json").write_text("{}", encoding="utf-8")
+    cfg = {"eos_token": "</s>", "extra_special_tokens": ["<x1>", "<x2>"], "pad_token": "<pad>"}
+    (tmp_path / "tokenizer_config.json").write_text(json.dumps(cfg), encoding="utf-8")
+    neural._fix_tokenizer_config(tmp_path)
+    fixed = json.loads((tmp_path / "tokenizer_config.json").read_text(encoding="utf-8"))
+    assert "extra_special_tokens" not in fixed, "transformers 4.x cannot read a list here"
+    assert fixed["additional_special_tokens"] == ["<x1>", "<x2>"] and fixed["eos_token"] == "</s>"
+
+
+def test_empty_list_is_dropped_and_a_dict_is_left_alone(tmp_path):
+    import json
+
+    from indiclearn.studio import neural
+
+    for value, expect_key in (([], False), ({"pad": "<pad>"}, True)):
+        (tmp_path / "tokenizer_config.json").write_text(json.dumps({"extra_special_tokens": value}), encoding="utf-8")
+        neural._fix_tokenizer_config(tmp_path)
+        assert ("extra_special_tokens" in json.loads((tmp_path / "tokenizer_config.json").read_text(encoding="utf-8"))) is expect_key
+    neural._fix_tokenizer_config(tmp_path / "missing")  # no file: no error
