@@ -1,154 +1,233 @@
-# IndicLearn — Contributions to Indic-language NLP
+# IndicLearn — what was built, and why it matters
 
-Author: Gundeti Siddarth · Project: IndicLearn (offline study app for Telugu-medium engineering students)
-Every number below comes from a report file in `training/reports/`. Nothing here is estimated.
+*Written for someone seeing this project for the first time. No background in NLP is assumed;
+technical words are explained in the glossary at the bottom.*
+
+Author: Gundeti Siddarth. Every number in this file comes from a report in `training/reports/`.
 
 ---
 
-## 1. The problem
+## The 30-second version
 
-Telugu-medium students study engineering from English notes. Standard machine translation
-(IndicTrans2, NLLB) turns **everything** into Telugu, including technical terms ("stack" → "స్టాక్"),
-which is not how lecturers teach. Lecturers speak Telugu sentences and **keep the technical terms in
-English**. That register — code-mixed technical Telugu — was not served by any model I could find
-(existing Telugu–English code-mixed corpora are social-media text; technical-term retention work exists
-for Hindi using constrained decoding, not a fine-tuned model).
+**IndicLearn** is a study app for engineering students who learn in Telugu. It runs on an ordinary
+laptop with no internet.
 
-## 2. Contributions
+Its main research result is a **translation model that writes Telugu the way Telugu lecturers
+actually speak in class**: Telugu sentences, with the technical words (*stack*, *deadlock*, *page fault*)
+kept in English. Standard translation tools do not do this. They translate every word into Telugu,
+which sounds unnatural to students.
 
-| # | Contribution | What it is | Evidence |
-|---|---|---|---|
-| 1 | **Lecturer-register Telugu translator** | `google/mt5-base` (582M) fine-tuned to write Telugu with English technical terms kept | chrF **73.85** on 349 held-out items (v1: 72.0) |
-| 2 | **Training corpus** | ~5,200 English → code-mixed Telugu pairs (`training/datasets/te_style`, `m2_te`, `m4_te`), auto-validated | 2,089 train / 157 val / 349 test for the translator |
-| 3 | **Formula- and code-safe translation protocol** | Formulas/code are masked, translation runs around them, and restored exactly; a sentence whose notation cannot be restored verbatim stays in English | Locked by tests in `tests/studio/test_offline_mode.py` |
-| 4 | **Technical-term retention model** | Predicts which English words a Telugu lecturer keeps in English | macro-F1 **0.823** vs 0.353 (always keep) and 0.357 (capitalisation rule) |
-| 5 | **Human data improves it** | v2 adds 6,000 human-translated pairs (AI4Bharat BPCC) under a separate prompt tag | chrF 72.0 → **73.85**, well-formed MCQs 99.3% → 100%, answer-letter match 64% → 69.3% |
-| 6 | **Fully offline system** | All of the above plus Gemma (Ollama), Whisper-Telugu, MMS voices, IndicTrans2 run on a 16 GB RAM / 6 GB RTX 3050 laptop with `INDICLEARN_OFFLINE=true` | `scripts/setup_offline.py`, `check_ai.bat` |
+I trained that model, built the dataset it learned from, measured it against a standard tool,
+and wrapped it in code that guarantees formulas are never corrupted.
 
-## 3. Results
+---
 
-### 3.1 Translator vs the standard baseline (same 349 test items, same references)
+## 1. The problem, with an example
 
-| System | chrF | Telugu-script share |
+A student reads this English sentence in an Operating Systems note:
+
+> *A deadlock happens when two processes each wait for a resource the other holds.*
+
+- **A standard translator** (IndicTrans2, from AI4Bharat) turns *every* word into Telugu, including
+  "deadlock" and "process". Students never say those words in Telugu. They say "deadlock" and "process"
+  in English.
+- **A Telugu lecturer** says something like: *"రెండు processes ఒకదానికొకటి hold చేసే resource కోసం wait చేసినప్పుడు deadlock వస్తుంది."*
+  Telugu grammar and connecting words, English technical terms.
+
+Mixing two languages like this inside one sentence is called **code-mixing** (or code-switching).
+The style of language used in a particular setting (here: a classroom) is called its **register**.
+
+Existing public work does not cover this: the Telugu–English code-mixed datasets I found are
+social-media text (used for tasks like detecting which language a word is in), and the research I found
+on keeping technical terms untranslated is for Hindi and uses a decoding trick rather than a trained model.
+So "Telugu + classroom register + a trained model + a dataset for it" is an open gap. This project fills it.
+
+---
+
+## 2. What was contributed
+
+### Contribution 1 — A translator that produces classroom-style Telugu
+- **What it is:** Google's `mT5-base` language model (582 million parameters) that I **fine-tuned**
+  (i.e. continued training on my own examples) so that it translates English technical text into code-mixed Telugu.
+- **Where it is:** `models/trained/te_style_translator/` (this folder also has a model card, `README.md`).
+- **Result:** score **73.85** on a test set of 349 sentences it never saw during training (the score is
+  explained in section 3).
+
+### Contribution 2 — The dataset it learned from
+- **What it is:** about 5,200 pairs of "English sentence → classroom-style Telugu sentence" covering definitions,
+  explanations and multiple-choice questions on Operating Systems, Discrete Maths and AI/NLP.
+- **Where it is:** `training/datasets/te_style/` (translator data), `m2_te/` and `m4_te/` (definition and quiz data),
+  `te_plus/` (the same data plus human-translated sentences — see Contribution 5).
+  A dataset card is in `training/datasets/te_style/README.md`.
+- **How it was made (important):** the Telugu side was **written by large AI models**, not by human translators
+  (a technique called *distillation*: a big model teaches a smaller one). Every pair was then checked automatically
+  — right amount of Telugu script, content matches the English, quiz questions well-formed — and pairs that failed were dropped.
+  It has **not** been checked by humans at scale.
+
+### Contribution 3 — A guarantee that formulas and code are never broken
+- **The risk:** translation models sometimes drop or scramble symbols. A lesson that shows a broken formula
+  like `p → q` or `a₁₁` is worse than an untranslated one.
+- **What the code does:** before translating, every formula and code snippet is replaced with a placeholder
+  (`Z1Z`, `Z2Z`, …). The model translates the text around the placeholders. Afterwards each placeholder is put back **exactly**.
+  If the model dropped one, repeated one, or invented one, that sentence is **left in English** instead of showing a damaged formula.
+- **Where it is:** `src/indiclearn/studio/neural.py` (functions `_protect`, `_restore`, `to_telugu`).
+  Tests that lock this behaviour: `tests/studio/test_offline_mode.py`.
+
+### Contribution 4 — A model that decides which words stay in English
+- **What it is:** a small model that, for each English word in a sentence, predicts whether a Telugu lecturer would
+  **keep it in English** (like "stack") or **translate it** (like "the").
+- **How it was trained:** the labels were extracted automatically from Contribution 2 — a word counts as "kept"
+  if it appears in English letters in the Telugu side of a pair. 45,508 words for training, 6,815 for testing.
+- **Result:** macro-F1 **0.823**. Two simple rules scored about 0.35 on the same test ("always keep English" and
+  "keep capitalised words"). The model also produced a glossary of 3,024 terms with how often each is kept
+  (`models/trained/te_term_keeper/glossary.json`).
+- **Not yet wired into the app.** It is a standalone result.
+
+### Contribution 5 — Human-translated data made the translator better
+- I added 6,000 sentence pairs from **BPCC**, a public English–Telugu dataset translated by humans (AI4Bharat),
+  and trained again. They are marked with a different instruction (`to Telugu (formal):`) so the model does not
+  confuse formal Telugu with classroom Telugu.
+- **Result:** score rose from 72.0 to **73.85**; quiz questions with valid format rose from 99.3% to 100%;
+  the correct answer letter was kept in 69.3% of quiz items, up from 64%.
+- **Caveat:** many of those 6,000 sentences are general news and film text, not technical. They help Telugu fluency;
+  they do not teach technical style.
+
+### Contribution 6 — Everything works with no internet
+The app can run entirely on a laptop with 16 GB RAM and a 6 GB graphics card (RTX 3050):
+the models above, plus Gemma (a small chat model, run through Ollama), Whisper (speech to text), MMS (text to speech),
+and IndicTrans2 (general translation). One switch in `.env` — `INDICLEARN_OFFLINE=true` — keeps every request on the laptop.
+With the switch off, the app uses online AI first (Gemini, Sarvam) and falls back to the local models.
+
+---
+
+## 3. Results, explained
+
+### What the score means
+The score is **chrF**: it compares the model's Telugu sentence with a reference sentence (the "right answer")
+by counting how many groups of characters match, from 0 (nothing in common) to 100 (identical).
+Higher is better. All systems below were tested on the **same 349 sentences** against the **same references**.
+
+| System | chrF score | How much of the output is Telugu script |
 |---|---|---|
-| **IndicLearn translator v2** (mT5-base + human BPCC) | **73.85** | 32.6% (English terms kept) |
-| IndicLearn translator v1 (lecturer-style data only) | 72.0 | 31.4% |
-| IndicBART variant (same data) | 63.4 | 28.8% |
-| IndicTrans2 en→te (standard baseline) | 29.1 | 99.6% (translates the terms too) |
+| **My translator, version 2** (with human data) | **73.85** | 32.6% |
+| My translator, version 1 | 72.0 | 31.4% |
+| IndicBART (another model, same data) | 63.4 | 28.8% |
+| **IndicTrans2** (standard tool, no fine-tuning) | **29.1** | **99.6%** |
 
-Source: `training/reports/te_style__mt5.json`, `te_plus__mt5.json`, `te_style__indicbart.json`,
-`te_style__indictrans2_baseline.json`.
+Sources: `training/reports/te_plus__mt5.json`, `te_style__mt5.json`, `te_style__indicbart.json`, `te_style__indictrans2_baseline.json`.
 
-**How to read it.** The references are code-mixed, so IndicTrans2 is scored against a style it was never
-asked to produce. The chrF gap mostly measures that **register difference**, not general translation
-quality; on ordinary full-Telugu translation IndicTrans2 is the stronger system.
+### How to read this table honestly
+The last column is the key. IndicTrans2 outputs almost pure Telugu (99.6%), because that is what it is built to do.
+My model keeps English technical words, so only about a third of its output is Telugu script. The references are
+classroom-style, so IndicTrans2 is being scored against a style it was never asked to produce.
+**The big gap (29.1 vs 73.85) mostly shows this difference in style, not that my model is a better
+translator in general.** For ordinary full-Telugu translation, IndicTrans2 is the stronger system.
 
-### 3.2 Term-retention model
+What the table does show: for the *classroom-style* task, a standard tool does not produce the right style
+and my fine-tuned model does.
 
-45,508 training words, 6,815 test words (labels extracted automatically from the corpus: a word is "kept" if it
-appears in Latin script in the Telugu target). Macro-F1 0.823; glossary of 3,024 terms with keep-rates.
-Source: `training/reports/term_keeper.json`.
+---
 
-### 3.3 Live demo output (v2 model, run on the laptop GPU)
+## 4. A real example, with the mistakes
 
-Command: `.venv\Scripts\python training\show_contribution.py`
+This is what the model printed when run on a laptop (`training/show_contribution.py`). Under each
+Telugu line is what to notice.
 
-```
-ENGLISH   : A stack is a last-in-first-out data structure used for function calls.
-OUR MODEL : Stack అనేది function calls కోసం ఉపయోగించే చివరి-in-first-out data structure.
-            ^ Telugu script: 36%  (English technical terms kept)
+**English:** A stack is a last-in-first-out data structure used for function calls.
+**Model:** `Stack అనేది function calls కోసం ఉపయోగించే చివరి-in-first-out data structure.`
+→ Good: "stack", "function calls", "data structure" stay in English. Flaw: "last-in-first-out" came out
+half-Telugu (`చివరి-in-first-out`).
 
-ENGLISH   : A page fault occurs when a process accesses a page not currently in main memory.
-OUR MODEL : ఒక process ప్రస్తుతం main memory లో లేని page ను access చేసేటప్పుడు వచ్చే page fault.
-            ^ Telugu script: 49%  (English technical terms kept)
+**English:** A page fault occurs when a process accesses a page not currently in main memory.
+**Model:** `ఒక process ప్రస్తుతం main memory లో లేని page ను access చేసేటప్పుడు వచ్చే page fault.`
+→ The best example: natural classroom Telugu with the right words kept in English.
 
-ENGLISH   : Modus ponens is a rule of inference: if p is true and p implies q, then q is true.
-OUR MODEL : Modus ponens అనేది inference యొక్క rule: p నిజం మరియు p q ను సూచిస్తుంది, అప్పుడు q నిజం          ం.
-            ^ Telugu script: 61%  (English technical terms kept)
+**English:** Modus ponens is a rule of inference: if p is true and p implies q, then q is true.
+**Model:** `Modus ponens అనేది inference యొక్క rule: p నిజం మరియు p q ను సూచిస్తుంది, అప్పుడు q నిజం          ం.`
+→ Wrong: "p implies q" became "p suggests q", the word "if" is lost, and the sentence ends in stray spaces.
 
-ENGLISH   : A deadlock happens when two processes each wait for a resource the other holds.
-OUR MODEL : రెండు processes ఒక resource ను ఉంచినప్పుడు ఒక deadlock జరుగుతుంది.
-            ^ Telugu script: 56%  (English technical terms kept)
-```
+**English:** A deadlock happens when two processes each wait for a resource the other holds.
+**Model:** `రెండు processes ఒక resource ను ఉంచినప్పుడు ఒక deadlock జరుగుతుంది.`
+→ Wrong meaning: the idea that each process *waits for a resource the other holds* is lost.
 
-Honest reading of these four outputs:
-- **Good:** sentences 1 and 2 keep the technical terms in English with natural Telugu grammar; sentence 2 is the strongest.
-- **Errors (kept on purpose):** "last-in-first-out" is half-translated (`చివరి-in-first-out`); in sentence 3 "p implies q" became
-  "p q ను సూచిస్తుంది" ("p suggests q"), the "if" is lost, and the line ends in stray spaces; sentence 4 changes
-  the meaning (the "each wait for a resource the other holds" idea is lost).
-- The side-by-side column for IndicTrans2 was not shown in this run because IndicTrans2 had not loaded yet; its numbers are in 3.1.
+**Summary:** the model is good at the *style*, and still makes *meaning* mistakes on logical wording.
+These mistakes are kept in this file on purpose.
 
-## 4. Limits (say these first)
+---
 
-1. **Fine-tuning, not a new architecture and not training from scratch.** Base models: mT5-base, XLM-R base, Flan-T5-base.
-2. **The training data's Telugu side is AI-written** (teacher–student distillation), then auto-validated for
-   Telugu-script share, source alignment and MCQ format. It is not human-reviewed at scale.
-3. **The 6,000 human BPCC pairs are general-domain** (the "technical" filter was loose: some are news and film text). They add formal-Telugu fluency, not technical style.
-4. **chrF on code-mixed references is partly inflated** because English terms are copied from the source.
-5. **Meaning errors remain on logical wording** (3.3). Human proofreading is needed before classroom use.
-6. **Negative result:** direct Telugu generation by M2/M4 (mT5/IndicBART) reached only 1.1–1.6/5 correctness; the translate-after-generate design replaced it.
-7. **No human evaluation yet** and no publication yet.
-8. The offline chat model (Gemma 4 E2B) is weaker than Gemini in Telugu; that is the cost of working with no internet.
-9. Telugu only; one education domain.
+## 5. Limits — read before citing any number
 
-## 5. Next steps (highest value first)
+1. **Fine-tuning, not new research architecture, not trained from scratch.** The base models (mT5, XLM-R, Flan-T5)
+   were built by others. The new parts are the task, the dataset, the formula-safety code and the evaluation.
+2. **The training data's Telugu is AI-written** and only automatically checked.
+3. **The 29.1 vs 73.85 comparison mostly reflects a difference in style** (section 3).
+4. **Part of the score is inflated** because English technical words are copied from the source straight into the answer,
+   so they match the reference for free.
+5. **Meaning mistakes remain** (section 4). A person who reads Telugu should check lessons before students rely on them.
+6. **A negative result:** I first tried to make the models write Telugu definitions and quizzes directly. Quality was poor
+   (1.1–1.6 out of 5 for correctness), so the design changed to "write in English, then translate".
+7. **No human evaluation yet**, and the model and data are **not yet published** (the cards are ready for Hugging Face).
+8. **The offline chat model (Gemma, small size) is weaker than Gemini**, especially in Telugu. That is the trade-off of having no internet.
+9. Telugu only, and mostly one subject area (computer-science courses).
 
-1. Human evaluation: 15–20 Telugu speakers rate fluency and meaning on ~30 sentences each.
-2. Publish model, dataset and cards on Hugging Face (`models/trained/te_style_translator/README.md`, `training/datasets/te_style/README.md`).
-3. Reduce meaning errors on logical sentences (sampling + rejection, more logic-heavy training data).
+## 6. What to do next, most valuable first
 
-## 6. Run commands
+1. **Human evaluation:** 15–20 Telugu speakers rate fluency and meaning of ~30 sentences each.
+2. **Publish** the model, dataset and cards on Hugging Face so others can use and cite them.
+3. **Reduce meaning mistakes** on logical sentences (more logic-heavy training data; generate several answers and reject bad ones).
 
-Run from `D:\Indic_NLP`. Prefix is the project virtual environment.
+---
 
-```
-# One-time offline setup (Ollama must be installed first; downloads CUDA PyTorch, Telugu models, Gemma)
-setup_offline.bat
+## 7. How to run things
 
-# Check what the app will use (LLM chain, device, models)
-check_ai.bat
-.venv\Scripts\python scripts\setup_offline.py --check
+Open a terminal in the project folder (`D:\Indic_NLP`). `.venv\Scripts\python` means "the project's own Python".
 
-# Live demo: our model's lecturer-style Telugu vs standard translation
-.venv\Scripts\python training\show_contribution.py
+| I want to… | Command |
+|---|---|
+| Set everything up for offline use (first time; install Ollama first from ollama.com) | `setup_offline.bat` |
+| Check what the app will use (chat model, GPU, translators) | `check_ai.bat` |
+| **See the demo** (classroom-style Telugu for 4 sentences) | `.venv\Scripts\python training\show_contribution.py` |
+| Re-measure the standard-tool comparison (slow: about 2–3 hours on CPU; do not interrupt) | `.venv\Scripts\python training\baseline_fair.py` |
+| Rebuild and re-test the word-keeping model (20 seconds) | `.venv\Scripts\python training\term_keeper.py` |
+| Install a model downloaded from Kaggle | `.venv\Scripts\python scripts\install_telugu_models.py D:\results.zip` |
+| Build the human-data mix (needs a Hugging Face login and accepting the BPCC terms) | `.venv\Scripts\python training\get_bpcc.py` |
+| Retrain on a free Kaggle GPU | `.venv\Scripts\python training\kaggle_run.py indic --only te_plus --no-wait` |
+| Start the app (offline is set in `.env`) | `run.bat` |
+| Run the automated tests | `.venv\Scripts\python -m pytest tests\studio -q` |
 
-# Fair baseline: IndicTrans2 on the same 349 test items (CPU; takes about 2-3 hours; do not interrupt)
-.venv\Scripts\pip install sacrebleu
-.venv\Scripts\python training\baseline_fair.py
+Troubleshooting:
+- **"CUDA out of memory"** (the 6 GB graphics card is shared with Gemma): run `ollama stop gemma4:e2b`, close the app, then check
+  `nvidia-smi` (it should show under 1 GB used).
+- **Library versions that work together on this laptop:** torch 2.6.0 (CUDA 12.4), transformers 4.57.x (must be below 5),
+  sentencepiece, sacrebleu. Transformers 5 breaks the IndicTrans2 code.
 
-# Term-retention model: rebuild the dataset and retrain (20 seconds, CPU)
-.venv\Scripts\python training\term_keeper.py
-
-# Install a Telugu model downloaded from Kaggle (zip or folder)
-.venv\Scripts\python scripts\install_telugu_models.py D:\results.zip
-
-# Build the human-data mix (needs a Hugging Face login and acceptance of ai4bharat/BPCC terms)
-.venv\Scripts\python -c "from huggingface_hub import login; login()"
-.venv\Scripts\python training\get_bpcc.py
-
-# Retrain on a free Kaggle GPU (needs a valid Kaggle token in secrets\kaggle.json)
-.venv\Scripts\python training\kaggle_run.py indic --only te_plus --no-wait
-.venv\Scripts\python training\kaggle_run.py status --kind indic
-
-# Run the app fully offline (INDICLEARN_OFFLINE=true is set in .env)
-run.bat
-
-# Run the test suite
-.venv\Scripts\python -m pytest tests\studio -q
-```
-
-If the GPU runs out of memory (6 GB shared with Gemma): `ollama stop gemma4:e2b`, close the app, check `nvidia-smi`.
-Library versions that work together on this laptop: torch 2.6.0 (CUDA 12.4), transformers 4.57.x (below 5),
-sentencepiece, sacrebleu.
-
-## 7. Files
+## 8. Where things are
 
 | What | Where |
 |---|---|
-| Translator model (v2) | `models/trained/te_style_translator/` (model card: `README.md` inside) |
-| Translator dataset + card | `training/datasets/te_style/`, `training/datasets/te_plus/` |
-| Term-retention model, glossary | `models/trained/te_term_keeper/` |
-| Term-retention dataset | `training/datasets/term_keeper/` |
-| Reports (all numbers above) | `training/reports/` |
-| Formula-safe translation code | `src/indiclearn/studio/neural.py` (`_protect`, `_restore`, `to_telugu`) |
-| Offline switch | `src/indiclearn/studio/brain.py` (`offline_mode`), `.env` (`INDICLEARN_OFFLINE`) |
+| The translator model (version 2) and its model card | `models/trained/te_style_translator/` |
+| The datasets and the dataset card | `training/datasets/te_style/`, `te_plus/`, `m2_te/`, `m4_te/` |
+| The word-keeping model and glossary | `models/trained/te_term_keeper/` |
+| Every measured number | `training/reports/` |
+| Formula-safe translation code | `src/indiclearn/studio/neural.py` |
+| The online/offline switch | `src/indiclearn/studio/brain.py` (`offline_mode`) and `.env` (`INDICLEARN_OFFLINE`) |
+| Demo and measurement scripts | `training/show_contribution.py`, `training/baseline_fair.py`, `training/term_keeper.py` |
+
+---
+
+## Glossary
+
+- **Fine-tuning:** taking a model someone else already trained and training it further on your own examples so it learns a specific task.
+- **Model / language model:** a program that has learned patterns from text and can produce text (here: translations).
+- **Dataset:** the examples a model learns from. Here: pairs of English and Telugu sentences.
+- **Translation baseline:** a standard tool you compare against, to show whether your model is actually better.
+- **Register:** the style of language used in a setting (classroom, news, chat).
+- **Code-mixing:** using two languages in one sentence (Telugu with English technical words).
+- **chrF:** a 0–100 score comparing a model's output with a reference by matching character groups.
+- **Macro-F1:** a 0–1 score for a yes/no prediction that gives both answers equal weight; 1 is perfect.
+- **Distillation:** a large model writes training examples for a smaller one.
+- **Test set:** sentences held back during training, used only to measure the result.
+- **GPU / CUDA:** the graphics card and the technology that lets models run fast on it.
+- **Ollama / Gemma:** the tool and the small chat model that answer student questions offline.
+- **BPCC:** a public English–Indian-language dataset, human-translated, from AI4Bharat.
+- **IndicTrans2:** a standard English↔Indian-language translation model from AI4Bharat, used here as the comparison.
