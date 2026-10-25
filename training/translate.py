@@ -12,9 +12,11 @@ Type 'quit' (or press Ctrl+C) to leave interactive mode.
 from __future__ import annotations
 
 import argparse
+import html
 import os
 import re
 import sys
+import webbrowser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +27,19 @@ def te_pct(s: str) -> int:
     te = len(re.findall(r"[ఀ-౿]", s))
     al = len(re.findall(r"[A-Za-zఀ-౿]", s))
     return round(100 * te / al) if al else 0
+
+
+PAGE = ROOT / "training" / "translate_output.html"
+
+
+def write_page(rows: list[tuple[str, str]]) -> None:
+    """A web page with every translation so far. Browsers draw Telugu correctly; many Windows terminals do not."""
+    body = "".join(f"<div class=r><div class=en>{html.escape(e)}</div><div class=te>{html.escape(t)}</div></div>" for e, t in reversed(rows))
+    PAGE.write_text(
+        "<!doctype html><meta charset=utf-8><meta http-equiv=refresh content=3><title>Translations</title>"
+        "<style>body{font:18px/1.7 'Noto Sans Telugu','Nirmala UI','Gautami',sans-serif;max-width:820px;margin:2rem auto;padding:0 1rem}"
+        ".r{border-bottom:1px solid #ccc;padding:.8rem 0}.en{color:#555}.te{font-size:22px;margin-top:.3rem}</style>"
+        f"<h2>English &rarr; classroom Telugu</h2>{body}", encoding="utf-8")
 
 
 def main() -> int:
@@ -46,11 +61,18 @@ def main() -> int:
         return 1
     print(f"Ready on {neural._device()}.\n")
 
+    shown: list[tuple[str, str]] = []
+
     def show(en: str) -> None:
         te = neural.to_telugu(en, model)
+        shown.append((en, te))
+        write_page(shown)
+        if len(shown) == 1:
+            webbrowser.open(PAGE.as_uri())  # opens once; the page refreshes itself after that
         print(f"  English : {en}")
         print(f"  Telugu  : {te}")
-        print(f"            (Telugu script: {te_pct(te)}% - the rest is English technical terms kept on purpose)\n")
+        print(f"            (Telugu script: {te_pct(te)}% - the rest is English technical terms kept on purpose)")
+        print(f"            Telugu looks broken here? Open {PAGE} in a browser - terminals often cannot draw it.\n")
 
     if a.file:
         for line in Path(a.file).read_text(encoding="utf-8").splitlines():
