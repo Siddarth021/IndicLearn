@@ -243,7 +243,50 @@ Troubleshooting:
 
 Not offered: scanned-note OCR in Telugu (it reads English only unless EasyOCR is installed).
 
-## 9. Where things are
+## 9. How the course content (lessons, notes, questions) was made
+
+The app ships two courses: **Operating Systems (OS)** and **Discrete Structures and Matrix Algebra (DSMA)**.
+All of it is in `src/indiclearn/studio/courses/`. Nothing here was copied from a textbook; it was generated and checked by the pipeline below.
+
+**Step 1 — The syllabus (the list of topics).**
+`os_syllabus.json`: 8 units, 38 topics, based on a typical B.Tech CSE OS syllabus (Silberschatz–Galvin order) cross-checked with the GATE 2027 CSE syllabus.
+`dsma_syllabus.json`: 6 units, 47 topics, from the IIIT Sri City DSMA syllabus (textbooks: Rosen 7e, Strang 3e), cross-checked with GATE.
+
+**Step 2 — The lessons (the "notes").** Script: `training/make_os_lessons.py` (run once per subject).
+1. For every topic, a *writer* AI is told to act as the best teacher of the subject and return one lesson as structured data:
+   a title, a short summary, 3–5 sections, 4–8 key terms, one worked example, exam tips and common mistakes, and a description of the one diagram to draw.
+2. A *different* AI (Gemini) then acts as a strict professor: it re-checks every statement, recomputes every number in the example,
+   and rewrites anything wrong. It corrected 13 OS lessons' fields and 5 DSMA fields. All 85 lessons (38 OS + 47 DSMA) were reviewed this way.
+3. Telugu: each lesson is translated section by section by a hosted AI (Sarvam or Gemini) with the technical terms kept in English, and stored next to
+   the English text (`os_lessons.jsonl`, `dsma_lessons.jsonl`). **These 85 stored Telugu lessons were not produced by the fine-tuned model in this project.**
+   The fine-tuned translator is used for any lesson that has no stored Telugu (for example one added later) when the app runs offline.
+4. Numerical topics also get a **live worked example** computed on demand by exact solvers (`oscalc.py`, `dsmacalc.py`); the lesson text explains the method.
+   The 29 DSMA lesson figures (units 1–4) are drawn by code (`diagrams_u1.py` to `diagrams_u4.py`), not by an AI.
+
+**Step 3 — The questions.** There are three sources, and the app mixes them when it makes a quiz or an exam paper.
+1. **The checked question bank** (`os_bank.jsonl`: 563 questions, `dsma_bank.jsonl`: 490). Script: `training/make_os_bank.py`. For every topic a
+   *teacher* AI writes questions of six kinds (fill in the blank 160, multiple choice 152, multi-select 128, short answer 299, medium 193, long 121),
+   each with a model answer and a mark scheme. A *second* AI then answers every question without seeing the key, and a checker keeps only the questions
+   whose key it agrees with. OS questions came mostly from Sarvam (487) and some from Gemini (76); all 490 DSMA questions came from Gemini.
+2. **Numerical questions, computed exactly** (`oscalc.py`, `dsmacalc.py`): CPU scheduling, page replacement, Banker's algorithm, disk scheduling,
+   truth tables, counting, recurrences, matrices and so on. The numbers and the answer are produced by code (sympy and exact solvers), so the answer cannot be wrong or mistyped.
+3. **Previous papers of the institute** (`dsma_pyq.json`; built by `training/build_dsma_pyq.py`): 8 IIIT Sri City DSMA papers (2021–2025 mid, end and quiz papers), 72 questions.
+   The questions were typed from the papers; every computed answer comes from the exact solvers; proofs and explanations were written by hand.
+   Where a printed paper had a mistake, the answer says so and gives the correct result.
+
+**Quick quizzes on a student's own notes** are a separate feature (`quizbank.py`, `quiz.py`). When a student uploads notes, the app finds the key concepts,
+and for each concept an AI writes multiple-choice questions *in the language the student picked* (English, Telugu, Hindi or Sanskrit). They are stored per language so each is written only once. Without any AI engine, a rule-based
+generator makes simpler questions from the notes. These do not use the question bank above.
+
+**On top of these**, when a student uploads their own notes and an AI engine is available, the app writes fresh questions from those notes and applies the same second-AI check
+before showing them (`exams.py`, `papers.py`). A student can also upload a past paper and the app reads its pattern (marks, number of questions) to build a matching paper (`pattern.py`).
+
+**Honest limits of the content:**
+- The lessons and the bank questions are AI-written and AI-checked. No professor has reviewed them yet. The exact solvers and the hand-typed past papers are the parts that are most trustworthy.
+- The stored Telugu lessons are AI-translated and have not been proofread by a Telugu-speaking teacher.
+- The quick quizzes on a student's own notes (see below) are written by an AI directly in the chosen language, so the Telugu in them is only as good as that AI. With no AI engine available they fall back to simple rule-based questions.
+
+## 10. Where things are
 
 | What | Where |
 |---|---|
