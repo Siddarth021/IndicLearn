@@ -186,6 +186,7 @@ Open a terminal in the project folder (`D:\Indic_NLP`). `.venv\Scripts\python` m
 |---|---|
 | Set everything up for offline use (first time; install Ollama first from ollama.com) | `setup_offline.bat` |
 | Check what the app will use (chat model, GPU, translators) | `check_ai.bat` |
+| **Translate your own sentences** (interactive: type English, get classroom-style Telugu) | `.venv\Scripts\python training\translate.py` (add `--cpu` if the GPU is busy) |
 | **See the demo** (classroom-style Telugu for 4 sentences) | `.venv\Scripts\python training\show_contribution.py` |
 | Re-measure the standard-tool comparison (slow: about 2–3 hours on CPU; do not interrupt) | `.venv\Scripts\python training\baseline_fair.py` |
 | Rebuild and re-test the word-keeping model (20 seconds) | `.venv\Scripts\python training\term_keeper.py` |
@@ -201,7 +202,22 @@ Troubleshooting:
 - **Library versions that work together on this laptop:** torch 2.6.0 (CUDA 12.4), transformers 4.57.x (must be below 5),
   sentencepiece, sacrebleu. Transformers 5 breaks the IndicTrans2 code.
 
-## 8. Where things are
+## 8. Indic-language features of the website
+
+| Feature | What a student sees | Offline? |
+|---|---|---|
+| **Interface in 4 languages** | The whole app UI switches between English, Telugu, Hindi and Sanskrit (`frontend/js/i18n.js`) | Yes |
+| **Lessons in Telugu** | 85 lessons (Operating Systems, Discrete Maths) shown in Telugu; new ones are translated by the classroom-style model, with formulas protected | Yes (needs the translator installed) |
+| **Doubt chat in Telugu** | Ask a question about your notes; the answer comes back in your chosen language, with the question language auto-detected | Yes with Gemma; weaker than Gemini |
+| **Speak your question** | Microphone input; a Telugu-tuned Whisper model is used when Telugu is chosen | Yes |
+| **Listen to answers** | Text-to-speech in Telugu, Hindi and English (MMS voices; Indic Parler-TTS optional for more languages) | Yes |
+| **Translate any text** | `/translate` between English and 12 Indian languages (Telugu, Hindi, Tamil, Kannada, Malayalam, Marathi, Bengali, Gujarati, Punjabi, Odia, Urdu, Sanskrit) using IndicTrans2 | Yes |
+| **Quizzes with Telugu questions** | Multiple-choice quizzes generated in the chosen language | Yes |
+| **Knowledge map** | Concept map of your notes per unit, with explanations in your language | Yes |
+
+Not offered: scanned-note OCR in Telugu (it reads English only unless EasyOCR is installed).
+
+## 9. Where things are
 
 | What | Where |
 |---|---|
