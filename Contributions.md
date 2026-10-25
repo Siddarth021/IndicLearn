@@ -186,7 +186,7 @@ Open a terminal in the project folder (`D:\Indic_NLP`). `.venv\Scripts\python` m
 |---|---|
 | Set everything up for offline use (first time; install Ollama first from ollama.com) | `setup_offline.bat` |
 | Check what the app will use (chat model, GPU, translators) | `check_ai.bat` |
-| **Translate your own sentences** (interactive: type English, get classroom-style Telugu) | `.venv\Scripts\python training\translate.py` (add `--cpu` if the GPU is busy) |
+| **Translate your own sentences** (interactive: type English, get classroom-style Telugu; the results also open in your browser — see 7.1) | `.venv\Scripts\python training\translate.py` (add `--cpu` if the GPU is busy) |
 | **See the demo** (classroom-style Telugu for 4 sentences) | `.venv\Scripts\python training\show_contribution.py` |
 | Re-measure the standard-tool comparison (slow: about 2–3 hours on CPU; do not interrupt) | `.venv\Scripts\python training\baseline_fair.py` |
 | Rebuild and re-test the word-keeping model (20 seconds) | `.venv\Scripts\python training\term_keeper.py` |
@@ -196,9 +196,35 @@ Open a terminal in the project folder (`D:\Indic_NLP`). `.venv\Scripts\python` m
 | Start the app (offline is set in `.env`) | `run.bat` |
 | Run the automated tests | `.venv\Scripts\python -m pytest tests\studio -q` |
 
+### 7.1 Reading the Telugu correctly (important for demos)
+
+Many Windows terminals **cannot draw Telugu properly**: they place each part of a letter on top of the previous one, so
+the text looks like overlapping, broken marks even when the model's answer is perfectly fine. Nothing is wrong with the
+model in that case; it is only how the terminal shows the text.
+
+To avoid this, `training/translate.py` also writes every result to a web page, **`training/translate_output.html`**,
+and opens it in your browser the first time you translate something. Browsers draw Telugu correctly.
+
+1. Run `.venv\Scripts\python training\translate.py`.
+2. Type an English sentence at `English>` and press Enter.
+3. Look at the browser page that opens. It shows each English sentence with its Telugu translation, newest first,
+   and refreshes by itself every 3 seconds, so you can keep typing in the terminal and read the answers in the browser.
+4. Reopen it any time by double-clicking `training\translate_output.html`.
+
+For the best-looking result in a terminal, use **Windows Terminal** (not the old console window) with a font that
+includes Telugu, such as *Nirmala UI*. The browser page is the safest option when showing someone.
+
+Which output to trust: if the browser page also shows a poor or wrong sentence, that is the model's own mistake
+(see section 4), not a display problem.
+
 Troubleshooting:
 - **"CUDA out of memory"** (the 6 GB graphics card is shared with Gemma): run `ollama stop gemma4:e2b`, close the app, then check
   `nvidia-smi` (it should show under 1 GB used).
+- **Telugu looks like overlapping marks:** a terminal display problem, not the model. Use the browser page (7.1).
+- **Output is random Japanese, Korean or Russian characters:** the model's output layer was overwritten when it loaded. The loader
+  now prevents this by itself (`_fix_untied_embeddings` in `src/indiclearn/studio/neural.py`); if it ever appears, update to the latest code.
+- **Error mentioning `extra_special_tokens` or `'list' object has no attribute 'keys'`:** a model saved by a newer library version;
+  the loader repairs this automatically (`_fix_tokenizer_config`).
 - **Library versions that work together on this laptop:** torch 2.6.0 (CUDA 12.4), transformers 4.57.x (must be below 5),
   sentencepiece, sacrebleu. Transformers 5 breaks the IndicTrans2 code.
 
