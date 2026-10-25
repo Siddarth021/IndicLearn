@@ -1,0 +1,7 @@
+{
+  "n_test": 349,
+  "chrF": 29.1,
+  "telugu_script_ratio": 0.996,
+  "model": "ai4bharat/indictrans2-en-indic-dist-200M",
+  "vs_ours_chrF": 73.85
+}
