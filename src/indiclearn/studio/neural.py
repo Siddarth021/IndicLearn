@@ -70,11 +70,35 @@ def _fix_tokenizer_config(folder: Path) -> None:
         pass  # no tokenizer file, or read-only folder: leave it as it is
 
 
+def _fix_untied_embeddings(folder: Path) -> None:
+    """A seq2seq model whose weight file holds BOTH ``shared.weight`` (word embeddings) and ``lm_head.weight``
+    (the trained output layer) must not have them tied. transformers 5 noticed and skipped the tie; 4.x obeys
+    ``tie_word_embeddings: true`` in config.json and overwrites the trained output layer with the embeddings, so the
+    model prints garbage (random Japanese/Korean tokens). The weight file's header says which case this is."""
+    import json
+    import struct
+
+    cfg_file, weights = folder / "config.json", folder / "model.safetensors"
+    try:
+        cfg = json.loads(cfg_file.read_text(encoding="utf-8"))
+        if not cfg.get("tie_word_embeddings", True) or not weights.exists():
+            return
+        with open(weights, "rb") as f:
+            size = struct.unpack("<Q", f.read(8))[0]
+            header = json.loads(f.read(size))
+        if "lm_head.weight" in header and "shared.weight" in header:
+            cfg["tie_word_embeddings"] = False
+            cfg_file.write_text(json.dumps(cfg, indent=2, ensure_ascii=False), encoding="utf-8")
+    except (OSError, ValueError, struct.error):
+        pass
+
+
 def _folder(*parts: str) -> Path | None:
     p = models_dir().joinpath(*parts)
     if not (p / "config.json").exists():
         return None
     _fix_tokenizer_config(p)
+    _fix_untied_embeddings(p)
     return p
 
 
@@ -331,6 +355,14 @@ def _restore(s: str, kept: list[str]) -> str:
     return re.sub(r"\s+([,.;:!?])", r"\1", re.sub(r"[ \t]{2,}", " ", s)).strip()
 
 
+_FOREIGN = re.compile(r"[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af\u0400-\u04ff]")  # kana, CJK, Hangul, Cyrillic
+
+
+def _looks_broken(out: str, src: str) -> bool:
+    """True for output no Telugu lecturer would write: foreign scripts, or far longer than the sentence it translates."""
+    return bool(_FOREIGN.search(out)) or len(out) > 6 * max(len(src), 20)
+
+
 def to_telugu(text: str, translator: Seq2SeqModel | None = None) -> str:
     """English study text -> lecturer Telugu, entirely on this computer. '' when the model is missing.
 
@@ -355,6 +387,8 @@ def to_telugu(text: str, translator: Seq2SeqModel | None = None) -> str:
                 pieces.append(sent.strip())
                 continue
             te = m.generate("to Telugu: " + safe.strip())
+            if te and _looks_broken(te, safe):
+                te = ""  # a broken model must never reach a student: the English sentence stays
             done = _restore(te, kept) if te else ""
             pieces.append(done or sent.strip())  # no answer, or a formula lost: that sentence stays English
         out_lines.append((marker or "") + " ".join(p for p in pieces if p))

@@ -172,3 +172,46 @@ def test_empty_list_is_dropped_and_a_dict_is_left_alone(tmp_path):
         neural._fix_tokenizer_config(tmp_path)
         assert ("extra_special_tokens" in json.loads((tmp_path / "tokenizer_config.json").read_text(encoding="utf-8"))) is expect_key
     neural._fix_tokenizer_config(tmp_path / "missing")  # no file: no error
+
+
+def _fake_weights(path, names):
+    import json
+    import struct
+
+    header = json.dumps({n: {"dtype": "F32", "shape": [1], "data_offsets": [0, 4]} for n in names}).encode()
+    path.write_bytes(struct.pack("<Q", len(header)) + header + b"\0\0\0\0")
+
+
+def test_separate_output_layer_is_never_tied_to_the_embeddings(tmp_path):
+    """transformers 4.x would overwrite a separately trained lm_head with the embeddings -> garbage output."""
+    import json
+
+    from indiclearn.studio import neural
+
+    (tmp_path / "config.json").write_text(json.dumps({"tie_word_embeddings": True, "model_type": "mt5"}), encoding="utf-8")
+    _fake_weights(tmp_path / "model.safetensors", ["shared.weight", "lm_head.weight", "encoder.block.0.x"])
+    neural._fix_untied_embeddings(tmp_path)
+    assert json.loads((tmp_path / "config.json").read_text(encoding="utf-8"))["tie_word_embeddings"] is False
+
+
+def test_a_genuinely_tied_model_is_left_alone(tmp_path):
+    import json
+
+    from indiclearn.studio import neural
+
+    (tmp_path / "config.json").write_text(json.dumps({"tie_word_embeddings": True}), encoding="utf-8")
+    _fake_weights(tmp_path / "model.safetensors", ["shared.weight", "encoder.block.0.x"])  # no separate lm_head
+    neural._fix_untied_embeddings(tmp_path)
+    assert json.loads((tmp_path / "config.json").read_text(encoding="utf-8"))["tie_word_embeddings"] is True
+    neural._fix_untied_embeddings(tmp_path / "missing")  # no folder: no error
+
+
+def test_garbage_from_a_broken_model_is_never_shown():
+    from indiclearn.studio import neural
+
+    class Broken:
+        def generate(self, prompt, max_new_tokens=None):
+            return "01.01.201 と思うのです 카지노사이트 " * 5
+
+    english = "Precision means out of all positives how many are predicted positive."
+    assert neural.to_telugu(english, Broken()) == english
