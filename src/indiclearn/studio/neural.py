@@ -534,6 +534,7 @@ class IndicTranslator:
     en_indic: tuple[Any, Any] | None
     indic_en: tuple[Any, Any] | None
     ip: Any
+    _cache_ok: bool = True
 
     def can(self, src: str, tgt: str) -> bool:
         if src not in FLORES or tgt not in FLORES or src == tgt:
@@ -550,8 +551,15 @@ class IndicTranslator:
         batch = self.ip.preprocess_batch(texts, src_lang=FLORES[src], tgt_lang=FLORES[tgt])
         enc = tok(batch, truncation=True, padding="longest", return_tensors="pt", return_attention_mask=True)
         enc = {k: v.to(model.device) for k, v in enc.items()}
+        kw = dict(min_length=0, max_length=256, num_beams=4, num_return_sequences=1)
         with t.no_grad():
-            gen = model.generate(**enc, use_cache=True, min_length=0, max_length=256, num_beams=4, num_return_sequences=1)
+            try:
+                gen = model.generate(**enc, use_cache=self._cache_ok, **kw)
+            except AttributeError:  # IndicTrans2's cache code breaks on transformers 4.5x ('NoneType' has no 'shape')
+                if not self._cache_ok:
+                    raise
+                self._cache_ok = False  # slower, but correct; remembered for the next batches
+                gen = model.generate(**enc, use_cache=False, **kw)
         out = tok.batch_decode(gen, skip_special_tokens=True, clean_up_tokenization_spaces=True)
         return list(self.ip.postprocess_batch(out, lang=FLORES[tgt]))
 

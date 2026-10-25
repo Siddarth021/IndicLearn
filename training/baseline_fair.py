@@ -44,21 +44,24 @@ def main() -> int:
     print(f"items: {len(rows)} | translating with IndicTrans2 en->te ...")
     out: list[str] = []
     for i in range(0, len(src), 16):
-        out.extend(tr.translate(src[i:i + 16], "en", "te"))
+        out.extend(tr.translate(src[i:i + 16], "en", "te", strict=True))
         print(f"  {min(i + 16, len(src))}/{len(src)}", end="\r", flush=True)
     print()
 
     chrf = sacrebleu.corpus_chrf(out, [gold]).score
     it_ratio = sum(map(te_ratio, out)) / len(out)
+    if it_ratio < 0.3:
+        print(f"\nINVALID RUN: output is only {it_ratio:.0%} Telugu script - the model did not translate. Not saving.")
+        return 1
     print("\n=== fair baseline on te_style test (same 349 references) ===")
     print(f"IndicTrans2 en->te   chrF = {chrf:5.1f}   te-script-ratio = {it_ratio:.3f}")
-    print(f"Our mT5 (reported)   chrF =  72.0   te-script-ratio = 0.314")
+    print(f"Our mT5 v2 (reported) chrF = 73.85   te-script-ratio = 0.326")
     print("\nHigher IndicTrans2 te-ratio (~0.9) = it over-translates the technical terms;")
     print("that register gap is the contribution, visible even if chrF is close.")
     (ROOT / "training" / "reports").mkdir(exist_ok=True)
     (ROOT / "training" / "reports" / "te_style__indictrans2_baseline.json").write_text(
         json.dumps({"n_test": len(rows), "chrF": round(chrf, 2), "telugu_script_ratio": round(it_ratio, 3),
-                    "model": "ai4bharat/indictrans2-en-indic-dist-200M", "vs_ours_chrF": 72.0}, indent=2),
+                    "model": "ai4bharat/indictrans2-en-indic-dist-200M", "vs_ours_chrF": 73.85}, indent=2),
         encoding="utf-8")
     print("\nsaved training/reports/te_style__indictrans2_baseline.json")
     return 0
