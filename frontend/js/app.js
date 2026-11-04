@@ -1,6 +1,6 @@
 import { api, setToken, getToken, ApiError } from "./api.js";
 import { t, getLang, setLang, LANGS, unitName } from "./i18n.js";
-import { h, toast, STATUS_COLORS } from "./util.js";
+import { h, toast, STATUS_COLORS, autoMath, plainMath } from "./util.js";
 import { S, on, emit } from "./state.js";
 import { createTutor } from "./chat.js";
 import { createReader } from "./reader.js";
@@ -216,7 +216,7 @@ async function upload(f) {
 function renderQuizPage() {
   const v = views.quiz; v.innerHTML = "";
   const chapters = [...S.nodes.values()].filter((n) => (n.type === "chapter" || n.type === "section" || n.type === "topic") && (n.n_children > 0 || n.definition));
-  const scope = h("select", { class: "field" }, h("option", { value: "" }, t("whole_doc")), ...chapters.map((n) => h("option", { value: n.id, selected: n.id === S.focus }, (n.type === "chapter" ? "" : "— ") + n.label)));
+  const scope = h("select", { class: "field" }, h("option", { value: "" }, t("whole_doc")), ...chapters.map((n) => h("option", { value: n.id, selected: n.id === S.focus }, (n.type === "chapter" ? "" : "— ") + plainMath(n.label))));
   const nSel = h("select", { class: "field", style: { width: "90px" } }, ...[3, 5, 8, 10].map((n) => h("option", { value: n, selected: n === 5 }, n)));
   const out = h("div", { class: "quizpage" });
   const start = async () => {
@@ -254,4 +254,5 @@ async function renderProgress() {
 on("progress", () => { if (S.view === "progress") renderProgress(); });
 on("lang", () => {});
 
+autoMath();
 boot();

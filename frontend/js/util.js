@@ -55,13 +55,74 @@ function loadKatex() {
     .catch(() => { katexReady = null; });
   return katexReady;
 }
-const HAS_MATH = /\$[^$\n]+\$|\\\(|\\\[|\\(frac|lambda|sum|times|leq|geq|alpha|beta|sigma|mu|infty)\b/;
+const HAS_MATH = /\$[^$\n]+\$|\\\(|\\\[|\\[a-zA-Z]{2,}/;
+const SKIP = "svg, .katex, script, style, textarea, pre, code, option, [data-nomath]";
+// true when some text outside already-rendered maths still holds a formula
+function needsMath(el) {
+  if (!el || el.nodeType !== 1 || el.closest(SKIP)) return false;
+  const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, { acceptNode: (n) => n.parentElement?.closest(SKIP) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+  for (let n = w.nextNode(); n; n = w.nextNode()) if (HAS_MATH.test(n.nodeValue)) return true;
+  return false;
+}
 export async function mathify(el) {
-  if (!el || !HAS_MATH.test(el.textContent || "")) return;
+  if (!needsMath(el)) return;
   await loadKatex();
   try {
     window.renderMathInElement?.(el, { throwOnError: false, delimiters: [
       { left: "$$", right: "$$", display: true }, { left: "\\[", right: "\\]", display: true },
       { left: "$", right: "$", display: false }, { left: "\\(", right: "\\)", display: false }] });
   } catch (e) { /* leave the text as it is */ }
+}
+// Safety net: every piece of text that ever appears on a page (tooltips, map panels, chat, lessons, quizzes,
+// papers ...) is typeset automatically, so a formula can never show up as raw "$p \vee q$" again.
+export function autoMath(root = document.body) {
+  let queue = new Set(), timer = null, busy = false;
+  const run = async () => {
+    timer = null; const els = [...queue]; queue = new Set(); busy = true;
+    for (const el of els) if (el.isConnected) await mathify(el);
+    busy = false;
+  };
+  const obs = new MutationObserver((muts) => {
+    if (busy) return;
+    for (const m of muts) {
+      const t = m.target.nodeType === 1 ? m.target : m.target.parentElement;
+      if (m.type === "characterData") { if (t) queue.add(t); }
+      else for (const n of m.addedNodes) { const e = n.nodeType === 1 ? n : n.parentElement; if (e) queue.add(e); }
+    }
+    if (queue.size && !timer) timer = setTimeout(run, 30);
+  });
+  obs.observe(root, { childList: true, subtree: true, characterData: true });
+  queue.add(root); timer = setTimeout(run, 0);
+  return obs;
+}
+// For places that cannot hold HTML (SVG labels, native tooltips, <option>, document title): LaTeX -> readable Unicode.
+const SYM = { vee: "∨", lor: "∨", wedge: "∧", land: "∧", neg: "¬", lnot: "¬", to: "→", rightarrow: "→", Rightarrow: "⇒", implies: "⇒",
+  leftarrow: "←", leftrightarrow: "↔", Leftrightarrow: "⇔", iff: "⇔", forall: "∀", exists: "∃", in: "∈", notin: "∉", ni: "∋",
+  subseteq: "⊆", subset: "⊂", supseteq: "⊇", supset: "⊃", cup: "∪", cap: "∩", emptyset: "∅", varnothing: "∅", setminus: "∖",
+  times: "×", cdot: "·", div: "÷", pm: "±", mp: "∓", leq: "≤", le: "≤", geq: "≥", ge: "≥", neq: "≠", ne: "≠", approx: "≈", equiv: "≡",
+  sim: "∼", propto: "∝", infty: "∞", sum: "∑", prod: "∏", int: "∫", partial: "∂", nabla: "∇", oplus: "⊕", otimes: "⊗", mid: "∣",
+  ldots: "…", cdots: "⋯", dots: "…", circ: "∘", top: "⊤", bot: "⊥", vdash: "⊢", models: "⊨", therefore: "∴", because: "∵",
+  alpha: "α", beta: "β", gamma: "γ", delta: "δ", epsilon: "ε", varepsilon: "ε", theta: "θ", lambda: "λ", mu: "μ", pi: "π", rho: "ρ",
+  sigma: "σ", tau: "τ", phi: "φ", varphi: "φ", omega: "ω", Delta: "Δ", Sigma: "Σ", Omega: "Ω", Theta: "Θ", Lambda: "Λ", Pi: "Π", Phi: "Φ",
+  langle: "⟨", rangle: "⟩", lceil: "⌈", rceil: "⌉", lfloor: "⌊", rfloor: "⌋", log: "log", lg: "lg", ln: "ln", max: "max", min: "min", gcd: "gcd", mod: "mod", bmod: "mod" };
+const BB = { N: "ℕ", Z: "ℤ", Q: "ℚ", R: "ℝ", C: "ℂ", P: "ℙ", E: "𝔼" };
+const SUP = "⁰¹²³⁴⁵⁶⁷⁸⁹", SUB = "₀₁₂₃₄₅₆₇₈₉";
+export function plainMath(src) {
+  let s = String(src ?? "");
+  if (!/[\\$]/.test(s)) return s;
+  s = s.replace(/\\(?:mathbb|mathbf|mathrm|mathit|mathcal|text|textbf|operatorname)\s*\{([^{}]*)\}/g, (_, x) => (/^[A-Z]$/.test(x) && BB[x]) || x);
+  s = s.replace(/\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, "($1)/($2)").replace(/\\sqrt\s*\{([^{}]*)\}/g, "√($1)");
+  s = s.replace(/\\(?:left|right|big|Big|bigg|Bigg)\b\s*/g, "").replace(/\\[,;:! ]/g, " ").replace(/\\\\/g, " ");
+  s = s.replace(/\\([A-Za-z]+)/g, (m, c) => SYM[c] ?? c);
+  s = s.replace(/\^\s*\{?(\d+)\}?/g, (_, d) => [...d].map((c) => SUP[c]).join("")).replace(/_\s*\{?(\d+)\}?/g, (_, d) => [...d].map((c) => SUB[c]).join(""));
+  s = s.replace(/[{}]/g, "").replace(/\$+/g, "").replace(/\s{2,}/g, " ");
+  return s.trim();
+}
+// Shorten text for a tooltip without ever cutting a $...$ formula in half.
+export function clip(s, max) {
+  s = String(s ?? ""); if (s.length <= max) return s;
+  let cut = max;
+  const before = s.slice(0, cut), dollars = (before.match(/(?<!\\)\$/g) || []).length;
+  if (dollars % 2 === 1) { const open = before.lastIndexOf("$"); cut = open > 0 ? open : max; }
+  return s.slice(0, cut).trimEnd() + "…";
 }

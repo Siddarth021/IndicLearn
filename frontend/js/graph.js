@@ -2,7 +2,7 @@
 //   radial - classic mind map, root in the centre
 //   tree   - left-to-right outline
 //   flow   - learning order: columns follow prerequisite / "next" edges
-import { STATUS_COLORS } from "./util.js";
+import { STATUS_COLORS, plainMath } from "./util.js";
 const d3 = window.d3;
 const TAU = Math.PI * 2;
 
@@ -221,9 +221,9 @@ export class MindMap {
           .attr("stroke-dasharray", `${c * (n.mastery.progress || 0)} ${c}`).attr("transform", "rotate(-90)").attr("opacity", n.mastery.progress > 0 ? 1 : 0);
       } else ring.attr("opacity", 0);
       // label
-      const label = (n.label || "").length > 34 ? n.label.slice(0, 33) + "…" : n.label;
+      const pl = plainMath(n.label || ""); const label = pl.length > 34 ? pl.slice(0, 33) + "…" : pl;
       let tip = g.select("title"); if (tip.empty()) tip = g.append("title");
-      tip.text(n.full_label || n.label || "");
+      tip.text(plainMath(n.full_label || n.label || ""));
       const base = n.type === "root" ? 17 : n.type === "chapter" ? 15 : n.type === "concept" ? 12.5 : 13.5;
       const txt = g.select("text.lbl").text(label).attr("data-base", base).attr("font-size", base * self.labelScale())
         .attr("font-weight", n.type === "chapter" || n.type === "root" ? 600 : 500).attr("fill", n.type === "concept" ? "#4A4336" : "#1F1B14");

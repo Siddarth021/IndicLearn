@@ -1,6 +1,6 @@
 import { api } from "./api.js";
 import { t } from "./i18n.js";
-import { h, toast, debounce, STATUS_COLORS } from "./util.js";
+import { h, clip, plainMath, toast, debounce, STATUS_COLORS } from "./util.js";
 import { S, emit, on, clearOwner } from "./state.js";
 import { MindMap } from "./graph.js";
 
@@ -92,7 +92,7 @@ export function createMapView(root) {
     unitSel.hidden = !units.length;
     if (!units.some((u) => u.id === unit)) unit = "all";
     unitSel.innerHTML = "";
-    unitSel.append(h("option", { value: "all" }, "All units"), ...units.map((u, i) => h("option", { value: u.id }, u.full_label || `Unit ${i + 1}: ${u.label}`)));
+    unitSel.append(h("option", { value: "all" }, "All units"), ...units.map((u, i) => h("option", { value: u.id }, plainMath(u.full_label || `Unit ${i + 1}: ${u.label}`))));
     unitSel.value = unit;
   }
   function draw(keepView = false) {
@@ -133,7 +133,7 @@ export function createMapView(root) {
     tip.append(h("b", {}, n.full_label || n.label));
     const type = { chapter: t("lg_chapter"), section: t("lg_section"), topic: t("lg_section"), concept: t("lg_concept"), doubt: t("lg_doubt") }[n.type];
     tip.append(h("span", { class: "small-caps" }, type + (n.mastery ? " · " + t("st_" + n.mastery.status) : "")));
-    const body = n.definition || n.summary; if (body) tip.append(h("div", { style: { marginTop: "5px", color: "#4A4336" } }, body.length > 170 ? body.slice(0, 168) + "…" : body));
+    const body = n.definition || n.summary; if (body) tip.append(h("div", { style: { marginTop: "5px", color: "#4A4336" } }, clip(body, 170)));
     tip.style.left = Math.min(e.clientX - r.left + 16, r.width - 300) + "px"; tip.style.top = Math.min(e.clientY - r.top + 14, r.height - 140) + "px";
   }
 
@@ -156,7 +156,7 @@ export function createMapView(root) {
       else detail.append(h("p", { style: { color: "var(--muted)", fontSize: "13px" } }, t("no_def")));
     }
     if (n.examples?.length) detail.append(section(t("examples"), ...n.examples.slice(0, 2).map((x) => h("p", { style: { margin: "4px 0", fontSize: "13.5px" } }, x))));
-    if (n.formulas?.length) detail.append(section(t("formulas"), ...n.formulas.slice(0, 3).map((x) => h("div", { class: "math", style: { fontFamily: "ui-monospace,monospace", background: "var(--surface-2)", borderRadius: "8px", padding: "6px 10px", margin: "4px 0", fontSize: "13px" } }, x))));
+    if (n.formulas?.length) detail.append(section(t("formulas"), ...n.formulas.slice(0, 3).map((x) => h("div", { class: "math", style: { fontFamily: "ui-monospace,monospace", background: "var(--surface-2)", borderRadius: "8px", padding: "6px 10px", margin: "4px 0", fontSize: "13px" } }, /\$|\\\(|\\\[/.test(x) ? x : "\\(" + x + "\\)"))));
     const edges = (S.graph?.edges || []);
     const pre = edges.filter((e) => e.type === "prereq" && e.target === n.id).map((e) => e.source);
     const post = edges.filter((e) => e.type === "prereq" && e.source === n.id).map((e) => e.target);
