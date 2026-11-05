@@ -56,7 +56,8 @@ async function speak(btn, text, lang) {
   const voice = voices.find((v) => v.lang?.toLowerCase().startsWith(base)) || null;
   const enVoice = voices.find((v) => v.lang?.toLowerCase().startsWith("en-in")) || voices.find((v) => v.lang?.toLowerCase().startsWith("en")) || null;
   const msg = plain(text);
-  const serverFirst = !!S.info?.speech?.server_tts;  // natural Sarvam voice beats robotic device voices
+  const sp = S.info?.speech || {};
+  const serverFirst = !!sp.server_tts || (sp.local_tts || []).includes(base);  // ONE engine for the whole reply; device voices differ per language  // natural Sarvam voice beats robotic device voices
   if (serverFirst) {
     try { await playServer(btn, msg, base); return; } catch (e) { if (speaking?.btn !== btn) return; /* fall through to device voice */ }
   }

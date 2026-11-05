@@ -548,8 +548,15 @@ def test_english_words_inside_a_telugu_reply_are_read_by_the_english_voice(monke
     monkeypatch.setattr(neural, "load_speaker", fake_speaker)
     monkeypatch.setattr(neural, "load_parler", fake_parler)
     svc = StudioService.__new__(StudioService)
+    # default: ONE voice reads the whole reply (English words are written in Telugu script) - no voice switching
     out = svc.speak("కన్వల్యూషన్ అంటే Graph Neural Networks", "te")
-    assert ("en", "Graph Neural Networks") in spoken and any(n == "te" for n, _ in spoken)
+    assert {n for n, _ in spoken} == {"te"} and not any(c.isascii() and c.isalpha() for _, t in spoken for c in t)
+    assert out
+    # opt-out: two voices, the English words cleaned for the English voice
+    spoken.clear()
+    monkeypatch.setenv("INDICLEARN_TTS_ONE_VOICE", "0")
+    out = svc.speak("కన్వల్యూషన్ అంటే Graph Neural Networks", "te")
+    assert ("en", "graph neural networks") in spoken and any(n == "te" for n, _ in spoken)
     with wave.open(io.BytesIO(out)) as w:
         assert w.getframerate() == 16000 and w.getnframes() > 3000  # both pieces joined, resampled
     assert join_wavs([tone(16000)])  # single piece is fine

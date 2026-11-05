@@ -648,7 +648,8 @@ class StudioService:
         brain = getattr(self.models, "brain", None)
         hosted_asr = st["asr"] or bool(brain and any(getattr(p, "audio", False) for p in brain.providers))
         local_asr = neural.models_dir().joinpath("whisper_small", "config.json").exists() or neural.models_dir().joinpath("whisper_te_small", "config.json").exists()
-        return {"server_tts": bool(st["tts"]), "server_asr": bool(hosted_asr or local_asr), "hosted": st["provider"]}
+        local_tts = [k for k in neural.TTS_FOLDERS if neural.models_dir().joinpath("pretrained", neural.TTS_FOLDERS[k], "config.json").exists()]
+        return {"server_tts": bool(st["tts"]), "local_tts": local_tts, "server_asr": bool(hosted_asr or local_asr), "hosted": st["provider"]}
 
     def transcribe(self, filename: str, data: bytes, lang: str = "", user_id: str | None = None, doc_id: str | None = None) -> dict[str, Any]:
         """Spoken question -> text + detected language.
@@ -825,7 +826,8 @@ class StudioService:
         if hosted:
             return hosted[0] if len(hosted) == 1 else join_wavs(hosted, gap_ms=60)
         clean = clean[:1200]
-        runs = split_script_runs(clean) if base != "en" else [("en", clean)]
+        from indiclearn.studio import tts_text
+
         native = neural.load_speaker(base) if base != "en" else None
         parler = neural.load_parler() if base in neural.PARLER_LANGS else None
         english = neural.load_speaker("en")
@@ -833,23 +835,35 @@ class StudioService:
         if base != "en" and native is None and parler is None:
             raise _err(f"No voice installed for this language on the server. Download one with: "
                        f"python scripts/download_models.py --only {neural.TTS_FOLDERS.get(base, 'mms_tts_tel')}", 503)
+        one_voice = os.environ.get("INDICLEARN_TTS_ONE_VOICE", "1").lower() not in ("0", "false", "no", "off")
         pieces: list[bytes] = []
-        for kind, chunk in runs:
-            if not re.search(r"\w", chunk):
-                continue
-            wav = b""
-            for part in _chunks(chunk, 280):
-                if kind == "en" or base == "en":
-                    w = english.wav(part) if english is not None else b""
-                    if not w and eng_parler is not None:
-                        w = eng_parler.wav(part, "en")
-                else:
-                    w = parler.wav(part, base) if parler is not None else b""
-                    if not w and native is not None:
-                        w = native.wav(part)
-                if w:
+
+        def say(part: str, lang_: str) -> bytes:
+            """one chunk -> WAV with the best local voice for lang_"""
+            if lang_ == "en":
+                w = english.wav(part) if english is not None else b""
+                return w or (eng_parler.wav(part, "en") if eng_parler is not None else b"")
+            w = parler.wav(part, lang_) if parler is not None else b""
+            return w or (native.wav(part) if native is not None else b"")
+
+        if base == "en":
+            for part in _chunks(tts_text.english_for_tts(clean), 280):
+                if re.search(r"\w", part) and (w := say(part, "en")):
                     pieces.append(w)
-            _ = wav
+        elif parler is not None or (one_voice and base in tts_text._SCRIPT):
+            # ONE voice for the whole reply: Parler reads Telugu + English natively; otherwise the English words are
+            # written in the native script so the single Telugu/Hindi voice can read them (no voice switching)
+            text = clean if parler is not None else tts_text.to_native_script(clean, base)
+            for part in _chunks(text, 280):
+                if re.search(r"\w", part) and (w := say(part, base)):
+                    pieces.append(w)
+        else:  # other languages: native voice for native text, English voice for Latin runs
+            for kind, chunk in split_script_runs(clean):
+                if not re.search(r"\w", chunk):
+                    continue
+                for part in _chunks(chunk if kind != "en" else tts_text.english_for_tts(chunk), 280):
+                    if (w := say(part, "en" if kind == "en" else base)):
+                        pieces.append(w)
         if not pieces:
             raise _err("Could not synthesise speech for that text.", 422)
         return pieces[0] if len(pieces) == 1 else join_wavs(pieces)
