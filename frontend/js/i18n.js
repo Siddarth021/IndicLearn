@@ -39,7 +39,7 @@ const S = {
     welcome_t: "మీ వ్యక్తిగత", welcome_b: "స్టడీ మ్యాప్", welcome_p: "నోట్స్, పురోగతి భద్రపరచడానికి సైన్ ఇన్ అవ్వండి, లేదా అతిథిగా వెంటనే ప్రయత్నించండి.",
     contents: "విషయసూచిక", original: "అసలు PDF", text_view: "టెక్స్ట్ వ్యూ", ask_tutor: "ట్యూటర్‌ని అడగండి", hide_tutor: "ట్యూటర్ దాచు", tutor: "స్టడీ ట్యూటర్", tutor_sub: "నాలుగు భాషల్లో దేనిలోనైనా అడగండి",
     placeholder: "సందేహం అడగండి… (English / తెలుగు / हिन्दी / संस्कृतम्)", send: "పంపు", clear_chat: "చాట్ తొలగించు", reply_in: "జవాబు భాష", auto: "నా ప్రశ్న భాషలోనే", asking_about: "అంశం", suggestions_title: "ప్రయత్నించండి",
-    sg_explain: "{t} వివరించు", sg_example: "ఒక ఉదాహరణ ఇవ్వు", sg_summary: "ఈ అంశం సారాంశం", sg_quiz: "దీనిపై క్విజ్ పెట్టు", sg_next: "తర్వాత ఏం చదవాలి?",
+    sg_explain: "{t} వివరించు", sg_example: "ఒక ఉదాహరణ ఇవ్వు", sg_summary: "ఈ అంశం సారాంశం", sg_quiz: "దీనిపై క్విజ్ ఇవ్వు", sg_next: "తర్వాత ఏం చదవాలి?",
     map_default: "అంశాల మ్యాప్", map_personal: "నా మ్యాప్", layout_radial: "మైండ్ మ్యాప్", layout_tree: "ట్రీ", layout_flow: "ప్రవాహం", show_prereq: "ముందస్తు అంశాలు", show_related: "సంబంధితం", fit: "సరిపెట్టు", expand: "అన్నీ విప్పు", collapse: "ముడుచు",
     search_nodes: "అంశం వెతకండి…", tour: "గైడెడ్ టూర్", tour_stop: "టూర్ ఆపు", prev: "వెనుకకు", next: "తర్వాత", step_of: "{n}లో {i}వ దశ",
     lg_chapter: "అధ్యాయం", lg_section: "విభాగం / అంశం", lg_concept: "భావన", lg_doubt: "మీ సందేహం", st_new: "మొదలుపెట్టలేదు", st_doubt: "అడిగినవి", st_revise: "పునశ్చరణ కావాలి", st_learning: "నేర్చుకుంటున్నారు", st_mastered: "పట్టు సాధించారు",

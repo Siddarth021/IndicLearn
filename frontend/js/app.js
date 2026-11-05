@@ -9,6 +9,7 @@ import { renderQuiz } from "./quizcard.js";
 import { createHud } from "./hud.js";
 import { renderPapers } from "./papers.js";
 import { renderCourse, courseOpen } from "./course.js";
+import { attachResizers } from "./resize.js";
 
 const $app = document.getElementById("app-root");
 const DOCLESS = new Set(["library", "course", "papers"]); // views that work without an open document
@@ -84,7 +85,7 @@ function shell(keepView = false) {
   const tutorEl = h("aside", { class: "tutor", id: "tutor" });
   views = {};
   for (const k of ["library", "study", "map", "quiz", "progress", "course", "papers"]) { views[k] = h("div", { class: "view" + (k === "study" || k === "map" ? " flush" : ""), hidden: true }); main.append(views[k]); }
-  app.append(side, main, tutorEl); $app.append(app);
+  app.append(side, main, tutorEl); $app.append(app); attachResizers(app);
   tutor = createTutor(tutorEl); reader = createReader(views.study); mapView = createMapView(views.map);
   if (S.doc) { reader.load(); }
   if (!keepView) S.view = "library";
