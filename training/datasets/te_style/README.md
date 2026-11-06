@@ -39,7 +39,7 @@ parallel training set.**
 | val | 157 | 98 | 59 |
 | test | 349 | 199 | 150 |
 
-~5,200 pairs total across the three tasks. Source domains: Operating Systems, Discrete
+2,595 pairs in total (1,580 definitions + 1,015 multiple-choice questions); the te_style set is these two combined. Source domains: Operating Systems, Discrete
 Structures & Mathematics, AI/NLP study notes.
 
 Each row: `input` (English, prefixed `to Telugu: `), `target` (code-mixed Telugu),

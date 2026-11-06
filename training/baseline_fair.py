@@ -9,9 +9,12 @@ the same way the running app does. Needs sacrebleu:  .venv\\Scripts\\pip install
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
+
+os.environ["INDICLEARN_FORCE_CPU"] = "1"  # a scoring run needs no speed; the 6 GB GPU is shared with Gemma
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))

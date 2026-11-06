@@ -54,7 +54,7 @@ So "Telugu + classroom register + a trained model + a dataset for it" is an open
   explained in section 3).
 
 ### Contribution 2 — The dataset it learned from
-- **What it is:** about 5,200 pairs of "English sentence → classroom-style Telugu sentence" covering definitions,
+- **What it is:** 2,595 pairs of "English sentence → classroom-style Telugu sentence" covering definitions,
   explanations and multiple-choice questions on Operating Systems, Discrete Maths and AI/NLP.
 - **Where it is:** `training/datasets/te_style/` (translator data), `m2_te/` and `m4_te/` (definition and quiz data),
   `te_plus/` (the same data plus human-translated sentences — see Contribution 5).

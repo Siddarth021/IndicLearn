@@ -5,9 +5,9 @@ LLM is reachable (and which make the first map instant even when one is):
 
 | Model | Job in the app | Base | Trained on |
 |---|---|---|---|
-| **M1** concept filter | keeps real concepts, drops junk nodes from the rule-mined map | `google/muril-base-cased` | rule-mined candidates from 460 B.Tech articles, judged by a teacher LLM |
+| **M1** concept filter | keeps real concepts, drops junk nodes from the rule-mined map | `FacebookAI/xlm-roberta-base` | rule-mined candidates from 460 B.Tech articles, judged by a teacher LLM |
 | **M2** description writer | one-line definition for a node the notes never define | `google/flan-t5-base` | teacher-written, student-friendly definitions (+ IndicTrans2 for Telugu/Hindi output) |
-| **M3** relation classifier | turns co-occurrence links into `prereq` / `related` / dropped | `google/muril-base-cased` | teacher prerequisite/related pairs + LectureBank 2 (balanced) |
+| **M3** relation classifier | turns co-occurrence links into `prereq` / `related` / dropped | `FacebookAI/xlm-roberta-base` | teacher prerequisite/related pairs + LectureBank 2 (balanced) |
 | **M4** quiz generator | a real MCQ with 3 believable wrong options | `google/flan-t5-base` | SciQ (human distractors) + teacher-written engineering MCQs |
 
 ## Pipeline (each step is resumable)

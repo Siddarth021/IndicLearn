@@ -1,0 +1,39 @@
+# ==============================================================================
+# Model Inventory & Management
+# Last Updated: 2026-11-04
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. ACTIVE / RESTORED MODELS (Needed for this Application)
+# ------------------------------------------------------------------------------
+
+# Ollama:
+# - gemma4:e2b (4.6 GB) - Primary local LLM
+ollama run gemma4:e2b
+
+# Hugging Face Models (Downloaded to local HF cache):
+# - intfloat/multilingual-e5-small (Embeddings for Indic languages & English)
+# - ai4bharat/indictrans2-en-indic-dist-200M (English -> Indic translation)
+# - facebook/mms-tts-eng (TTS English)
+# - facebook/mms-tts-hin (TTS Hindi)
+# - facebook/mms-tts-tel (TTS Telugu)
+# - openai/whisper-small (General Whisper ASR)
+# - vasista22/whisper-telugu-small (Telugu Whisper ASR)
+
+
+# ------------------------------------------------------------------------------
+# 2. INTENTIONALLY EXCLUDED / UNUSED MODELS (Do Not Download - Left Deleted)
+# ------------------------------------------------------------------------------
+# These were previously cached or installed but are not needed by the application:
+#
+# - Qwen/Qwen2.5-VL-3B-Instruct (~7 GB) [Vision-LLM not used]
+# - tiiuae/falcon-rw-1b (~4.9 GB) [Old LLM]
+# - PKUDigitalHealth/ECG-R1-8B-RL [Domain-specific ECG research model]
+# - openai/clip-vit-large-patch14, -base-patch32, -base-patch16 [Vision-text not used]
+# - nvidia/segformer-b5-finetuned-ade-640-640, -b2-... [Segmentation not used]
+# - l3cube-pune/indic-sentence-bert-nli (~1.8 GB) [Superseded by multilingual-e5-small]
+# - sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 [Superseded by e5]
+# - sentence-transformers/all-MiniLM-L6-v2 [Superseded by e5]
+# - PaddlePaddle/PP-LCNet_*, PP-OCRv6_*, UVDoc [App uses RapidOCR via pip]
+# - ai4bharat/indictrans2-indic-en-dist-200M [Indic->En not needed]
+# - llama3.2:3b, gemma2:2b, gemma4:e4b (Ollama) [Older/too large for 6GB GPU]
